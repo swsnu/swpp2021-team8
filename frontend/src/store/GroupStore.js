@@ -38,7 +38,7 @@ export const getGroups = (query) => async (dispatch) => {
     const res = await axios.get(`/api/group/?${query}`);
     dispatch(_getGroups(res.data));
   } catch (e) {
-    //TODO
+    // TODO
   }
 };
 
@@ -118,7 +118,7 @@ export default function GroupReducer(state = initialState, action) {
         groups: state.groups.filter((group) => group.id !== action.id),
       };
 
-    //TODO: add user to group
+    // TODO: add user to group
     case 'group/ADD_USER_TO_GROUP':
       return {
         ...state,
@@ -127,7 +127,7 @@ export default function GroupReducer(state = initialState, action) {
         }),
       };
 
-    //TODO: delete user from group
+    // TODO: delete user from group
     case 'group/DELETE_USER_FROM_GROUP':
       return {
         ...state,

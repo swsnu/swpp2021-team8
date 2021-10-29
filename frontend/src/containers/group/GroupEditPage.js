@@ -1,25 +1,24 @@
 import React from 'react';
 
 const GroupEditPage = ({ history }) => {
-  const onBackClick = (e) => {
+  const onBackClick = () => {
     history.goBack();
   };
 
-  const onCancelClick = (e) => {
-    //TODO
+  const onCancelClick = () => {
+    // TODO
   };
 
-  const onConfirmClick = (e) => {
-    //TODO
+  const onConfirmClick = () => {
+    // TODO
   };
 
   return (
     <>
-      <button id="back-button" onClick={onBackClick}>
+      <button id="back-button" onClick={onBackClick} type="button">
         Back
       </button>
       <select id="people-select">people TODO</select>
-      <select id="duration-select">duration TODO</select>
       <input id="public-input" name="public" type="checkbox" />
       <input id="password-input" name="password" type="password" />
       <input
@@ -31,10 +30,11 @@ const GroupEditPage = ({ history }) => {
       <input id="description-input" name="description" type="text" />
       <select id="account-bank-select">account bank TODO</select>
       <input id="account-number-input" name="account-number" type="text" />
-      <button id="cancel-button" onClick={onCancelClick}>
+      <input id="account-name-input" name="account-name" type="text" />
+      <button id="cancel-button" onClick={onCancelClick} type="button">
         Cancel
       </button>
-      <button id="confirm-button" onClick={onConfirmClick}>
+      <button id="confirm-button" onClick={onConfirmClick} type="button">
         Confirm
       </button>
     </>

@@ -1,33 +1,32 @@
 import React from 'react';
 
 const GroupCreatePage = ({ history }) => {
-  const onBackClick = (e) => {
+  const onBackClick = () => {
     history.goBack();
   };
 
-  const onOTTClick = (e) => {
-    //TODO
+  const onOTTClick = () => {
+    // TODO
   };
 
-  const onCancelClick = (e) => {
-    //TODO
+  const onCancelClick = () => {
+    // TODO
   };
 
-  const onCreateGroupClick = (e) => {
-    //TODO
+  const onCreateGroupClick = () => {
+    // TODO
   };
 
   return (
     <>
-      <button id="back-button" onClick={onBackClick}>
+      <button id="back-button" onClick={onBackClick} type="button">
         Back
       </button>
-      <button id="ott-button" onClick={onOTTClick}>
+      <button id="ott-button" onClick={onOTTClick} type="button">
         OTT button TODO
       </button>
       <select id="membership-select">membership TODO</select>
       <select id="people-select">people TODO</select>
-      <select id="duration-select">duration TODO</select>
       <input id="public-input" name="public" type="checkbox" />
       <input id="password-input" name="password" type="password" />
       <input
@@ -39,10 +38,15 @@ const GroupCreatePage = ({ history }) => {
       <input id="description-input" name="description" type="text" />
       <select id="account-bank-select">account bank TODO</select>
       <input id="account-number-input" name="account-number" type="text" />
-      <button id="cancel-button" onClick={onCancelClick}>
+      <input id="account-name-input" name="account-name" type="text" />
+      <button id="cancel-button" onClick={onCancelClick} type="button">
         Cancel
       </button>
-      <button id="create-group-button" onClick={onCreateGroupClick}>
+      <button
+        id="create-group-button"
+        onClick={onCreateGroupClick}
+        type="button"
+      >
         Create Group
       </button>
     </>

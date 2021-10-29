@@ -11,6 +11,7 @@ const ContentListItem = () => {
       <p>director</p>
       <p>writer</p>
       <p>starts</p>
+      <p>num favorite</p>
     </>
   );
 };

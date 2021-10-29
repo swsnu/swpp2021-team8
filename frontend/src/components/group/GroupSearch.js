@@ -1,26 +1,23 @@
 import React from 'react';
 
 const GroupSearch = () => {
-  const onSearchClick = (e) => {
-    //TODO
+  const onSearchClick = () => {
+    // TODO
   };
 
-  const onFilterClick = (e) => {
-    //TODO
+  const onFilterClick = () => {
+    // TODO
   };
   return (
     <>
       <p>title</p>
-      <button id="search-button" onClick={onSearchClick}>
+      <button id="search-button" onClick={onSearchClick} type="button">
         Search
       </button>
-      <button id="filter-button" onClick={onFilterClick}>
+      <button id="filter-button" onClick={onFilterClick} type="button">
         Filter
       </button>
       <input id="ott-input" name="ott" />
-      <select id="duration-select"></select>
-      <select id="people-left-select"></select>
-      <select id="people-total-select"></select>
     </>
   );
 };

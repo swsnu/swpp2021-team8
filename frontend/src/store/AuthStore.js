@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 const initialState = {
-  errorMessage: '',
-  isLoggedIn: true,
-  user: {},
+  loginError: '',
+  signUpError: '',
+  isLoggedIn: false,
 };
 
 const _getLoginStatus = (status) => {
@@ -18,8 +18,16 @@ const _logOut = () => {
   return { type: 'auth/LOG_OUT' };
 };
 
-const _singUp = () => {
+const _signUp = () => {
   return { type: 'auth/SIGN_UP' };
+};
+
+const _setLoginErrorMessage = (message) => {
+  return { type: 'auth/SET_LOGIN_ERROR_MESSAGE', message };
+};
+
+const _setSignUpErrorMessage = (message) => {
+  return { type: 'auth/SET_SIGN_UP_ERROR_MESSAGE', message };
 };
 
 export const getLoginStatus = () => async (dispatch) => {
@@ -27,7 +35,7 @@ export const getLoginStatus = () => async (dispatch) => {
     const res = await axios.get('/api/user');
     dispatch(_getLoginStatus(res.data));
   } catch (e) {
-    //TODO
+    // TODO
   }
 };
 
@@ -36,7 +44,8 @@ export const logIn = (userInfo) => async (dispatch) => {
     const res = await axios.post('/api/user/login', userInfo);
     dispatch(_logIn(res.data));
   } catch (e) {
-    //TODO
+    // TODO
+    dispatch(_setLoginErrorMessage(e));
   }
 };
 
@@ -50,21 +59,32 @@ export const logOut = () => async (dispatch) => {
 export const signUp = (userInfo) => async (dispatch) => {
   try {
     await axios.post('/api/user', userInfo);
-    dispatch(_singUp());
-  } catch (e) {}
+    dispatch(_signUp());
+  } catch (e) {
+    // TODO
+    dispatch(_setSignUpErrorMessage(e));
+  }
 };
 
-//TODO: LocalStorage
+// TODO: LocalStorage
 export default function AuthReducer(state = initialState, action) {
   switch (action.type) {
     case 'auth/GET_LOGIN_STATUS':
       return { ...state, isLoggedIn: action.status };
 
     case 'auth/LOG_IN':
-      return { ...state, user: action.user };
+      // TODO set localStorage
+      return state;
 
     case 'auth/LOG_OUT':
+      // TODO delete localStorage?
       return { ...state, isLoggedIn: false };
+
+    case 'auth/SET_LOGIN_ERROR_MESSAGE':
+      return { ...state, loginError: action.message };
+
+    case 'auth/SET_SIGN_UP_ERROR_MESSAGE':
+      return { ...state, signUpError: action.message };
 
     default:
       break;

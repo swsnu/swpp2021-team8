@@ -4,6 +4,8 @@ const initialState = {
   searchContents: [],
   favoriteContents: [],
   recommendationContents: [],
+  trendingContents: [],
+  selectedContent: {},
 };
 
 const _getSearchContents = (contents) => {
@@ -26,9 +28,17 @@ const _deleteFavoriteContent = (id) => {
   return { type: 'content/DELETE_FAVORITE_CONTENT', id };
 };
 
+const _getTrendingContents = (contents) => {
+  return { type: 'content/GET_TRENDING_CONTENTS', contents };
+};
+
+const _getContentDetail = (content) => {
+  return { type: 'content/GET_CONTENT_DETAIL', content };
+};
+
 export const getSearchContents = (query) => async (dispatch) => {
   try {
-    const res = axios.get(`/api/content/${query}`);
+    const res = axios.get(`/api/content/?${query}`);
     dispatch(_getSearchContents(res.data));
   } catch (e) {}
 };
@@ -62,6 +72,20 @@ export const deleteFavoriteContent =
     } catch (e) {}
   };
 
+export const getTrendingContents = () => async (dispatch) => {
+  try {
+    const res = axios.get('/api/content/trending');
+    dispatch(_getTrendingContents(res.data));
+  } catch (e) {}
+};
+
+export const getContentDetail = (contentId) => async (dispatch) => {
+  try {
+    const res = axios.get(`/api/content/${contentId}`);
+    dispatch(_getContentDetail(res.data));
+  } catch (e) {}
+};
+
 export default function ContentReducer(state = initialState, action) {
   switch (action.type) {
     case 'content/GET_SEARCH_CONTENTS':
@@ -70,8 +94,11 @@ export default function ContentReducer(state = initialState, action) {
     case 'content/GET_RECOMMENDATION_CONTENTS':
       return { ...state, recommendationContents: action.contents };
 
-    case 'content/GET_FAVORITE_CONTENT':
+    case 'content/GET_FAVORITE_CONTENTS':
       return { ...state, favoriteContents: action.contents };
+
+    case 'content/GET_TRENDING_CONTENTS':
+      return { ...state, trendingContents: action.contents };
 
     case 'content/ADD_FAVORITE_CONTENT':
       return {
@@ -85,6 +112,12 @@ export default function ContentReducer(state = initialState, action) {
         favoriteContents: state.favoriteContents.filter(
           (content) => content.id !== action.id,
         ),
+      };
+
+    case 'content/GET_CONTENT_DETAIL':
+      return {
+        ...state,
+        selectedContent: action.content,
       };
 
     default:
