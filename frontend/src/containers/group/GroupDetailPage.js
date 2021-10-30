@@ -1,34 +1,41 @@
 import React from 'react';
 
 const GroupDetailPage = ({ history }) => {
-  const onBackClick = (e) => {
+  const onBackClick = () => {
     history.goBack();
   };
 
-  const onJoinClick = (e) => {
-    //TODO
+  const onJoinClick = () => {
+    // TODO
   };
 
-  const onEditClick = (e) => {
-    //TODO
+  const onQuitClick = () => {
+    // TODO
   };
 
-  const onDeleteClick = (e) => {
-    //TODO
+  const onEditClick = () => {
+    // TODO
+  };
+
+  const onDeleteClick = () => {
+    // TODO
   };
 
   return (
     <>
-      <button id="back-button" onClick={onBackClick}>
+      <button id="back-button" onClick={onBackClick} type="button">
         Back
       </button>
-      <button id="join-button" onClick={onJoinClick}>
+      <button id="join-button" onClick={onJoinClick} type="button">
         Join
       </button>
-      <button id="edit-button" onClick={onEditClick}>
+      <button id="quit-button" onClick={onQuitClick} type="button">
+        Quit
+      </button>
+      <button id="edit-button" onClick={onEditClick} type="button">
         Edit
       </button>
-      <button id="delete-button" onClick={onDeleteClick}>
+      <button id="delete-button" onClick={onDeleteClick} type="button">
         Delete
       </button>
     </>

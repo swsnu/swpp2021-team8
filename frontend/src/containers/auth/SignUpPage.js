@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const SignUpPage = ({ history }) => {
+const SignUpPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
@@ -22,8 +22,8 @@ const SignUpPage = ({ history }) => {
     setUsername(e.target.value);
   };
 
-  //TODO: create account
-  const onCreateAccountClick = (e) => {};
+  // TODO: create account
+  const onCreateAccountClick = () => {};
 
   return (
     <>
@@ -60,7 +60,11 @@ const SignUpPage = ({ history }) => {
           id="username-input"
           onChange={onUsernameChange}
         />
-        <button id="create-account-button" onClick={onCreateAccountClick}>
+        <button
+          id="create-account-button"
+          onClick={onCreateAccountClick}
+          type="button"
+        >
           Create Account
         </button>
       </form>

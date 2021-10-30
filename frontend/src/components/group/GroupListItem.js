@@ -10,7 +10,6 @@ const GroupListItem = () => {
       <p>price</p>
       <p>people-current</p>
       <p>people-total</p>
-      <p>duration</p>
     </>
   );
 };

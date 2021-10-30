@@ -1,19 +1,19 @@
 import React from 'react';
 
 const Calendar = () => {
-  const onPreviousClick = (e) => {
-    //TODO
+  const onPreviousClick = () => {
+    // TODO
   };
 
-  const onNextClick = (e) => {
-    //TODO
+  const onNextClick = () => {
+    // TODO
   };
   return (
     <>
-      <button id="previous-button" onClick={onPreviousClick}>
+      <button id="previous-button" onClick={onPreviousClick} type="button">
         Previous
       </button>
-      <button id="next-button" onClick={onNextClick}>
+      <button id="next-button" onClick={onNextClick} type="button">
         Previous
       </button>
     </>

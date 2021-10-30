@@ -12,11 +12,11 @@ const LoginPage = ({ history }) => {
     setPassword(e.target.value);
   };
 
-  const onLoginClick = (e) => {
-    //TODO
+  const onLoginClick = () => {
+    // TODO
   };
 
-  const onSignUpClick = (e) => {
+  const onSignUpClick = () => {
     history.push('/signup');
   };
 
@@ -39,10 +39,10 @@ const LoginPage = ({ history }) => {
           value={password}
           onChange={onPasswordChange}
         />
-        <button id="login-button" onClick={onLoginClick}>
+        <button id="login-button" onClick={onLoginClick} type="button">
           LogIn
         </button>
-        <button id="signup-button" onClick={onSignUpClick}>
+        <button id="signup-button" onClick={onSignUpClick} type="button">
           SignUp
         </button>
       </form>
