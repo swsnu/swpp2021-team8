@@ -1,6 +1,7 @@
 /* eslint object-curly-newline: ["off"] */
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
+/* eslint-disable-next-line  */
 import { createBrowserHistory } from 'history';
 
 import thunk from 'redux-thunk';
