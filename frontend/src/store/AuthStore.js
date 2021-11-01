@@ -3,7 +3,7 @@ import axios from 'axios';
 const initialState = {
   loginError: '',
   signUpError: '',
-  isLoggedIn: false,
+  isLoggedIn: true,
 };
 
 const _getLoginStatus = (status) => {

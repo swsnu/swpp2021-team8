@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 import { Route, Redirect, Switch } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';

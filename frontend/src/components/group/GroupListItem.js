@@ -3,7 +3,7 @@ import React from 'react';
 const GroupListItem = () => {
   return (
     <>
-      <image />
+      <img alt="GroupListItem" />
       <p>title</p>
       <p>creator</p>
       <p>membership</p>

@@ -1,0 +1,49 @@
+// Roboto Font
+@font-face {
+  font-family: 'Roboto-Bold';
+  src: url('./fonts/Roboto/Roboto-Bold.ttf');
+}
+@font-face {
+  font-family: 'Roboto-Medium';
+  src: url('./fonts/Roboto/Roboto-Medium.ttf');
+}
+
+@font-face {
+  font-family: 'Roboto-Regular';
+  src: url('./fonts/Roboto/Roboto-Regular.ttf');
+}
+
+// JosefinSans
+@font-face {
+  font-family: 'JosefinSans-Bold';
+  src: url('./fonts/Josefin_Sans/static/JosefinSans-Bold.ttf');
+}
+
+@font-face {
+  font-family: 'JosefinSans-Semi-Bold';
+  src: url('./fonts/Josefin_Sans/static/JosefinSans-SemiBold.ttf');
+}
+
+@font-face {
+  font-family: 'JosefinSans-Medium';
+  src: url('./fonts/Josefin_Sans/static/JosefinSans-Medium.ttf');
+}
+
+// base global font for content
+$font-base-stack: 'Roboto-Regular', sans-serif;
+// base global font for title
+$font-title-stack: 'JosefinSans-Semi-Bold', $font-base-stack;
+
+// base global button class
+button {
+  font-family: $font-base-stack;
+  background-color: rgb(255, 60, 60);
+  cursor: pointer;
+  padding: 10px 20px;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  letter-spacing: 0.6px;
+  text-align: center;
+  text-decoration: none;
+}
