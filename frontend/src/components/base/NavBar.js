@@ -2,21 +2,14 @@ import React from 'react';
 import './NavBar.scss';
 import { withRouter } from 'react-router-dom';
 import { FaUserCircle } from 'react-icons/fa';
-import { useDispatch } from 'react-redux';
-import { logOut } from '../../store/AuthStore';
 
-const NavBar = ({ history, isLoggedIn = false }) => {
-  const dispatch = useDispatch();
+const NavBar = ({ history, isLoggedIn = false, onLogOutClick }) => {
   const onLogoClick = () => {
     history.push('/main');
   };
 
   const onMyPageClick = () => {
     history.push('/mypage');
-  };
-
-  const onLogOutClick = () => {
-    dispatch(logOut());
   };
 
   return (
