@@ -8,10 +8,10 @@ import './MyPage.scss';
 const MyPage = () => {
   return (
     <>
-      <div className="user__info">
+      <div className="my_info">
         <h1> My Page </h1>
-        <div className="user__info__email">email</div>
-        <div className="user__info__username">username</div>
+        <div className="my_info__email">email</div>
+        <div className="my_info__username">username</div>
       </div>
       <GroupList />
       <Calendar />
