@@ -1,13 +1,13 @@
 import axios from 'axios';
 
 const initialState = {
-  loginError: 'email',
-  signUpError: 'email',
-  isLoggedIn: false,
+  loginError: '',
+  signUpError: '',
+  isLoggedIn: JSON.parse(localStorage.getItem('isLoggedIn')),
 };
 
-const _getLoginStatus = (status) => {
-  return { type: 'auth/GET_LOGIN_STATUS', status };
+const _getLoginStatus = ({ isLoggedIn }) => {
+  return { type: 'auth/GET_LOGIN_STATUS', status: isLoggedIn };
 };
 
 const _logIn = (user) => {
@@ -32,37 +32,58 @@ const _setSignUpErrorMessage = (message) => {
 
 export const getLoginStatus = () => async (dispatch) => {
   try {
-    const res = await axios.get('/api/user');
+    const res = await axios.get('/api/user/');
     dispatch(_getLoginStatus(res.data));
-  } catch (e) {
-    // TODO
-  }
+  } catch (e) {}
 };
 
 export const logIn = (userInfo) => async (dispatch) => {
   try {
-    const res = await axios.post('/api/user/login', userInfo);
+    const res = await axios.post('/api/login/', userInfo);
     dispatch(_logIn(res.data));
   } catch (e) {
     // TODO
-    dispatch(_setLoginErrorMessage(e));
+    switch (e.response.status) {
+      case 400: // Bad request
+        dispatch(_setLoginErrorMessage('Key Error!'));
+        break;
+      case 401: // Not authorized
+        dispatch(_setLoginErrorMessage('Not Athorized'));
+        break;
+      default:
+        dispatch(_setLoginErrorMessage('Something Error'));
+        break;
+    }
   }
 };
 
 export const logOut = () => async (dispatch) => {
   try {
-    await axios.get('/api/user/logout');
+    await axios.get('/api/logout/');
     dispatch(_logOut());
   } catch (e) {}
 };
 
 export const signUp = (userInfo) => async (dispatch) => {
   try {
-    await axios.post('/api/user', userInfo);
+    await axios.post('/api/signup/', userInfo);
     dispatch(_signUp());
   } catch (e) {
     // TODO
-    dispatch(_setSignUpErrorMessage(e));
+    switch (e.response.status) {
+      case 400: // Bad request
+        dispatch(_setSignUpErrorMessage('Key Error!'));
+        break;
+      case 405: // Not allowed request
+        dispatch(_setSignUpErrorMessage('Not allowed request'));
+        break;
+      case 409: // IntegrityError
+        dispatch(_setSignUpErrorMessage('Integrity Error'));
+        break;
+      default:
+        dispatch(_setSignUpErrorMessage('Something Error'));
+        break;
+    }
   }
 };
 
@@ -70,15 +91,16 @@ export const signUp = (userInfo) => async (dispatch) => {
 export default function AuthReducer(state = initialState, action) {
   switch (action.type) {
     case 'auth/GET_LOGIN_STATUS':
+      localStorage.setItem('isLoggedIn', JSON.stringify(action.status));
       return { ...state, isLoggedIn: action.status };
 
     case 'auth/LOG_IN':
-      // TODO set localStorage
-      return state;
+      localStorage.setItem('isLoggedIn', JSON.stringify(true));
+      return { ...state, isLoggedIn: true, loginError: '', signUpError: '' };
 
     case 'auth/LOG_OUT':
-      // TODO delete localStorage?
-      return { ...state, isLoggedIn: false };
+      localStorage.setItem('isLoggedIn', JSON.stringify(false));
+      return { ...state, isLoggedIn: false, loginError: '', signUpError: '' };
 
     case 'auth/SET_LOGIN_ERROR_MESSAGE':
       return { ...state, loginError: action.message };

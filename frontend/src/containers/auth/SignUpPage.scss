@@ -48,6 +48,9 @@
   }
 
   .signup__error {
-    border: 3px solid rgb(255, 60, 60);
+    background-color: #ff3c3c;
+    border-radius: 5px;
+    font-size: 1.4em;
+    padding: 10px;
   }
 }

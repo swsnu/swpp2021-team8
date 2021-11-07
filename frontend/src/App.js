@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, Redirect, Switch } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
@@ -11,11 +11,16 @@ import GroupDetailPage from './containers/group/GroupDetailPage';
 import GroupEditPage from './containers/group/GroupEditPage';
 import ContentDetailPage from './containers/content/ContentDetailPage';
 import NavBar from './components/base/NavBar';
-import { logOut } from './store/AuthStore';
+import { getLoginStatus, logOut } from './store/AuthStore';
 
 function App({ history }) {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+
+  useEffect(() => {
+    dispatch(getLoginStatus());
+  }, []);
+
   const onLogOutClick = () => {
     dispatch(logOut());
   };

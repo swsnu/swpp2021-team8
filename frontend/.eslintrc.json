@@ -23,6 +23,7 @@
     "arrow-body-style": "off",
     "react/prop-types": "off",
     "operator-linebreak": "off",
+    "object-curly-newline": "off",
     "jsx-a11y/label-has-associated-control": [
       "error",
       {

@@ -33,7 +33,6 @@ const LoginPage = ({ history }) => {
           <label htmlFor="email">Email</label>
           <input
             type="text"
-            className={loginError === 'email' ? 'login__error' : ''}
             name="email"
             id="email-input"
             value={email}
@@ -45,11 +44,6 @@ const LoginPage = ({ history }) => {
           <label htmlFor="password">Password</label>
           <input
             type="password"
-            className={
-              loginError === 'password' || loginError === 'email'
-                ? 'login__error'
-                : ''
-            }
             name="password"
             id="password-input"
             value={password}
@@ -72,6 +66,11 @@ const LoginPage = ({ history }) => {
             Sign Up
           </button>
         </div>
+        {loginError ? (
+          <div className="login__body login__error">{loginError}</div>
+        ) : (
+          ''
+        )}
       </form>
     </>
   );

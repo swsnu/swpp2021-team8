@@ -5,7 +5,7 @@ import { signUp } from '../../store/AuthStore';
 
 import './SignUpPage.scss';
 
-const SignUpPage = () => {
+const SignUpPage = ({ history }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
@@ -62,6 +62,7 @@ const SignUpPage = () => {
     // TODO: Validation check
     if (isPasswordValid && isPasswordEqual) {
       dispatch(signUp({ email, password, username }));
+      history.push('/login');
     }
   };
 
@@ -72,7 +73,6 @@ const SignUpPage = () => {
         <div className="signup__body">
           <label htmlFor="email">Email</label>
           <input
-            className={signUpError === 'email' ? 'signup__error' : ''}
             type="text"
             name="email"
             id="email-input"
@@ -84,7 +84,6 @@ const SignUpPage = () => {
         <div className="signup__body">
           <label htmlFor="password">Password</label>
           <input
-            className={signUpError === 'password' ? 'signup__error' : ''}
             type="password"
             name="password"
             id="password-input"
@@ -95,7 +94,6 @@ const SignUpPage = () => {
         </div>
         <div className="signup__body signup__confirm">
           <input
-            className={signUpError === 'password' ? 'signup__error' : ''}
             type="password"
             name="password-confirm"
             id="password-confirm-input"
@@ -131,7 +129,6 @@ const SignUpPage = () => {
         <div className="signup__body">
           <label htmlFor="username">username</label>
           <input
-            className={signUpError === 'username' ? 'signup__error' : ''}
             type="text"
             name="username"
             value={username}
@@ -149,6 +146,11 @@ const SignUpPage = () => {
             Create Account
           </button>
         </div>
+        {signUpError ? (
+          <div className="signup__body signup__error">{signUpError}</div>
+        ) : (
+          ''
+        )}
       </form>
     </>
   );
