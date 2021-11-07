@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const initialState = {
   loginError: 'email',
-  signUpError: '',
+  signUpError: 'email',
   isLoggedIn: false,
 };
 
