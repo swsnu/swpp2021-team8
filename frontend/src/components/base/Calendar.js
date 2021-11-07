@@ -53,7 +53,7 @@ const CalendarTableBody = (year, month) => {
     rows.push(row);
   }
   return (
-    <Table.Body className="calendar__table__body">
+    <Table.Body className="calendar__body__table__body">
       {rows.map((row) => (<Table.Row>{row}</Table.Row>))}
     </Table.Body>
   );
@@ -80,7 +80,7 @@ const Calendar = () => {
         <button id="previous-button" onClick={onPreviousClick} type="button">
           &lt;
         </button>
-        <Table striped className="calendar__table">
+        <Table striped className="calendar__body__table">
           {CALENDAR_TABLE_HEADER}
           {CalendarTableBody(year, month - 1)}
         </Table>
