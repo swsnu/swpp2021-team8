@@ -1,7 +1,6 @@
 import React from 'react';
-import './App.css';
 import { Route, Redirect, Switch } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import MainPage from './containers/base/MainPage';
 import MyPage from './containers/base/MyPage';
@@ -12,12 +11,17 @@ import GroupDetailPage from './containers/group/GroupDetailPage';
 import GroupEditPage from './containers/group/GroupEditPage';
 import ContentDetailPage from './containers/content/ContentDetailPage';
 import NavBar from './components/base/NavBar';
+import { logOut } from './store/AuthStore';
 
 function App({ history }) {
+  const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const onLogOutClick = () => {
+    dispatch(logOut());
+  };
   return (
     <ConnectedRouter history={history}>
-      <NavBar isLoggedIn={isLoggedIn} />
+      <NavBar isLoggedIn={isLoggedIn} onLogOutClick={onLogOutClick} />
       {isLoggedIn ? (
         <Switch>
           <Route path="/main" component={MainPage} exact />

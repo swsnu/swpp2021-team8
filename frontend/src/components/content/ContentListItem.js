@@ -3,7 +3,7 @@ import React from 'react';
 const ContentListItem = () => {
   return (
     <>
-      <image id="content-image" />
+      <img alt="ContentListItem" id="content-image" />
       <p>Content-title</p>
       <p>array of images for platform</p>
       <p>array of string for genre</p>

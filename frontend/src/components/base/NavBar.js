@@ -1,7 +1,9 @@
 import React from 'react';
+import './NavBar.scss';
 import { withRouter } from 'react-router-dom';
+import { FaUserCircle } from 'react-icons/fa';
 
-const NavBar = ({ history, isLoggedIn = false }) => {
+const NavBar = ({ history, isLoggedIn = false, onLogOutClick }) => {
   const onLogoClick = () => {
     history.push('/main');
   };
@@ -10,25 +12,33 @@ const NavBar = ({ history, isLoggedIn = false }) => {
     history.push('/mypage');
   };
 
-  // TODO: dispatch action
-  const onLogOutClick = () => {};
-
   return (
-    <>
-      <button id="logo-button" onClick={onLogoClick} type="button">
+    <div className="navbar">
+      <div
+        className="navbar__logo"
+        onClick={onLogoClick}
+        role="button"
+        tabIndex={0}
+      >
         Subroker
-      </button>
+      </div>
       {isLoggedIn && (
-        <>
-          <button id="my-page-button" onClick={onMyPageClick} type="button">
-            My Page
-          </button>
-          <button id="logout-button" onClick={onLogOutClick} type="button">
+        <div className="navbar__auth">
+          <FaUserCircle
+            className="navbar__auth--mypage"
+            onClick={onMyPageClick}
+          />
+          <button
+            className="button"
+            id="logout-button"
+            onClick={onLogOutClick}
+            type="button"
+          >
             LogOut
           </button>
-        </>
+        </div>
       )}
-    </>
+    </div>
   );
 };
 
