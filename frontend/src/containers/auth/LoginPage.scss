@@ -1,0 +1,41 @@
+@import '../../base.scss';
+
+.login {
+  width: 50%;
+  margin: 100px auto;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+
+  .login__header {
+    font-size: 2.7em;
+    color: #fcb70d;
+  }
+
+  .login__error {
+    border: 3px solid rgb(255, 60, 60);
+  }
+
+  .login__body {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    color: white;
+    align-items: center;
+
+    label {
+      font-size: 1.5em;
+    }
+
+    button,
+    input {
+      font-size: 1.2em;
+      width: 60%;
+      margin-left: auto;
+    }
+
+    .login__body--login {
+      background-color: #fcb70d;
+    }
+  }
+}

@@ -1,7 +1,14 @@
+@import './base.scss';
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   display: flex;
   justify-content: center;
   background-color: black;
+  font-family: $font-base-stack;
 
   #root {
     display: flex;

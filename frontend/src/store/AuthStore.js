@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 const initialState = {
-  loginError: '',
+  loginError: 'email',
   signUpError: '',
-  isLoggedIn: true,
+  isLoggedIn: false,
 };
 
 const _getLoginStatus = (status) => {
