@@ -28,4 +28,4 @@ jobs:
         - coverage run --source='.' manage.py test
         - coverage xml
         - sonar-scanner
-        - coveralls --merage=../frontend/coverage.json
+        - coveralls --merge=../frontend/coverage.json
