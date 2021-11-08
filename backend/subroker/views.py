@@ -251,10 +251,7 @@ def content_info(request, content_id):
                 content = Content.objects.get(id=content_id)
             except (Content.DoesNotExist) as e:
                 return HttpResponse(status=404)
-            user_arr = []
-            users = content.user_id.all()
-            for user in users:
-                user_arr.append(user.id)
+            users = [user for user in content.user_id.all()]
             return JsonResponse({
                 "id": content.id, 
                 "the_movie_id": content.the_movie_id,
