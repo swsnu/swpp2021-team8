@@ -268,7 +268,7 @@ def recommendation(request, user_id):
 def user_favorite_list(request):
     if request.method == 'GET':
         if request.user.is_authenticated:
-            fav_return = [content for content in Content.objects.filter(user_id__in=[request.user]).values()]
+            fav_contents = [content for content in request.user.favorite_contents.all()]
             if not fav_return:
                 return HttpResponse(status=404)
             return JsonResponse(fav_return, safe=False, status=200)
