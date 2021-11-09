@@ -162,31 +162,32 @@ def group_detail(request, group_id):
         else:
             return HttpResponse(status=401)
 
-    #TODO
     elif request.method == 'PUT':
         if request.user.is_authenticated:
             req_data = json.loads(request.body.decode())
             group_name = req_data['name']
             group_description = req_data['description']
-            group_is_public = bool(req_data['is_public'])
-            group_password = int(req_data['password'])
+            group_is_public = req_data['is_public']
+            group_password = req_data['password']
             group_account_bank = req_data['account_bank']
             group_account_number = req_data['account_number']
             group_account_name = req_data['account_name']
             try:
                 group = Group.objects.get(id=group_id)
+            #ERR 404 : Group Doesn't Exist
             except(Group.DoesNotExist) as e:
                 return HttpResponse(status=404)
+            #ERR 403 : Not Leader
             if(group.leader != request.user):
                 response_dict = {"leader": group.leader.id, "request user": request.user.id}
                 return JsonResponse(response_dict, status=403)
-            group.name=group_name, 
-            group.description=group_description, 
-            group.is_public=group_is_public, 
-            group.password=group_password, 
-            group.account_bank = group_account_bank, 
-            group.account_number=group_account_number, 
-            group.account_name=group_account_name, 
+            group.name=group_name
+            group.description=group_description
+            group.is_public=group_is_public
+            group.password=group_password
+            group.account_bank = group_account_bank
+            group.account_number=group_account_number
+            group.account_name=group_account_name
             group.save()
             response_dict = {
                 "id": group.id, 
@@ -233,11 +234,13 @@ def group_add_user(request, group_id):
             if(group.current_people >= group.membership.max_people):
                 return HttpResponseBadRequest()
             group.members.add(new_member)
+            group.current_people = group.current_people+1
             group.save()
             members = [member for member in group.members.all().values()]
             response_dict = {
                 "id": group.id, 
-                "members": members
+                "members": members,
+                "current_people": group.current_people
             }
             return JsonResponse(response_dict, status=200)
         #ERR 401 : Not Authenticated
@@ -252,7 +255,14 @@ def group_add_user(request, group_id):
             except(Group.DoesNotExist) as e:
                 return HttpResponse(status=404)
             group.members.remove(request.user)
-            return HttpResponse(status=200)
+            group.current_people= group.current_people-1
+            members = [member for member in group.members.all().values()]
+            response_dict = {
+                "id": group.id, 
+                "members": members,
+                "current_people": group.current_people
+            }
+            return JsonResponse(response_dict, status=200)
         #ERR 401 : Not Authenticated
         else:
             return HttpResponse(status=401)

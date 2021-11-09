@@ -288,6 +288,67 @@ class SubrokerTestCase(TestCase):
         response = client.get('/api/group/10/')
         self.assertEqual(response.status_code, 404)
 
+    #group detail : PUT
+    def test_group_detail_put(self):
+        client = Client()
+
+        #PUT ERR unauthorized user request : 401
+        response = client.put('/api/group/1/', )
+        response = client.put('/api/review/1/', content_type='application/json')
+        self.assertEqual(response.status_code, 401)
+
+        #login
+        client.post('/api/login/', json.dumps({'username': 'user1', 'password': 'user1_password'}),
+                               content_type='application/json')
+
+        #PUT SUCCESS : 200
+        response = client.put('/api/group/1/', json.dumps({
+            "name": "name_change", 
+            "description": "description_change", 
+            "is_public": "False", 
+            "password": "1234",
+            "account_bank": "IBK", 
+            "account_number": "1234", 
+            "account_name": "account_name_change"
+            }), content_type='application/json')
+        self.assertEqual(response.status_code, 200)      
+        group = json.loads(response.content.decode())
+        self.assertEqual(1, group['id'])
+        self.assertEqual('name_change', group['name'])
+        self.assertEqual('description_change', group['description'])
+        self.assertEqual('False', group['is_public'])
+        self.assertEqual('1234', group['password'])
+        self.assertEqual('IBK', group['account_bank'])
+        self.assertEqual('1234', group['account_number'])
+        self.assertEqual('account_name_change', group['account_name'])
+
+        #PUT ERR group doesn't exist : 404
+        response = client.put('/api/group/10/', json.dumps({
+            "name": "name_change", 
+            "description": "description_change", 
+            "is_public": "False", 
+            "password": "1234",
+            "account_bank": "IBK", 
+            "account_number": "1234", 
+            "account_name": "account_name_change"
+            }), content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+
+        #PUT ERR not leader: 403
+        client.get('/api/logout/')
+        client.post('/api/login/', json.dumps({'username': 'user2', 'password': 'user2_password'}),
+                               content_type='application/json')
+        response = client.put('/api/group/1/', json.dumps({
+            "name": "name_change", 
+            "description": "description_change", 
+            "is_public": "False", 
+            "password": "1234",
+            "account_bank": "IBK", 
+            "account_number": "1234", 
+            "account_name": "account_name_change"
+            }), content_type='application/json')
+        self.assertEqual(response.status_code, 403)
+
     #group detail : DELETE
     def test_group_detail_delete(self):
         client=Client()
@@ -325,6 +386,8 @@ class SubrokerTestCase(TestCase):
                                content_type='application/json')
         response = client.put('/api/group/2/user/')
         self.assertEqual(response.status_code, 200)
+        group = json.loads(response.content.decode())
+        self.assertEqual(2, group['current_people'])
 
         #PUT ERR no group exists : 404
         response = client.put('/api/group/10/user/')
@@ -346,7 +409,8 @@ class SubrokerTestCase(TestCase):
                                content_type='application/json')
         response = client.delete('/api/group/1/user/')
         self.assertEqual(response.status_code, 200)
-        #self.assertEqual(Group.objects.all().values()[0].members.count(), 0)
+        group = json.loads(response.content.decode())
+        self.assertEqual(0, group['current_people'])
 
         #DELETE ERR no group exists : 404
         response = client.delete('/api/group/5/user/')
