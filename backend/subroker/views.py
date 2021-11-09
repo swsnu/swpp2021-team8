@@ -77,6 +77,11 @@ def group_list(request):
             #ERR 404 : Group Doesn't Exist
             if not group_all_list:
                 return HttpResponse(status=404)
+            for group in group_all_list:
+                membership_id = group['membership_id']
+                membership = Ott.objects.filter(id=membership_id).values()[0]
+                group.pop('membership_id')
+                group['membership'] =  membership
             return JsonResponse(group_all_list, safe=False, status=200)
         #ERR 401 : Not Authenticated
         else:
@@ -96,7 +101,7 @@ def group_list(request):
                 group_account_name = req_data['account_name']
                 group_leader = request.user
             #ERR 400 : JSONDecodeErr
-            except (JSONDecodeError) as e:
+            except (JSONDecodeError, KeyError) as e:
                 return HttpResponseBadRequest()
             try:
                 group_membership = Ott.objects.get(id=req_data['membership'])
@@ -133,8 +138,9 @@ def group_detail(request, group_id):
             #ERR 404 : Group Doesn't Exist
             except (Group.DoesNotExist) as e:
                 return HttpResponse(status=404)
-            members = [member for member in group.members.all()]
-            
+            membership = Ott.objects.filter(id=group.membership.id).values()[0]
+            members = [member for member in group.members.all().values()]
+            leader = User.objects.filter(id=group.leader.id).values()[0]
             return JsonResponse({
                 "id": group.id, 
                 "name": group.name, 
@@ -143,12 +149,12 @@ def group_detail(request, group_id):
                 "password": group.password, 
                 "created_at": group.created_at,
                 "will_be_deleted": group.will_be_deleted,
-                "membership": json.dumps(group.membership.__dict__), 
+                "membership": membership, 
                 "payday": group.payday, 
                 "account_bank": group.account_bank, 
                 "account_number": group.account_number, 
                 "account_name": group.account_name, 
-                "leader": group.leader.id,
+                "leader": leader,
                 "members": members,
                 "current_people": group.current_people
                 }, status=200)
@@ -162,7 +168,7 @@ def group_detail(request, group_id):
             req_data = json.loads(request.body.decode())
             group_name = req_data['name']
             group_description = req_data['description']
-            #group_is_public = bool(req_data['is_public'])
+            group_is_public = bool(req_data['is_public'])
             group_password = int(req_data['password'])
             group_account_bank = req_data['account_bank']
             group_account_number = req_data['account_number']
@@ -176,7 +182,7 @@ def group_detail(request, group_id):
                 return JsonResponse(response_dict, status=403)
             group.name=group_name, 
             group.description=group_description, 
-            #group.is_public=group_is_public, 
+            group.is_public=group_is_public, 
             group.password=group_password, 
             group.account_bank = group_account_bank, 
             group.account_number=group_account_number, 
@@ -188,10 +194,6 @@ def group_detail(request, group_id):
                 "description": group.description, 
                 "is_public": group.is_public, 
                 "password": group.password, 
-                "created_at": group.created_at,
-                "will_be_deleted": group.will_be_deleted,
-                "membership": group.membership, 
-                "payday": group.payday, 
                 "account_bank": group.account_bank, 
                 "account_number": group.account_number, 
                 "account_name": group.account_name, 
@@ -232,13 +234,10 @@ def group_add_user(request, group_id):
                 return HttpResponseBadRequest()
             group.members.add(new_member)
             group.save()
-            member_arr = []
-            members = group.members.all()
-            for member in members:
-                member_arr.append(member.id)
+            members = [member for member in group.members.all().values()]
             response_dict = {
                 "id": group.id, 
-                "members": member_arr
+                "members": members
             }
             return JsonResponse(response_dict, status=200)
         #ERR 401 : Not Authenticated
