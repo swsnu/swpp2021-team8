@@ -366,11 +366,17 @@ def content_trending(request):
 def review_content(request, content_id):
     if request.method == 'GET':
         if request.user.is_authenticated:
-            content = Content.object.get(id=content_id)
-            reviews = [review for review in content.content_reviews.all()]
-            if not reviews:
+            try:
+                content = Content.objects.get(id=content_id)
+            #ERR 404 : Content Doesn't Exist
+            except(Content.DoesNotExist) as e:
                 return HttpResponse(status=404)
+            reviews = [review for review in content.content_reviews.all().values()]
+            #ERR 400 : Review Doesn't Exist
+            if not reviews:
+                return HttpResponse(status=400)
             return JsonResponse(reviews, safe=False, status=200)
+        #ERR 401 : Not Authenticated
         else:
             return HttpResponse(status=401)
     elif request.method == 'POST':
@@ -379,16 +385,19 @@ def review_content(request, content_id):
                 req_data = json.loads(request.body.decode())
                 review_detail = req_data['detail']
                 review_user = request.user
+            #ERR 400 : KeyErr, JSONDecodeErr
             except (KeyError, JSONDecodeError) as e:
                 return HttpResponseBadRequest()
             try:
                 review_content = Content.objects.get(id=content_id)
+            #ERR 404 : Content Doesn't Exist
             except (Content.DoesNotExist) as e:
                 return HttpResponse(status=404)
             review = Review(content=review_content, detail=review_detail, user=review_user)
             review.save()
             response_dict = {'id': review.id, 'content': review.content.id, 'detail': review.detail, 'user':review.user.id, 'created_at': review.created_at}
             return JsonResponse(response_dict, status=201)
+        #ERR 401 : Not Authenticated
         else:
             return HttpResponse(status=401)
     else:
@@ -399,10 +408,12 @@ def review_detail(request, review_id):
         if request.user.is_authenticated:
             try:
                 review = Review.objects.get(id=review_id)
+            #ERR 404 : Review Doesn't Exist
             except (Review.DoesNotExist) as e:
                 return HttpResponse(status=404)
-            response_dict = {"id": review.id, "content": review.content.id, "detail": review.detail, "user": review.user.id, "created_at": review.created_at}
+            response_dict = {"id": review.id, "content_id": review.content.id, "detail": review.detail, "user": review.user.id, "created_at": review.created_at}
             return JsonResponse(response_dict, status=200)
+        #ERR 401 : Not Authenticated
         else:
             return HttpResponse(status=401)
 
@@ -412,14 +423,17 @@ def review_detail(request, review_id):
             review_detail = req_data['detail']
             try:
                 review = Review.objects.get(id=review_id)
+            #ERR 404 : Review Doesn't Exist
             except(Review.DoesNotExist) as e:
                 return HttpResponse(status=404)
+            #ERR 403 : Not Author
             if(review.user != request.user):
                 return HttpResponse(status=403)
             review.detail = review_detail
             review.save()
-            response_dict = {"id": review.id, "content": review.content.id, "detail": review.detail, "user": review.user.id}
+            response_dict = {"id": review.id, "content_id": review.content.id, "detail": review.detail, "user_id": review.user.id}
             return JsonResponse(response_dict, status=200)
+        #ERR 401 : Not Authenticated
         else:
             return HttpResponse(status=401)
 
@@ -427,10 +441,12 @@ def review_detail(request, review_id):
         if request.user.is_authenticated:
             try:
                 review = Review.objects.get(id=review_id)
+            #ERR 404 : Review Doesn't Exist
             except(Review.DoesNotExist) as e:
                 return HttpResponse(status=404)
             review.delete()
             return HttpResponse(status=200)
+        #ERR 401 : Not Authenticated
         else:
             return HttpResponse(status=401)
         

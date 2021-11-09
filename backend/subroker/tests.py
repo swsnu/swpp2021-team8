@@ -36,10 +36,10 @@ class SubrokerTestCase(TestCase):
         new_content2.save()
         new_content2.favorite_users.add(new_user1)
         new_content2.save()
-        """
+
         new_review = Review(content=new_content, detail='review_detail', user=new_user1)
         new_review.save()
-        """
+        
         new_group = Group(name='group_name', description='group_description', is_public = True, password = -1, will_be_deleted= False, membership = new_ott, payday=1, account_bank='Woori', account_name='group1_account', account_number='1234', leader=new_user1, current_people=1)
         new_group.save()
         new_group2 = Group(name='group_name', description='group_description', is_public = True, password = -1, will_be_deleted= False, membership = new_ott2, payday=1, account_bank='Woori', account_name='group2_account', account_number='1234', leader=new_user1, current_people=1)
@@ -242,6 +242,19 @@ class SubrokerTestCase(TestCase):
             "account_name": "Hyeju Na"
             }), content_type='application/json')
         self.assertEqual(response.status_code, 404)
+
+
+    #group list : 405 ERROR (METHOD NOT ALLOWED)
+    def test_group_list_405(self):
+        client=Client()
+        #PUT : NOT ALLOWED
+        response = client.put('/api/group/')
+        self.assertEqual(response.status_code, 405)
+
+        #DELETE : NOT ALLOWED
+        response = client.delete('/api/group/')
+        self.assertEqual(response.status_code, 405)
+
 
     #group detail : GET
     def test_group_detail_get(self):
@@ -479,7 +492,7 @@ class SubrokerTestCase(TestCase):
         response = client.delete('/api/content/1/favorite/10/')
         self.assertEqual(response.status_code, 400)
 
-    #user_favorite_list : 405 ERROR (METHOD NOT ALLOWED)
+    #content_favorite_list : 405 ERROR (METHOD NOT ALLOWED)
     def test_content_favorite_405(self):
         client=Client()
         #POST : NOT ALLOWED
@@ -488,4 +501,165 @@ class SubrokerTestCase(TestCase):
 
         #GET : NOT ALLOWED
         response = client.get('/api/content/1/favorite/1/')
+        self.assertEqual(response.status_code, 405)
+
+    #review content : GET
+    def test_review_content_get(self):
+        client = Client()
+
+        #GET ERR unauthorized user request : 401
+        response = client.get('/api/content/1/review/')
+        self.assertEqual(response.status_code, 401)
+
+        #login
+        client.post('/api/login/', json.dumps({'username': 'user1', 'password': 'user1_password'}),
+                               content_type='application/json')
+
+        #GET SUCCESS : 200
+        response = client.get('/api/content/1/review/')
+        self.assertEqual(response.status_code, 200)
+        review = json.loads(response.content.decode())[0]
+        self.assertEqual(1, review['id'])
+        self.assertEqual(1, review['content_id'])
+        self.assertEqual(1, review['user_id'])
+        self.assertEqual('review_detail', review['detail'])
+
+        #GET ERR content doesn't exist : 404
+        response = client.get('/api/content/10/review/')
+        self.assertEqual(response.status_code, 404)
+
+        #GET ERR review doesn't exist : 400
+        response = client.get('/api/content/2/review/')
+        self.assertEqual(response.status_code, 400)
+
+
+    #review content : POST
+    def test_review_content_post(self):
+        client = Client()
+
+        #POST ERR unauthorized user request : 401
+        response = client.post('/api/content/1/review/')
+        self.assertEqual(response.status_code, 401)
+
+        #login
+        client.post('/api/login/', json.dumps({'username': 'user1', 'password': 'user1_password'}),
+                               content_type='application/json')
+
+        #POST SUCCESS : 200
+        response = client.post('/api/content/1/review/', json.dumps({'detail': 'review1'}), content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+        review = json.loads(response.content.decode())
+        self.assertEqual(2, review['id'])
+        self.assertEqual(1, review['content'])
+        self.assertEqual(1, review['user'])
+        self.assertEqual('review1', review['detail'])
+
+        #POST ERR content doesn't exist : 404
+        response = client.post('/api/content/10/review/', json.dumps({'detail': 'review1'}), content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+
+        #POST ERR KeyErr, JSONDecodeErr : 400
+        response = client.post('/api/content/1/review/', json.dumps({}), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+
+    #user_favorite_list : 405 ERROR (METHOD NOT ALLOWED)
+    def test_review_content_405(self):
+        client=Client()
+        #PUT : NOT ALLOWED
+        response = client.put('/api/content/1/review/')
+        self.assertEqual(response.status_code, 405)
+
+        #DELETE : NOT ALLOWED
+        response = client.delete('/api/content/1/review/')
+        self.assertEqual(response.status_code, 405)
+
+    #review content : GET
+    def test_review_detail_post(self):
+        client = Client()
+
+        #GET ERR unauthorized user request : 401
+        response = client.get('/api/review/1/')
+        self.assertEqual(response.status_code, 401)
+
+        #login
+        client.post('/api/login/', json.dumps({'username': 'user1', 'password': 'user1_password'}),
+                               content_type='application/json')
+
+        #GET SUCCESS : 200
+        response = client.get('/api/review/1/')        
+        self.assertEqual(response.status_code, 200)
+        review = json.loads(response.content.decode())
+        self.assertEqual(1, review['id'])
+        self.assertEqual(1, review['content_id'])
+        self.assertEqual(1, review['user'])
+        self.assertEqual('review_detail', review['detail'])
+
+        #GET ERR review doesn't exist : 404
+        response = client.get('/api/review/10/')
+        self.assertEqual(response.status_code, 404)
+
+
+    #review content : PUT
+    def test_review_detail_put(self):
+        client = Client()
+
+        #PUT ERR unauthorized user request : 401
+        response = client.put('/api/review/1/', json.dumps({'detail': 'change_detail'}),
+                               content_type='application/json')
+        self.assertEqual(response.status_code, 401)
+
+        #login
+        client.post('/api/login/', json.dumps({'username': 'user1', 'password': 'user1_password'}),
+                               content_type='application/json')
+
+        #PUT SUCCESS : 200
+        response = client.put('/api/review/1/', json.dumps({'detail': 'change_detail'}),
+                               content_type='application/json')        
+        self.assertEqual(response.status_code, 200)
+        review = json.loads(response.content.decode())
+        self.assertEqual(1, review['id'])
+        self.assertEqual(1, review['content_id'])
+        self.assertEqual(1, review['user_id'])
+        self.assertEqual('change_detail', review['detail'])
+
+        #PUT ERR review doesn't exist : 404
+        response = client.put('/api/review/10/', json.dumps({'detail': 'change_detail'}),
+                               content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+
+        #PUT ERR not author : 403
+        client.get('/api/logout/')
+        client.post('/api/login/', json.dumps({'username': 'user2', 'password': 'user2_password'}),
+                               content_type='application/json')
+        response = client.put('/api/review/1/', json.dumps({'detail': 'change_detail'}),
+                               content_type='application/json')
+        self.assertEqual(response.status_code, 403)
+
+
+    #review content : DELETE
+    def test_review_detail_delete(self):
+        client = Client()
+
+        #DELETE ERR unauthorized user request : 401
+        response = client.delete('/api/review/1/')
+        self.assertEqual(response.status_code, 401)
+
+        #login
+        client.post('/api/login/', json.dumps({'username': 'user1', 'password': 'user1_password'}),
+                               content_type='application/json')
+
+        #DELETE SUCCESS : 200
+        response = client.delete('/api/review/1/')
+        self.assertEqual(response.status_code, 200)
+
+        #DELETE ERR review doesn't exist : 404
+        response = client.delete('/api/review/10/')
+        self.assertEqual(response.status_code, 404)
+
+    #user_favorite_list : 405 ERROR (METHOD NOT ALLOWED)
+    def test_review_detail_405(self):
+        client=Client()
+        #POST : NOT ALLOWED
+        response = client.post('/api/review/1/')
         self.assertEqual(response.status_code, 405)
