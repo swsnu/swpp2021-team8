@@ -256,7 +256,7 @@ def group_add_user(request, group_id):
         #ERR 401 : Not Authenticated
         else:
             return HttpResponse(status=401)
-    #ERR 405 : METHOD NOT ALLOWEd
+    #ERR 405 : METHOD NOT ALLOWED
     else:
         return HttpResponseNotAllowed(['PUT', 'DELETE'])
 
@@ -272,20 +272,20 @@ def content_detail(request, content_id):
             #ERR 404 : Content Doesn't Exist
             except (Content.DoesNotExist) as e:
                 return HttpResponse(status=404)
-            user_arr = []
-            users = content.favorite_users.all()
-            for user in users:
-                user_arr.append(user.id)
+            fav_users = [user for user in content.favorite_users.all().values()]
             return JsonResponse({
                 "id": content.id, 
                 "the_movie_id": content.the_movie_id,
                 "name": content.name,
                 "favorite_count": content.favorite_cnt,
-                "favorite_users": user_arr
+                "favorite_users": fav_users
                 }, status=200)
         #ERR 401 : Not Authenticated
         else:
             return HttpResponse(status=401)
+    #ERR 405 : METHOD NOT ALLOWED
+    else:
+        return HttpResponseNotAllowed(['GET'])
 
 def content_recommendation(request, user_id):
     return HttpResponse("recommendation")
@@ -293,46 +293,69 @@ def content_recommendation(request, user_id):
 def user_favorite_list(request, user_id):
     if request.method == 'GET':
         if request.user.is_authenticated:
-            user = User.object.get(id=user_id)
-            fav_contents = [content for content in user.favorite_contents.all()]
-            if not fav_contents:
+            try:
+                user = User.objects.get(id=user_id)
+            #ERR 404 : User Doesn't Exist
+            except(User.DoesNotExist) as e:
                 return HttpResponse(status=404)
+            fav_contents = [content for content in user.favorite_contents.all().values()]
+            #ERR 400 : Fav Content Doesn't Exist
+            if not fav_contents:
+                return HttpResponse(status=400)
             return JsonResponse(fav_contents, safe=False, status=200)
+        #ERR 401 : Not Authenticated
         else:
             return HttpResponse(status=401)
+    #ERR 405 : METHOD NOT ALLOWED
+    else:
+        return HttpResponseNotAllowed(['GET'])
 
-def content_favorite(request, content_id):
+def content_favorite(request, user_id, content_id):
     if request.method == 'PUT':
         if request.user.is_authenticated:
-            new_user = request.user
+            try:
+                new_user = User.objects.get(id=user_id)
+            #ERR 404 : User Doesn't Exist
+            except(User.DoesNotExist) as e:
+                return HttpResponse(status=404)
+            #ERR 400 : Content Doesn't Exist
             try:
                 content = Content.objects.get(id=content_id)
             except(Content.DoesNotExist) as e:
-                return HttpResponse(status=404)
+                return HttpResponse(status=400)
             content.favorite_users.add(new_user)
+            content.favorite_cnt = content.favorite_cnt +1
             content.save()
-            fav_arr = []
-            fav_users = content.favorite_users.all()
-            for fav_user in fav_users:
-                fav_arr.append(fav_user.id)
+            fav_users = [user for user in content.favorite_users.all().values()]
             response_dict = {
                 "id": content.id, 
-                "members": fav_arr
+                "favorite_users": fav_users,
+                "favorite_cnt": content.favorite_cnt
             }
             return JsonResponse(response_dict, status=200)
+        #ERR 401 : Not Authenticated
         else:
             return HttpResponse(status=401)
 
     elif request.method == 'DELETE':
         if request.user.is_authenticated:
             try:
-                content = Content.objects.get(id=content_id)
-            except(Content.DoesNotExist) as e:
+                user = User.objects.get(id=user_id)
+            #ERR 404 : User Doesn't Exist
+            except(User.DoesNotExist) as e:
                 return HttpResponse(status=404)
+            try:
+                content = Content.objects.get(id=content_id)
+            #ERR 400 : Content Doesn't Exist
+            except(Content.DoesNotExist) as e:
+                return HttpResponse(status=400)
             content.favorite_users.remove(request.user)
+            content.favorite_cnt = content.favorite_cnt -1
             return HttpResponse(status=200)
+        #ERR 401 : Not Authenticated
         else:
             return HttpResponse(status=401)
+    #ERR 405 : METHOD NOT ALLOWED
     else:
         return HttpResponseNotAllowed(['PUT', 'DELETE'])
 

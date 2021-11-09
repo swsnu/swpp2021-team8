@@ -29,11 +29,14 @@ class SubrokerTestCase(TestCase):
         new_ott.save()
         new_ott2 = Ott(ott='Watcha', membership='Standard', max_people=4, cost=7900, image= tempfile.NamedTemporaryFile(suffix=".jpg").name)
         new_ott2.save()
+        
+        new_content = Content(the_movie_id=1, name= 'content_name', favorite_cnt= 0)
+        new_content.save()
+        new_content2 = Content(the_movie_id=2, name= 'content_name', favorite_cnt= 1)
+        new_content2.save()
+        new_content2.favorite_users.add(new_user1)
+        new_content2.save()
         """
-        new_content = Content(the_movie_id=1234, name= 'movie_name', favorite_cnt= 1)
-        new_content.save()
-        new_content.favorite_users.add(new_user2)
-        new_content.save()
         new_review = Review(content=new_content, detail='review_detail', user=new_user1)
         new_review.save()
         """
@@ -318,7 +321,6 @@ class SubrokerTestCase(TestCase):
         response = client.put('/api/group/1/user/')
         self.assertEqual(response.status_code, 400)
 
-
     #group add user : DELETE
     def test_group_add_user_delete(self):
         client=Client()
@@ -344,4 +346,146 @@ class SubrokerTestCase(TestCase):
         response = client.post('/api/group/1/user/')
         self.assertEqual(response.status_code, 405)
 
-    
+    #content detail : GET
+    def test_content_detail_get(self):
+        client = Client()
+
+        #GET ERR unauthorized user request : 401
+        response = client.get('/api/content/1/')
+        self.assertEqual(response.status_code, 401)
+
+        #login
+        client.post('/api/login/', json.dumps({'username': 'user1', 'password': 'user1_password'}),
+                               content_type='application/json')
+
+        #GET SUCCESS : 200
+        response = client.get('/api/content/1/')
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content.decode())
+        self.assertEqual(1, content['id'])
+        self.assertEqual(1, content['the_movie_id'])
+        self.assertEqual(0, content['favorite_count'])
+
+        #GET ERR content doesn't exist : 404
+        response = client.get('/api/content/10/')
+        self.assertEqual(response.status_code, 404)
+
+    #content detail : 405 ERROR (METHOD NOT ALLOWED)
+    def test_content_detail_405(self):
+        client=Client()
+        #POST : NOT ALLOWED
+        response = client.post('/api/content/1/')
+        self.assertEqual(response.status_code, 405)
+
+        #PUT : NOT ALLOWED
+        response = client.put('/api/content/1/')
+        self.assertEqual(response.status_code, 405)
+
+        #DELETE : NOT ALLOWED
+        response = client.delete('/api/content/1/')
+        self.assertEqual(response.status_code, 405)
+
+    #user favorite list : GET
+    def test_user_favorite_list_get(self):
+        client = Client()
+
+        #GET ERR unauthorized user request : 401
+        response = client.get('/api/content/1/favorite/')
+        self.assertEqual(response.status_code, 401)
+
+        #login
+        client.post('/api/login/', json.dumps({'username': 'user1', 'password': 'user1_password'}),
+                               content_type='application/json')
+
+        #GET SUCCESS : 200
+        response = client.get('/api/content/1/favorite/')
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content.decode())[0]
+        self.assertEqual(2, content['id'])
+        self.assertEqual(2, content['the_movie_id'])
+        self.assertEqual(1, content['favorite_cnt'])
+
+        #GET ERR user doesn't exist : 404
+        response = client.get('/api/content/10/favorite/')
+        self.assertEqual(response.status_code, 404)
+
+        #GET ERR fav content doesn't exist : 400
+        response = client.get('/api/content/2/favorite/')
+        self.assertEqual(response.status_code, 400)
+
+    #user_favorite_list : 405 ERROR (METHOD NOT ALLOWED)
+    def test_user_favorite_list_405(self):
+        client=Client()
+        #POST : NOT ALLOWED
+        response = client.post('/api/content/1/favorite/')
+        self.assertEqual(response.status_code, 405)
+
+        #PUT : NOT ALLOWED
+        response = client.put('/api/content/1/favorite/')
+        self.assertEqual(response.status_code, 405)
+
+        #DELETE : NOT ALLOWED
+        response = client.delete('/api/content/1/favorite/')
+        self.assertEqual(response.status_code, 405)
+
+    #content favorite : PUT
+    def test_content_favorite_put(self):
+        client = Client()
+
+        #PUT ERR unauthorized user request : 401
+        response = client.put('/api/content/1/favorite/1/')
+        self.assertEqual(response.status_code, 401)
+
+        #login
+        client.post('/api/login/', json.dumps({'username': 'user2', 'password': 'user2_password'}),
+                               content_type='application/json')
+
+        #PUT SUCCESS : 200
+        response = client.put('/api/content/2/favorite/2/')
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content.decode())
+        self.assertEqual(2, content['id'])
+        self.assertEqual(2, content['favorite_cnt'])
+
+        #PUT ERR user doesn't exist : 404
+        response = client.put('/api/content/10/favorite/2/')
+        self.assertEqual(response.status_code, 404)
+
+        #PUT ERR fav content doesn't exist : 400
+        response = client.put('/api/content/2/favorite/10/')
+        self.assertEqual(response.status_code, 400)
+
+    #content favorite : DELETE
+    def test_content_favorite_delete(self):
+        client = Client()
+
+        #DELETE ERR unauthorized user request : 401
+        response = client.delete('/api/content/1/favorite/2/')
+        self.assertEqual(response.status_code, 401)
+
+        #login
+        client.post('/api/login/', json.dumps({'username': 'user1', 'password': 'user1_password'}),
+                               content_type='application/json')
+
+        #DELETE SUCCESS : 200
+        response = client.delete('/api/content/1/favorite/2/')
+        self.assertEqual(response.status_code, 200)
+
+        #DELETE ERR user doesn't exist : 404
+        response = client.delete('/api/content/10/favorite/2/')
+        self.assertEqual(response.status_code, 404)
+
+        #DELETE ERR fav content doesn't exist : 400
+        response = client.delete('/api/content/1/favorite/10/')
+        self.assertEqual(response.status_code, 400)
+
+    #user_favorite_list : 405 ERROR (METHOD NOT ALLOWED)
+    def test_content_favorite_405(self):
+        client=Client()
+        #POST : NOT ALLOWED
+        response = client.post('/api/content/1/favorite/1/')
+        self.assertEqual(response.status_code, 405)
+
+        #GET : NOT ALLOWED
+        response = client.get('/api/content/1/favorite/1/')
+        self.assertEqual(response.status_code, 405)
