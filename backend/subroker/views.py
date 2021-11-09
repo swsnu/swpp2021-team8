@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.db.models.query import EmptyQuerySet
 from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseBadRequest, JsonResponse
 from django.contrib.auth.models import User
-from django.contrib.auth import login as auth_login, logout
+from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.views.decorators import csrf
 from django.views.decorators.csrf import ensure_csrf_cookie
 import json
@@ -17,9 +17,15 @@ def signup(request):
         req_data = json.loads(request.body.decode())
         username = req_data['username']
         password = req_data['password']
-        User.objects.create_user(username, password)
-        return HttpResponse(status=201)
+        try:
+            user = User.objects.get(username = username)
+        except (User.DoesNotExist) as e:
+            User.objects.create_user(username=username, email=None, password=password)
+            return HttpResponse(status=201)
+        #ERR 400 : Username Already Exists
+        return HttpResponseBadRequest()
     else:
+        #ERR 405 : METHOD NOT ALLOWED
         return HttpResponseNotAllowed(['POST'])
 
 #token/ : Token
@@ -38,22 +44,26 @@ def login(request):
         password = req_data['password']
         try:
             user = User.objects.get(username = username)
+        #ERR 401 : User Doesn't Exist
         except (User.DoesNotExist) as e:
             return HttpResponse(status=401)
+        #ERR 401 : Password Doesn't Match
         if user.check_password(password) == False:
             return HttpResponse(status=401)
         auth_login(request, user)
         return HttpResponse(status=204)
 
     else:
+        #ERR 405 : METHOD NOT ALLOWED
         return HttpResponseNotAllowed(['POST'])
 
 #logout/ : User Log Out
 def logout(request):
     if request.method == 'GET':
         if request.user.is_authenticated:
-            logout(request)
+            auth_logout(request)
             return HttpResponse(status=204)
+        #ERR 401 : Not Authenticatedd
         else:
             return HttpResponse(status=401)
     else:
@@ -64,9 +74,11 @@ def group_list(request):
     if request.method == 'GET':
         if request.user.is_authenticated:
             group_all_list = [group for group in Group.objects.all().values()]
+            #ERR 404 : Group Doesn't Exist
             if not group_all_list:
                 return HttpResponse(status=404)
             return JsonResponse(group_all_list, safe=False, status=200)
+        #ERR 401 : Not Authenticated
         else:
             return HttpResponse(status=401)
         
@@ -78,16 +90,17 @@ def group_list(request):
                 group_description = req_data['description']
                 group_is_public = bool(req_data['is_public'])
                 group_password = int(req_data['password'])
-                group_ott = req_data['ott']
                 group_payday = int(req_data['payday'])
                 group_account_bank = req_data['account_bank']
                 group_account_number = req_data['account_number']
                 group_account_name = req_data['account_name']
                 group_leader = request.user
+            #ERR 400 : JSONDecodeErr
             except (JSONDecodeError) as e:
                 return HttpResponseBadRequest()
             try:
                 group_membership = Ott.objects.get(id=req_data['membership'])
+            #ERR 404 : Ott Doesn't Exist
             except (Ott.DoesNotExist) as e:
                 return HttpResponse(status=404)
             group = Group(
@@ -95,7 +108,6 @@ def group_list(request):
                 description=group_description, 
                 is_public=group_is_public, 
                 password=group_password, 
-                ott=group_ott,
                 membership=group_membership, 
                 payday=group_payday, 
                 account_bank = group_account_bank, 
@@ -106,22 +118,23 @@ def group_list(request):
             group.save()
             response_dict = {'id': group.id, 'name': group.name, 'leader': group.leader.id} 
             return JsonResponse(response_dict, status=201)
+        #ERR 401 : Not Authenticated
         else:
             return HttpResponse(status=401)
+    #ERR 405 : METHOD NOT ALLOWED
     else:
         return HttpResponseNotAllowed(['GET', 'POST'])
 
-def group_info(request, group_id):
+def group_detail(request, group_id):
     if request.method == 'GET':
         if request.user.is_authenticated:
             try:
                 group = Group.objects.get(id=group_id)
+            #ERR 404 : Group Doesn't Exist
             except (Group.DoesNotExist) as e:
                 return HttpResponse(status=404)
-            member_arr = []
-            members = group.members.all()
-            for member in members:
-                member_arr.append(member.id)
+            members = [member for member in group.members.all()]
+            
             return JsonResponse({
                 "id": group.id, 
                 "name": group.name, 
@@ -130,16 +143,16 @@ def group_info(request, group_id):
                 "password": group.password, 
                 "created_at": group.created_at,
                 "will_be_deleted": group.will_be_deleted,
-                "ott": group.ott,
-                "membership_id": group.membership.id, 
+                "membership": json.dumps(group.membership.__dict__), 
                 "payday": group.payday, 
                 "account_bank": group.account_bank, 
                 "account_number": group.account_number, 
                 "account_name": group.account_name, 
                 "leader": group.leader.id,
-                "members": member_arr,
+                "members": members,
                 "current_people": group.current_people
                 }, status=200)
+        #ERR 401 : METHOD NOT ALLOWED
         else:
             return HttpResponse(status=401)
 
@@ -177,8 +190,7 @@ def group_info(request, group_id):
                 "password": group.password, 
                 "created_at": group.created_at,
                 "will_be_deleted": group.will_be_deleted,
-                "ott": group.ott,
-                "membership_id": group.membership.id, 
+                "membership": group.membership, 
                 "payday": group.payday, 
                 "account_bank": group.account_bank, 
                 "account_number": group.account_number, 
@@ -194,13 +206,15 @@ def group_info(request, group_id):
         if request.user.is_authenticated:
             try:
                 group = Group.objects.get(id=group_id)
+            #ERR 404 : Group Doesn't Exist
             except(Group.DoesNotExist) as e:
                 return HttpResponse(status=404)
             group.delete()
             return HttpResponse(status=200)
+        #ERR 401 : Not Authenticated
         else:
             return HttpResponse(status=401)
-        
+    #ERR 405 : METHOD NOT ALLOWED
     else:
         return HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
 
@@ -210,10 +224,12 @@ def group_add_user(request, group_id):
             new_member = request.user
             try:
                 group = Group.objects.get(id=group_id)
+            #ERR 404 : Group Doesn't Exist
             except(Group.DoesNotExist) as e:
                 return HttpResponse(status=404)
+            #ERR 400 : Group Is Full
             if(group.current_people >= group.membership.max_people):
-                return HttpResponseBadRequest
+                return HttpResponseBadRequest()
             group.members.add(new_member)
             group.save()
             member_arr = []
@@ -225,6 +241,7 @@ def group_add_user(request, group_id):
                 "members": member_arr
             }
             return JsonResponse(response_dict, status=200)
+        #ERR 401 : Not Authenticated
         else:
             return HttpResponse(status=401)
 
@@ -232,27 +249,32 @@ def group_add_user(request, group_id):
         if request.user.is_authenticated:
             try:
                 group = Group.objects.get(id=group_id)
+            #ERR 404 : Group Doesn't Exist
             except(Group.DoesNotExist) as e:
                 return HttpResponse(status=404)
             group.members.remove(request.user)
             return HttpResponse(status=200)
+        #ERR 401 : Not Authenticated
         else:
             return HttpResponse(status=401)
+    #ERR 405 : METHOD NOT ALLOWEd
     else:
         return HttpResponseNotAllowed(['PUT', 'DELETE'])
+
 #Content
 def content_list(request, content_id):
     return HttpResponse("content search")
 
-def content_info(request, content_id):
+def content_detail(request, content_id):
     if request.method == 'GET':
         if request.user.is_authenticated:
             try:
                 content = Content.objects.get(id=content_id)
+            #ERR 404 : Content Doesn't Exist
             except (Content.DoesNotExist) as e:
                 return HttpResponse(status=404)
             user_arr = []
-            users = content.user_id.all()
+            users = content.favorite_users.all()
             for user in users:
                 user_arr.append(user.id)
             return JsonResponse({
@@ -260,36 +282,38 @@ def content_info(request, content_id):
                 "the_movie_id": content.the_movie_id,
                 "name": content.name,
                 "favorite_count": content.favorite_cnt,
-                "user_id": user_arr
+                "favorite_users": user_arr
                 }, status=200)
+        #ERR 401 : Not Authenticated
         else:
             return HttpResponse(status=401)
 
-def recommendation(request, user_id):
+def content_recommendation(request, user_id):
     return HttpResponse("recommendation")
 
-def user_favorite_list(request):
+def user_favorite_list(request, user_id):
     if request.method == 'GET':
         if request.user.is_authenticated:
-            fav_return = [content for content in Content.objects.filter(user_id__in=[request.user]).values()]
-            if not fav_return:
+            user = User.object.get(id=user_id)
+            fav_contents = [content for content in user.favorite_contents.all()]
+            if not fav_contents:
                 return HttpResponse(status=404)
-            return JsonResponse(fav_return, safe=False, status=200)
+            return JsonResponse(fav_contents, safe=False, status=200)
         else:
             return HttpResponse(status=401)
 
 def content_favorite(request, content_id):
     if request.method == 'PUT':
         if request.user.is_authenticated:
-            new_fav = request.user
+            new_user = request.user
             try:
                 content = Content.objects.get(id=content_id)
             except(Content.DoesNotExist) as e:
                 return HttpResponse(status=404)
-            content.user_id.add(new_fav)
+            content.favorite_users.add(new_user)
             content.save()
             fav_arr = []
-            fav_users = content.user_id.all()
+            fav_users = content.favorite_users.all()
             for fav_user in fav_users:
                 fav_arr.append(fav_user.id)
             response_dict = {
@@ -306,24 +330,25 @@ def content_favorite(request, content_id):
                 content = Content.objects.get(id=content_id)
             except(Content.DoesNotExist) as e:
                 return HttpResponse(status=404)
-            content.user_id.remove(request.user)
+            content.favorite_users.remove(request.user)
             return HttpResponse(status=200)
         else:
             return HttpResponse(status=401)
     else:
         return HttpResponseNotAllowed(['PUT', 'DELETE'])
 
-def trending(request):
+def content_trending(request):
     return HttpResponse("trending")
 
 #Review
 def review_content(request, content_id):
     if request.method == 'GET':
         if request.user.is_authenticated:
-            review_return = [review for review in Review.objects.filter(content__id__startswith=str(content_id)).values()]
-            if not review_return:
+            content = Content.object.get(id=content_id)
+            reviews = [review for review in content.content_reviews.all()]
+            if not reviews:
                 return HttpResponse(status=404)
-            return JsonResponse(review_return, safe=False, status=200)
+            return JsonResponse(reviews, safe=False, status=200)
         else:
             return HttpResponse(status=401)
     elif request.method == 'POST':
@@ -338,23 +363,23 @@ def review_content(request, content_id):
                 review_content = Content.objects.get(id=content_id)
             except (Content.DoesNotExist) as e:
                 return HttpResponse(status=404)
-            review = Review(content=review_content, detail=review_detail, user_id=review_user)
+            review = Review(content=review_content, detail=review_detail, user=review_user)
             review.save()
-            response_dict = {'id': review.id, 'content': review.content.id, 'detail': review.detail, 'user_id':review.user_id.id, 'created_at': review.created_at}
+            response_dict = {'id': review.id, 'content': review.content.id, 'detail': review.detail, 'user':review.user.id, 'created_at': review.created_at}
             return JsonResponse(response_dict, status=201)
         else:
             return HttpResponse(status=401)
     else:
         return HttpResponseNotAllowed(['GET', 'POST'])
 
-def review_info(request, review_id):
+def review_detail(request, review_id):
     if request.method == 'GET':
         if request.user.is_authenticated:
             try:
                 review = Review.objects.get(id=review_id)
             except (Review.DoesNotExist) as e:
                 return HttpResponse(status=404)
-            response_dict = {"id": review.id, "content": review.content.id, "detail": review.detail, "user_id": review.user_id.id, "created_at": review.created_at}
+            response_dict = {"id": review.id, "content": review.content.id, "detail": review.detail, "user": review.user.id, "created_at": review.created_at}
             return JsonResponse(response_dict, status=200)
         else:
             return HttpResponse(status=401)
@@ -367,11 +392,11 @@ def review_info(request, review_id):
                 review = Review.objects.get(id=review_id)
             except(Review.DoesNotExist) as e:
                 return HttpResponse(status=404)
-            if(review.user_id != request.user):
+            if(review.user != request.user):
                 return HttpResponse(status=403)
             review.detail = review_detail
             review.save()
-            response_dict = {"id": review.id, "content": review.content.id, "detail": review.detail, "user_id": review.user_id.id}
+            response_dict = {"id": review.id, "content": review.content.id, "detail": review.detail, "user": review.user.id}
             return JsonResponse(response_dict, status=200)
         else:
             return HttpResponse(status=401)
