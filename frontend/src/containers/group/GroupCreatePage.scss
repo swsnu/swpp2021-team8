@@ -1,20 +1,22 @@
 @import '../../base.scss';
+
 .groupcreate{
     display: flex;
     margin:0 0 0 0;
     .groupcreate__main {
         color:white;
+        margin-left: 50px;
+        font-family: $font-base-stack;
         .groupcreate__membership {
             .groupcreate__membership__header {
                 display: flex;
                 margin: 20px 0 50px 0px;
                 text-align: center;
                 align-items: center;
-                .groupcreate__info {
-                    margin-left: 20px;
+                .groupcreate__membership__info {
                     font-size: 24pt;
                     font-family: $font-base-stack;
-                    font-weight: bolder;
+                    font-weight:bolder;
                 }
             }
             .groupcreate__membership__body {
@@ -24,10 +26,9 @@
                     margin: 20px 0 20px 0;
                     .category {
                         font-size: 15pt;
-                        font-family: $font-base-stack;
-                        font-weight: bold;
+                        font-weight: bolder;
                         align-content: center;
-                        width: 200px;
+                        width: 150px;
                         white-space: pre-wrap;
                         line-height: 1.5;
                         margin-right: 20px;
@@ -38,57 +39,150 @@
                         line-height: 1.5;
                     }                
                 }
-                .logo {
-                    height: 50px;
-                    width: 50px;
+                .ott .content{
+                    display: flex;
+                    .ott__content__component {
+                        margin-right: 15px;
+                    }
+                    .groupcreate__ott {
+                        display: none;
+                    }
+                    .logo {
+                        height: 40px;
+                        width: 40px;
+                        border-radius: 10px;
+                    }
+                    .logo.unchecked {
+                        filter: brightness(40%);
+                    }
                 }
-                .description, .members {
-                    display: block;
+                .membership {
+                    #membership-select {
+                        color: gray;
+                        width: 400px;
+                        height: 40px;
+                        font-size: 12pt;
+                    }
+                }
+                .people {
+                    #people-select {
+                        color: gray;
+                        width: 80px;
+                        height: 40px;
+                        font-size: 12pt;
+                    }
+                }
+                .cost .content{
+                    font-size:14pt;
+                    font-weight: bold;
+                    color: rgb(209, 204, 204);
+                }
+                .public .content{
+                    [type=checkbox]{
+                        display: none;
+                    }
+                    .round-slider-container{
+                        width: 55px;
+                        height: 30px;
+                        background: white;
+                        border-radius: 50px;
+                        cursor: pointer;
+                        display: flex;
+                        justify-content: space-around;
+                        align-items: center;
+                        position: relative;
+                        .round-slider {
+                            width: 25px;
+                            height: 26px;
+                            border-radius: 50%;
+                            background: rgb(187, 186, 186);
+                            top: 2px;
+                            left: 27px;
+                            position: absolute;
+                        }
+                    }
+                    #public-input:checked +.round-slider-container {
+                        background: white;
+                        .round-slider{
+                            transform: translateX(-25px);
+                        }
+                    }
+                }
+                .password .content {
+                    input {
+                        display: block;
+                        height: 30px;
+                        width: 200px;
+                    }
+                    .password-validcheck {
+                        margin-top: 15px;
+                    }
+                    div {
+                        font-size: 13pt;
+                    }
+                    span {
+                        margin-right: 10px;
+                    }
+                }
+            }
+        }
+        hr {
+            margin-top: 50px;
+            margin-bottom: 50px;
+            width : 800px;
+            color:white;
+            size: 5;
+        }
+        .groupcreate__group {
+            .groupcreate__group__header {
+                display: flex;
+                margin: 20px 0 50px 0px;
+                text-align: center;
+                align-items: center;
+                .groupcreate__group__info {
+                    font-size: 24pt;
+                    font-family: $font-base-stack;
+                    font-weight:bolder;
+                }
+            }
+            .groupcreate__group__body {
+                .groupcreate__group__field {
+                    display: flex;
+                    align-content: center;
+                    margin: 20px 0 20px 0;
+                    .category {
+                        flex-basis:150px;
+                        flex-shrink:0;
+                        font-size: 15pt;
+                        font-weight: bolder;
+                        align-content: center;
+                        width: 150px;
+                        white-space: pre-wrap;
+                        line-height: 1.5;
+                        margin-right: 20px;
+                    }
                     .content {
-                        margin-top: 10px;
-                        display: flex;
-                    }
-                }
-                .groupcreate__member {
-                    margin-right: 20px;
-                    text-align: center;
-                    .groupcreate__member__index {
-                        display: flex;
                         align-content: center;
-                        justify-content: center;
-                        background-color: orange;
-                        height: 50px;
-                        width: 50px;
-                        border-radius: 50%;
-                    }
-                    .groupcreate__member__username {
-                        text-align: center;
-                        width:50px;
-                        font-size: 10pt;
-                    }
-                }
-                .groupcreate__member--empty {
-                    margin-right: 20px;
-                    text-align: center;
-                    .groupcreate__member__index--empty {
-                        display: flex;
-                        align-content: center;
-                        justify-content: center;
-                        background-color: gray;
-                        height: 50px;
-                        width: 50px;
-                        border-radius: 50%;
-                    }
+                        white-space: pre-wrap;
+                        line-height: 1.5;
+                        input, textarea, select{
+                            height : 30px;
+                            width : 400px;
+                            color: gray;
+                            font-size: 12pt;
+                        }
+                        textarea {
+                            height : 90px;
+                        }
+                        select {
+                            width: 408px;
+                        }
+                        #payday-select {
+                            width: 80px;
+                        }
+                    }                
                 }
             }
-            .groupcreate__footer {
-                .groupcreate__body__table {
-                    height: 300px;
-                    width: 500px;
-                    margin: 0 20px 0 20px;
-                }
-            }
-    
         }
     }
 }
@@ -104,33 +198,14 @@
     margin: 10px 0 0 0;
     padding:0 0 0 0;
 }
-// #previous-button {
-//     height: 40px;
-//     width: 40px;
-//     border-radius: 50%;
-//     text-align: center;
-//     vertical-align: middle;
-//     margin: 100px 0 0 5px;
-// }
-// #next-button {
-//     height: 40px;
-//     width: 40px;
-//     border-radius: 50%;
-//     text-align: center;
-//     vertical-align: middle;
-//     margin: 100px 5px 0 0;
-// }
-// .cell {
-//     text-align: center;
-//     vertical-align: middle;
-// }
-// .sunday {
-//     color: red;
-// }
-// .today {
-//     background-color: red;
-//     height: 30px;
-//     width: 30px;
-//     border-radius: 50%;
-//     color:white;
-// }
+#cancel-button, #create-group-button {
+    width:290px;
+    height: 50px;
+    font-size: 15pt;
+    font-family: $font-title-stack;
+    font-weight: bolder;
+    background: #fcb70d;
+    margin-top: 30px;
+    margin-right: 50px;
+    margin-bottom: 50px;
+}
