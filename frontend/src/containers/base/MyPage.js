@@ -3,8 +3,6 @@ import Calendar from '../../components/base/Calendar';
 
 import './MyPage.scss';
 
-import './MyPage.scss';
-
 const MyPage = () => {
   return (
     <>
@@ -13,7 +11,6 @@ const MyPage = () => {
         <div className="mypage__info__email">email</div>
         <div className="mypage__info__username">username</div>
       </div>
-      <GroupList />
       <Calendar />
     </>
   );
