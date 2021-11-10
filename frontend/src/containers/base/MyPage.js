@@ -1,7 +1,7 @@
 import React from 'react';
-import GroupList from '../../components/group/GroupList';
 import Calendar from '../../components/base/Calendar';
-import ContentList from '../../components/content/ContentList';
+
+import './MyPage.scss';
 
 import './MyPage.scss';
 
@@ -15,7 +15,6 @@ const MyPage = () => {
       </div>
       <GroupList />
       <Calendar />
-      <ContentList />
     </>
   );
 };
