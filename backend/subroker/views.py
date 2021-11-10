@@ -4,13 +4,15 @@ from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseBadReq
 from django.contrib.auth.models import User
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.views.decorators import csrf
-from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 import json
 from json.decoder import JSONDecodeError
 from .models import Ott, Group, Content, Review
 from django.core.exceptions import ObjectDoesNotExist
 
 # user/: Get user's login status
+@ensure_csrf_cookie
+@csrf_exempt
 def user(request):
     if request.method == 'GET':
         if request.user.is_authenticated:
@@ -21,6 +23,8 @@ def user(request):
         return HttpResponseNotAllowed(['GET'])
 
 #signup/ : User Sign Up
+@ensure_csrf_cookie
+@csrf_exempt
 def signup(request):
     if request.method == 'POST':
         req_data = json.loads(request.body.decode())
@@ -31,8 +35,8 @@ def signup(request):
         except (User.DoesNotExist) as e:
             User.objects.create_user(username=username, email=None, password=password)
             return HttpResponse(status=201)
-        #ERR 400 : Username Already Exists
-        return HttpResponseBadRequest()
+        #ERR 409 : Username Already Exists
+        return HttpResponse(status=409)
     else:
         #ERR 405 : METHOD NOT ALLOWED
         return HttpResponseNotAllowed(['POST'])
@@ -46,6 +50,8 @@ def token(request):
         return HttpResponseNotAllowed(['GET'])
 
 #login/ : User Log In
+@ensure_csrf_cookie
+@csrf_exempt
 def login(request):
     if request.method=='POST' :
         req_data = json.loads(request.body.decode())
