@@ -57,12 +57,17 @@ const GroupDetailPage = ({ history }) => {
   };
   const onJoinClick = () => {
     // dispatch(addUserToGroup(group.id, user.id));
-    setGroup({ ...group, members: [...group.members, user] });
+    setGroup({
+      ...group,
+      current_people: group.current_people + 1,
+      members: [...group.members, user],
+    });
   };
   const onQuitClick = () => {
     // dispatch(deleteUserToGroup(group.id, user.id));
     setGroup({
       ...group,
+      current_people: group.current_people - 1,
       members: group.members.filter((member) => {
         return member.id !== user.id;
       }),
