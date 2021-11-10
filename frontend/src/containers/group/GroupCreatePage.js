@@ -33,23 +33,23 @@ const GroupCreatePage = ({ history }) => {
     },
   ];
   const [selectedOtt, setSelectedOtt] = useState(null);
-  const [membership, setMembership] = useState(null);
+  const [membership_, setMembership] = useState(null);
   const [people, setPeople] = useState(0);
   const [isPublic, setIsPublic] = useState(true);
-  const [password, setPassword] = useState('');
+  const [password_, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [isPasswordEqual, setIsPasswordEqual] = useState(true);
   const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [description_, setDescription] = useState('');
   const [accountBank, setAccountBank] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [accountName, setAccountName] = useState('');
-  const [payday, setPayday] = useState('');
+  const [payday_, setPayday] = useState('');
   const dispatch = useDispatch();
 
   const checkPasswordEqual = () => {
-    if (password === passwordConfirm) {
+    if (password_ === passwordConfirm) {
       setIsPasswordEqual(true);
     } else {
       setIsPasswordEqual(false);
@@ -57,7 +57,7 @@ const GroupCreatePage = ({ history }) => {
   };
   const checkPasswordValid = () => {
     if (
-      password.match(/[0-9]{4}/)
+      password_.match(/[0-9]{4}/)
     ) {
       setIsPasswordValid(true);
     } else {
@@ -67,7 +67,7 @@ const GroupCreatePage = ({ history }) => {
   useEffect(() => {
     checkPasswordValid();
     checkPasswordEqual();
-  }, [password, passwordConfirm]);
+  }, [password_, passwordConfirm]);
 
   const onBackClick = () => {
     history.goBack();
@@ -130,15 +130,15 @@ const GroupCreatePage = ({ history }) => {
   const onCreateGroupClick = () => {
     dispatch(createGroup({
       name: title,
-      description: description,
+      description: description_,
       is_public: isPublic,
-      password: password,
+      password: password_,
       created_at: new Date(),
       updated_at: new Date(),
       will_be_deleted: false,
       ott: selectedOtt,
-      membership: membership,
-      payday: payday,
+      membership: membership_,
+      payday: payday_,
       account_bank: accountBank,
       account_number: accountNumber,
       account_name: accountName,
@@ -203,7 +203,7 @@ const GroupCreatePage = ({ history }) => {
       id="people-select"
       name="membership"
       onChange={onPeopleSelect}
-      disabled={!membership}
+      disabled={!membership_}
     >
       <option value={1}>1</option>
       <option value={2}>2</option>
@@ -214,7 +214,7 @@ const GroupCreatePage = ({ history }) => {
   const costContent = (
     <div className="cost__text">
       {
-        selectedOtt && membership && people ?
+        selectedOtt && membership_ && people ?
           (
             <>
               {Math.floor(selectedOtt.cost / people).toString().concat(' Won')}
@@ -271,7 +271,7 @@ const GroupCreatePage = ({ history }) => {
         id="group-title-input"
         name="group-title"
         type="text"
-        value="Enter group title"
+        value={title}
         onChange={onTitleChange}
       />
     </>
@@ -282,7 +282,7 @@ const GroupCreatePage = ({ history }) => {
         id="description-input"
         name="description"
         type="text"
-        value="Enter group description"
+        value={description_}
         onChange={onDescriptionChange}
       />
     </>
@@ -304,14 +304,14 @@ const GroupCreatePage = ({ history }) => {
         id="account-number-input"
         name="account-number"
         type="text"
-        value="Enter your account number"
+        value={accountNumber}
         onChange={onAccountNumberChange}
       />
       <input
         id="account-name-input"
         name="account-name"
         type="text"
-        value="Enter your account name"
+        value={accountName}
         onChange={onAccountNameChange}
       />
     </>
@@ -375,12 +375,6 @@ const GroupCreatePage = ({ history }) => {
             {renderField('Account', accountInputContent, 'group')}
             {renderField('Payday', paydayInputContent, 'group')}
           </div>
-          {title}
-          {description}
-          {accountBank}
-          {accountNumber}
-          {accountName}
-          {payday}
         </div>
         <div className="groupcreate__buttons">
           <button id="cancel-button" onClick={onCancelClick} type="button">
