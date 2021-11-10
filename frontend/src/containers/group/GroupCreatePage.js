@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import { createGroup } from '../../store/GroupStore';
 import netflixLogo from './temp/netflixLogo.png';
 import watchaLogo from './temp/watchaLogo.png';
 import tvingLogo from './temp/tvingLogo.png';
 import './GroupCreatePage.scss';
 
 const GroupCreatePage = ({ history }) => {
+  const user = {
+    id: 1,
+    username: 'swpp',
+  };
   const ottList = [
     {
       name: 'Netflix',
@@ -40,6 +46,7 @@ const GroupCreatePage = ({ history }) => {
   const [accountNumber, setAccountNumber] = useState('');
   const [accountName, setAccountName] = useState('');
   const [payday, setPayday] = useState('');
+  const dispatch = useDispatch();
 
   const checkPasswordEqual = () => {
     if (password === passwordConfirm) {
@@ -117,11 +124,29 @@ const GroupCreatePage = ({ history }) => {
   };
 
   const onCancelClick = () => {
-    // TODO
+    history.goBack();
   };
 
   const onCreateGroupClick = () => {
-    // TODO
+    dispatch(createGroup({
+      name: title,
+      description_: description,
+      is_public: isPublic,
+      password_: password,
+      created_at: new Date(),
+      updated_at: new Date(),
+      will_be_deleted: false,
+      ott: selectedOtt,
+      membership_: membership,
+      payday_: payday,
+      account_bank: accountBank,
+      account_number: accountNumber,
+      account_name: accountName,
+      leader: user,
+      members: [user],
+      current_people: 1,
+    }));
+    history.push('/main');
   };
   const renderField = (category, content, section = 'membership') => {
     const classname = 'groupcreate__'.concat(section, '__field ', category.toLowerCase());

@@ -198,14 +198,16 @@
     margin: 10px 0 0 0;
     padding:0 0 0 0;
 }
-#cancel-button, #create-group-button {
-    width:290px;
-    height: 50px;
-    font-size: 15pt;
-    font-family: $font-title-stack;
-    font-weight: bolder;
-    background: #fcb70d;
-    margin-top: 30px;
-    margin-right: 50px;
-    margin-bottom: 50px;
+.groupcreate__buttons{
+    #cancel-button, #create-group-button {
+        width:290px;
+        height: 50px;
+        font-size: 15pt;
+        font-family: $font-title-stack;
+        font-weight: bolder;
+        background: #fcb70d;
+        margin-top: 30px;
+        margin-right: 50px;
+        margin-bottom: 50px;
+    }
 }
