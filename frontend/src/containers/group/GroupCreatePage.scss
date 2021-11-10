@@ -1,0 +1,136 @@
+@import '../../base.scss';
+.groupcreate{
+    display: flex;
+    margin:0 0 0 0;
+    .groupcreate__main {
+        color:white;
+        .groupcreate__membership {
+            .groupcreate__membership__header {
+                display: flex;
+                margin: 20px 0 50px 0px;
+                text-align: center;
+                align-items: center;
+                .groupcreate__info {
+                    margin-left: 20px;
+                    font-size: 24pt;
+                    font-family: $font-base-stack;
+                    font-weight: bolder;
+                }
+            }
+            .groupcreate__membership__body {
+                .groupcreate__membership__field {
+                    display: flex;
+                    align-content: center;
+                    margin: 20px 0 20px 0;
+                    .category {
+                        font-size: 15pt;
+                        font-family: $font-base-stack;
+                        font-weight: bold;
+                        align-content: center;
+                        width: 200px;
+                        white-space: pre-wrap;
+                        line-height: 1.5;
+                        margin-right: 20px;
+                    }
+                    .content {
+                        align-content: center;
+                        white-space: pre-wrap;
+                        line-height: 1.5;
+                    }                
+                }
+                .logo {
+                    height: 50px;
+                    width: 50px;
+                }
+                .description, .members {
+                    display: block;
+                    .content {
+                        margin-top: 10px;
+                        display: flex;
+                    }
+                }
+                .groupcreate__member {
+                    margin-right: 20px;
+                    text-align: center;
+                    .groupcreate__member__index {
+                        display: flex;
+                        align-content: center;
+                        justify-content: center;
+                        background-color: orange;
+                        height: 50px;
+                        width: 50px;
+                        border-radius: 50%;
+                    }
+                    .groupcreate__member__username {
+                        text-align: center;
+                        width:50px;
+                        font-size: 10pt;
+                    }
+                }
+                .groupcreate__member--empty {
+                    margin-right: 20px;
+                    text-align: center;
+                    .groupcreate__member__index--empty {
+                        display: flex;
+                        align-content: center;
+                        justify-content: center;
+                        background-color: gray;
+                        height: 50px;
+                        width: 50px;
+                        border-radius: 50%;
+                    }
+                }
+            }
+            .groupcreate__footer {
+                .groupcreate__body__table {
+                    height: 300px;
+                    width: 500px;
+                    margin: 0 20px 0 20px;
+                }
+            }
+    
+        }
+    }
+}
+#back-button {
+    display: flex;
+    background-color: black;
+    height: 40px;
+    width: 120px;
+    font-size: 15pt;
+    font-weight: bold;
+    justify-content: left;
+    align-items: center;
+    margin: 10px 0 0 0;
+    padding:0 0 0 0;
+}
+// #previous-button {
+//     height: 40px;
+//     width: 40px;
+//     border-radius: 50%;
+//     text-align: center;
+//     vertical-align: middle;
+//     margin: 100px 0 0 5px;
+// }
+// #next-button {
+//     height: 40px;
+//     width: 40px;
+//     border-radius: 50%;
+//     text-align: center;
+//     vertical-align: middle;
+//     margin: 100px 5px 0 0;
+// }
+// .cell {
+//     text-align: center;
+//     vertical-align: middle;
+// }
+// .sunday {
+//     color: red;
+// }
+// .today {
+//     background-color: red;
+//     height: 30px;
+//     width: 30px;
+//     border-radius: 50%;
+//     color:white;
+// }
