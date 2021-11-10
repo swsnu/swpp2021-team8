@@ -35,15 +35,11 @@ def signup(request):
     if request.method == 'POST':
         try:
             req_data = json.loads(request.body.decode())
-            email = req_data['email']
-            password = req_data['password']
             username = req_data['username']
+            password = req_data['password']
 
-            User.objects.create_user(username, email, password)
+            User.objects.create_user(username=username, password=password)
             return HttpResponse(status=201)
-
-        except (KeyError, JSONDecodeError) as e:
-            return HttpResponse(status=400)
 
         except (IntegrityError) as e:
             return HttpResponse(status=409)
@@ -60,10 +56,10 @@ def login(request):
     if request.method=='POST' :
         try:
             req_data = json.loads(request.body.decode())
-            email = req_data['email']
+            username = req_data['username']
             password = req_data['password']
             
-            user = User.objects.get(email = email)
+            user = User.objects.get(username = username)
 
             if user.check_password(password) == False:
                 return HttpResponse(status=401)
@@ -71,9 +67,6 @@ def login(request):
             auth_login(request, user)
 
             return HttpResponse(status=204)
-
-        except (KeyError, JSONDecodeError) as e:
-            return HttpResponse(status=400)
 
         except (User.DoesNotExist) as e:
             return HttpResponse(status=401)

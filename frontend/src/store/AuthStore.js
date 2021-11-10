@@ -10,8 +10,8 @@ const _getLoginStatus = ({ isLoggedIn }) => {
   return { type: 'auth/GET_LOGIN_STATUS', status: isLoggedIn };
 };
 
-const _logIn = (user) => {
-  return { type: 'auth/LOG_IN', user };
+const _logIn = () => {
+  return { type: 'auth/LOG_IN' };
 };
 
 const _logOut = () => {
@@ -39,19 +39,15 @@ export const getLoginStatus = () => async (dispatch) => {
 
 export const logIn = (userInfo) => async (dispatch) => {
   try {
-    const res = await axios.post('/api/login/', userInfo);
-    dispatch(_logIn(res.data));
+    await axios.post('/api/login/', userInfo);
+    dispatch(_logIn());
   } catch (e) {
-    // TODO
     switch (e.response.status) {
-      case 400: // Bad request
-        dispatch(_setLoginErrorMessage('Key Error!'));
-        break;
-      case 401: // Not authorized
-        dispatch(_setLoginErrorMessage('Not Athorized'));
+      case 401: // Username or password is wrong
+        dispatch(_setLoginErrorMessage('Check your username/password'));
         break;
       default:
-        dispatch(_setLoginErrorMessage('Something Error'));
+        dispatch(_setLoginErrorMessage('Something is wrong'));
         break;
     }
   }
@@ -68,22 +64,19 @@ export const signUp = (userInfo) => async (dispatch) => {
   try {
     await axios.post('/api/signup/', userInfo);
     dispatch(_signUp());
+
+    return true;
   } catch (e) {
     // TODO
     switch (e.response.status) {
-      case 400: // Bad request
-        dispatch(_setSignUpErrorMessage('Key Error!'));
-        break;
-      case 405: // Not allowed request
-        dispatch(_setSignUpErrorMessage('Not allowed request'));
-        break;
-      case 409: // IntegrityError
-        dispatch(_setSignUpErrorMessage('Integrity Error'));
+      case 409: // Username already exists
+        dispatch(_setSignUpErrorMessage('Username already exists'));
         break;
       default:
-        dispatch(_setSignUpErrorMessage('Something Error'));
+        dispatch(_setSignUpErrorMessage('Something is wrong'));
         break;
     }
+    return false;
   }
 };
 

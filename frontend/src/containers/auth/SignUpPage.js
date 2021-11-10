@@ -6,7 +6,6 @@ import { signUp } from '../../store/AuthStore';
 import './SignUpPage.scss';
 
 const SignUpPage = ({ history }) => {
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [username, setUsername] = useState('');
@@ -42,10 +41,6 @@ const SignUpPage = ({ history }) => {
     checkPasswordEqual();
   }, [password, passwordConfirm]);
 
-  const onEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
-
   const onPasswordChange = (e) => {
     setPassword(e.target.value);
   };
@@ -58,11 +53,14 @@ const SignUpPage = ({ history }) => {
     setUsername(e.target.value);
   };
 
-  const onCreateAccountClick = () => {
+  const onCreateAccountClick = async () => {
     // TODO: Validation check
     if (isPasswordValid && isPasswordEqual) {
-      dispatch(signUp({ email, password, username }));
-      history.push('/login');
+      const res = await dispatch(signUp({ password, username }));
+
+      if (res) {
+        history.push('/login');
+      }
     }
   };
 
@@ -71,14 +69,14 @@ const SignUpPage = ({ history }) => {
       <form className="signup" id="signup-form">
         <div className="signup__header">Sign Up</div>
         <div className="signup__body">
-          <label htmlFor="email">Email</label>
+          <label htmlFor="username">ID</label>
           <input
             type="text"
-            name="email"
-            id="email-input"
-            value={email}
-            onChange={onEmailChange}
-            placeholder="Enter your email"
+            name="username"
+            id="username-input"
+            value={username}
+            onChange={onUsernameChange}
+            placeholder="Enter your username"
           />
         </div>
         <div className="signup__body">
@@ -103,7 +101,7 @@ const SignUpPage = ({ history }) => {
           />
         </div>
         <div className="signup__body">
-          <div className="signup__body--password">
+          <div className="signup__body--icon">
             <span>
               {isPasswordValid ? (
                 <FaCheckCircle style={{ color: 'green' }} />
@@ -115,7 +113,7 @@ const SignUpPage = ({ history }) => {
           </div>
         </div>
         <div className="signup__body" style={{ marginTop: '10px' }}>
-          <div className="signup__body--password">
+          <div className="signup__body--icon">
             <span>
               {isPasswordEqual ? (
                 <FaCheckCircle style={{ color: 'green' }} />
@@ -127,17 +125,6 @@ const SignUpPage = ({ history }) => {
           </div>
         </div>
         <div className="signup__body">
-          <label htmlFor="username">username</label>
-          <input
-            type="text"
-            name="username"
-            value={username}
-            id="username-input"
-            onChange={onUsernameChange}
-            placeholder="Enter your username"
-          />
-        </div>
-        <div className="signup__body">
           <button
             id="create-account-button"
             onClick={onCreateAccountClick}
@@ -147,7 +134,14 @@ const SignUpPage = ({ history }) => {
           </button>
         </div>
         {signUpError ? (
-          <div className="signup__body signup__error">{signUpError}</div>
+          <div className="signup__body">
+            <div className="signup__body--icon">
+              <span>
+                <FaTimesCircle style={{ color: 'red' }} />
+              </span>
+              {signUpError}
+            </div>
+          </div>
         ) : (
           ''
         )}

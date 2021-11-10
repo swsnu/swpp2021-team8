@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { FaTimesCircle } from 'react-icons/fa';
 import { logIn } from '../../store/AuthStore';
 import './LoginPage.scss';
 
 const LoginPage = ({ history }) => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
   const loginError = useSelector((state) => state.auth.loginError);
 
-  const onEmailChange = (e) => {
-    setEmail(e.target.value);
+  const onUsernameChange = (e) => {
+    setUsername(e.target.value);
   };
 
   const onPasswordChange = (e) => {
@@ -18,7 +19,7 @@ const LoginPage = ({ history }) => {
   };
 
   const onLoginClick = () => {
-    dispatch(logIn({ email, password }));
+    dispatch(logIn({ username, password }));
   };
 
   const onSignUpClick = () => {
@@ -30,14 +31,14 @@ const LoginPage = ({ history }) => {
       <form className="login" id="signup-form">
         <div className="login__header">Login</div>
         <div className="login__body">
-          <label htmlFor="email">Email</label>
+          <label htmlFor="username">ID</label>
           <input
             type="text"
-            name="email"
-            id="email-input"
-            value={email}
-            placeholder="Enter your email"
-            onChange={onEmailChange}
+            name="username"
+            id="username-input"
+            value={username}
+            placeholder="Enter your username"
+            onChange={onUsernameChange}
           />
         </div>
         <div className="login__body">
@@ -51,6 +52,18 @@ const LoginPage = ({ history }) => {
             onChange={onPasswordChange}
           />
         </div>
+        {loginError ? (
+          <div className="login__body">
+            <div className="login__body--icon">
+              <span>
+                <FaTimesCircle style={{ color: 'red' }} />
+              </span>
+              {loginError}
+            </div>
+          </div>
+        ) : (
+          ''
+        )}
         <div className="login__body">
           <button
             className="login__body--login"
@@ -66,11 +79,6 @@ const LoginPage = ({ history }) => {
             Sign Up
           </button>
         </div>
-        {loginError ? (
-          <div className="login__body login__error">{loginError}</div>
-        ) : (
-          ''
-        )}
       </form>
     </>
   );

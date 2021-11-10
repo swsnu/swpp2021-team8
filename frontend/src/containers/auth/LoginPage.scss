@@ -39,5 +39,18 @@
     .login__body--login {
       background-color: #fcb70d;
     }
+
+    .login__body--icon {
+      display: flex;
+      width: 60%;
+      align-items: center;
+      text-align: left;
+      margin-left: auto;
+
+      span {
+        margin-right: 10px;
+        font-size: 1.5em;
+      }
+    }
   }
 }
