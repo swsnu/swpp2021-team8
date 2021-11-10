@@ -1,0 +1,56 @@
+@import '../../base.scss';
+
+.signup {
+  width: 50%;
+  margin: 100px auto;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+
+  .signup__header {
+    font-size: 2.7em;
+    color: #ff3c3c;
+  }
+
+  .signup__body {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    color: white;
+    align-items: center;
+
+    label {
+      font-size: 1.5em;
+    }
+
+    button,
+    input {
+      width: 60%;
+      margin-left: auto;
+    }
+
+    .signup__body--icon {
+      display: flex;
+      width: 60%;
+      align-items: center;
+      text-align: left;
+      margin-left: auto;
+
+      span {
+        margin-right: 10px;
+        font-size: 1.5em;
+      }
+    }
+  }
+
+  .signup__confirm {
+    margin-top: 10px;
+  }
+
+  .signup__error {
+    background-color: #ff3c3c;
+    border-radius: 5px;
+    font-size: 1.4em;
+    padding: 10px;
+  }
+}

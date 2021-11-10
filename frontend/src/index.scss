@@ -1,12 +1,19 @@
+@import './base.scss';
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   display: flex;
   justify-content: center;
   background-color: black;
+  font-family: $font-base-stack;
 
   #root {
     display: flex;
     flex-direction: column;
     border: 1px solid red;
-    width: 52%;
+    width: 65%;
   }
 }

@@ -10,6 +10,15 @@ from json.decoder import JSONDecodeError
 from .models import Ott, Group, Content, Review
 from django.core.exceptions import ObjectDoesNotExist
 
+# user/: Get user's login status
+def user(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated:
+            return JsonResponse({ "isLoggedIn": True }, status=200)
+        else:
+            return JsonResponse({ "isLoggedIn": False }, status=200)
+    else:
+        return HttpResponseNotAllowed(['GET'])
 
 #signup/ : User Sign Up
 def signup(request):
@@ -462,4 +471,3 @@ def review_detail(request, review_id):
         
     else:
         return HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
-
