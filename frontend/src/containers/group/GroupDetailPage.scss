@@ -1,0 +1,136 @@
+@import '../../base.scss';
+.groupdetail{
+    display: flex;
+    margin:0 0 0 0;
+    .groupdetail__main {
+        color:white;
+        // justify-self: center;
+        .groupdetail__header {
+            display: flex;
+            margin: 20px 0 50px 0px;
+            text-align: center;
+            align-items: center;
+            .groupdetail__ottlogo {
+                display: flex;
+                height: 70px;
+                width: 70px;
+                border: 1px solid;
+                border-color: white;
+            }
+            .groupdetail__name {
+                margin-left: 20px;
+                font-size: 32pt;
+                font-family: $font-title-stack;
+                font-weight: bolder;
+            }
+        }
+        .groupdetail__body {
+            .groupdetail__field {
+                display: flex;
+                align-content: center;
+                margin: 20px 0 20px 0;
+                .category {
+                    font-size: 15pt;
+                    font-weight: bold;
+                    align-content: center;
+                    width: 200px;
+                    white-space: pre-wrap;
+                    line-height: 1.5;
+                    margin-right: 20px;
+                }
+                .content {
+                    align-content: center;
+                    white-space: pre-wrap;
+                    line-height: 1.5;
+                }                
+            }
+            .description, .members {
+                display: block;
+                .content {
+                    margin-top: 10px;
+                    display: flex;
+                }
+            }
+            .groupdetail__member {
+                margin-right: 20px;
+                text-align: center;
+                .groupdetail__member__index {
+                    display: flex;
+                    align-content: center;
+                    justify-content: center;
+                    background-color: orange;
+                    height: 50px;
+                    width: 50px;
+                    border-radius: 50%;
+                }
+                .groupdetail__member__username {
+                    text-align: center;
+                    width:50px;
+                    font-size: 10pt;
+                }
+            }
+            .groupdetail__member--empty {
+                margin-right: 20px;
+                text-align: center;
+                .groupdetail__member__index--empty {
+                    display: flex;
+                    align-content: center;
+                    justify-content: center;
+                    background-color: gray;
+                    height: 50px;
+                    width: 50px;
+                    border-radius: 50%;
+                }
+            }
+        }
+        .groupdetail__footer {
+            .groupdetail__body__table {
+                height: 300px;
+                width: 500px;
+                margin: 0 20px 0 20px;
+            }
+        }
+    }
+}
+#back-button {
+    display: flex;
+    background-color: black;
+    height: 40px;
+    width: 120px;
+    font-size: 15pt;
+    font-weight: bold;
+    justify-content: left;
+    align-items: center;
+    margin: 10px 0 0 0;
+    padding:0 0 0 0;
+}
+// #previous-button {
+//     height: 40px;
+//     width: 40px;
+//     border-radius: 50%;
+//     text-align: center;
+//     vertical-align: middle;
+//     margin: 100px 0 0 5px;
+// }
+// #next-button {
+//     height: 40px;
+//     width: 40px;
+//     border-radius: 50%;
+//     text-align: center;
+//     vertical-align: middle;
+//     margin: 100px 5px 0 0;
+// }
+// .cell {
+//     text-align: center;
+//     vertical-align: middle;
+// }
+// .sunday {
+//     color: red;
+// }
+// .today {
+//     background-color: red;
+//     height: 30px;
+//     width: 30px;
+//     border-radius: 50%;
+//     color:white;
+// }

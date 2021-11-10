@@ -76,7 +76,7 @@ const SignUpPage = ({ history }) => {
             id="username-input"
             value={username}
             onChange={onUsernameChange}
-            placeholder="Enter your username"
+            placeholder="Enter your ID"
           />
         </div>
         <div className="signup__body">
