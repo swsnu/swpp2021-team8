@@ -1,0 +1,49 @@
+@import '../../base.scss';
+
+.calendar {
+    background-color:white;
+    align-self: center;
+    .calendar__header {
+        margin: 20px 0 50px 0px;
+        text-align: center;
+        vertical-align: middle;
+    }
+    .calendar__body {
+        display: flex;
+        .calendar__body__table {
+            height: 300px;
+            width: 500px;
+            margin: 0 20px 0 20px;
+        }
+    }
+}
+#previous-button {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    text-align: center;
+    vertical-align: middle;
+    margin: 100px 0 0 5px;
+}
+#next-button {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    text-align: center;
+    vertical-align: middle;
+    margin: 100px 5px 0 0;
+}
+.cell {
+    text-align: center;
+    vertical-align: middle;
+}
+.sunday {
+    color: red;
+}
+.today {
+    background-color: red;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    color:white;
+}
