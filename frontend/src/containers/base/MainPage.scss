@@ -31,12 +31,7 @@
     }
   }
 
-  .main__group-header,
-  .main__content-header {
-    display: flex;
-    margin-bottom: 30px;
-  }
-
+  // Search
   .main__search {
     width: 100%;
     display: flex;
@@ -57,8 +52,16 @@
     }
 
     .main__search--search {
+      margin-left: 10px;
       background-color: #fcb70d;
     }
+  }
+
+  // Group
+  .main__group-header,
+  .main__content-header {
+    display: flex;
+    margin-bottom: 30px;
   }
 
   .main__group-body {
@@ -73,4 +76,85 @@
       margin-bottom: 10px;
     }
   }
+
+  .main__group-filter {
+    display: none;
+    background-color: #d0c8c8;
+    z-index: 100;
+    position: absolute;
+    top: 285px;
+    width: 60%;
+
+    padding: 20px;
+
+    .main__group-filter--ott {
+      display: flex;
+      flex-direction: column;
+      .main__group-filter--ott-option {
+        display: flex;
+        margin-top: 20px;
+        align-items: center;
+
+        img {
+          border-radius: 10px;
+        }
+
+        .main__group-filter--button {
+          cursor: pointer;
+          display: flex;
+          font-size: 1em;
+          align-items: center;
+          background-color: white;
+          border-radius: 15px;
+          margin-left: 10px;
+          padding: 0px 20px;
+          height: 60%;
+        }
+      }
+    }
+
+    .main__group-filter--setting {
+      display: flex;
+      flex-direction: column;
+      margin-left: 20px;
+
+      .main__group-filter--column {
+        display: flex;
+        flex-direction: column;
+        margin-right: 30px;
+        label {
+          margin-bottom: 10px;
+        }
+      }
+
+      .main__group-filter--member {
+        display: flex;
+        width: 100%;
+        margin-top: 20px;
+      }
+    }
+  }
+
+  // Content
+  .main__content-body {
+    margin-bottom: 50px;
+    .main__content-body--title {
+      color: white;
+      font-size: 1.5em;
+      margin-bottom: 30px;
+    }
+
+    .main__content-body--poster {
+      display: flex;
+      justify-content: space-between;
+
+      div {
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.visible {
+  display: flex !important;
 }
