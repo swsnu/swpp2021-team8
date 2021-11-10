@@ -37,7 +37,7 @@ const LoginPage = ({ history }) => {
             name="username"
             id="username-input"
             value={username}
-            placeholder="Enter your username"
+            placeholder="Enter your ID"
             onChange={onUsernameChange}
           />
         </div>
