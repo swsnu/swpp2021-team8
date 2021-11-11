@@ -168,6 +168,8 @@
                         input, textarea, select{
                             height : 30px;
                             width : 400px;
+                            margin-right: 400px;
+                            margin-top: 10px;
                             color: gray;
                             font-size: 12pt;
                         }
@@ -175,7 +177,7 @@
                             height : 90px;
                         }
                         select {
-                            width: 408px;
+                            width: 400px;
                         }
                         #payday-select {
                             width: 80px;

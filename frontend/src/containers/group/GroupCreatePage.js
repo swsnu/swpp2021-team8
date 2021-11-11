@@ -40,7 +40,7 @@ const GroupCreatePage = ({ history }) => {
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [isPasswordEqual, setIsPasswordEqual] = useState(true);
-  const [title, setTitle] = useState('');
+  const [groupTitle, setTitle] = useState('');
   const [description_, setDescription] = useState('');
   const [accountBank, setAccountBank] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
@@ -129,14 +129,14 @@ const GroupCreatePage = ({ history }) => {
 
   const onCreateGroupClick = () => {
     dispatch(createGroup({
-      name: title,
+      title: groupTitle,
       description: description_,
       is_public: isPublic,
       password: password_,
       created_at: new Date(),
       updated_at: new Date(),
       will_be_deleted: false,
-      ott: selectedOtt,
+      platform: selectedOtt,
       membership: membership_,
       payday: payday_,
       account_bank: accountBank,
@@ -144,7 +144,10 @@ const GroupCreatePage = ({ history }) => {
       account_name: accountName,
       leader: user,
       members: [user],
-      current_people: 1,
+      curMember: 1,
+      maxMember: people,
+      duration: 1,
+      price: Math.floor(selectedOtt.cost / people),
     }));
     history.push('/main');
   };
@@ -271,7 +274,7 @@ const GroupCreatePage = ({ history }) => {
         id="group-title-input"
         name="group-title"
         type="text"
-        value={title}
+        value={groupTitle}
         onChange={onTitleChange}
       />
     </>
