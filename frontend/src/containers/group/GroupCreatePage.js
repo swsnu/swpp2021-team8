@@ -8,24 +8,23 @@ import tvingLogo from './temp/tvingLogo.png';
 import './GroupCreatePage.scss';
 
 const GroupCreatePage = ({ history }) => {
-  const user = {
-    id: 1,
-    username: 'swpp',
-  };
   const ottList = [
     {
+      id: 1,
       name: 'Netflix',
       logo: netflixLogo,
       max_people: 4,
       cost: 14500,
     },
     {
+      id: 0,
       name: 'Watcha',
       logo: watchaLogo,
       max_people: 4,
       cost: 12900,
     },
     {
+      id: 2,
       name: 'Tving',
       logo: tvingLogo,
       max_people: 4,
@@ -36,16 +35,16 @@ const GroupCreatePage = ({ history }) => {
   const [membership_, setMembership] = useState(null);
   const [people, setPeople] = useState(0);
   const [isPublic, setIsPublic] = useState(true);
-  const [password_, setPassword] = useState('');
-  const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [password_, setPassword] = useState(0);
+  const [passwordConfirm, setPasswordConfirm] = useState(0);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [isPasswordEqual, setIsPasswordEqual] = useState(true);
-  const [groupTitle, setTitle] = useState('');
+  const [title, setTitle] = useState('');
   const [description_, setDescription] = useState('');
   const [accountBank, setAccountBank] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [accountName, setAccountName] = useState('');
-  const [payday_, setPayday] = useState('');
+  const [payday_, setPayday] = useState(0);
   const dispatch = useDispatch();
 
   const checkPasswordEqual = () => {
@@ -57,7 +56,7 @@ const GroupCreatePage = ({ history }) => {
   };
   const checkPasswordValid = () => {
     if (
-      password_.match(/[0-9]{4}/)
+      password_.toString().match(/[0-9]{4}/)
     ) {
       setIsPasswordValid(true);
     } else {
@@ -126,28 +125,17 @@ const GroupCreatePage = ({ history }) => {
   const onCancelClick = () => {
     history.goBack();
   };
-
   const onCreateGroupClick = () => {
     dispatch(createGroup({
-      title: groupTitle,
+      name: title,
       description: description_,
       is_public: isPublic,
       password: password_,
-      created_at: new Date(),
-      updated_at: new Date(),
-      will_be_deleted: false,
-      platform: selectedOtt,
-      membership: membership_,
+      membership: selectedOtt.id,
       payday: payday_,
       account_bank: accountBank,
       account_number: accountNumber,
       account_name: accountName,
-      leader: user,
-      members: [user],
-      curMember: 1,
-      maxMember: people,
-      duration: 1,
-      price: Math.floor(selectedOtt.cost / people),
     }));
     history.push('/main');
   };
@@ -274,7 +262,7 @@ const GroupCreatePage = ({ history }) => {
         id="group-title-input"
         name="group-title"
         type="text"
-        value={groupTitle}
+        value={title}
         onChange={onTitleChange}
       />
     </>
