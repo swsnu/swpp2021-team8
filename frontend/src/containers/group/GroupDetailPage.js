@@ -80,7 +80,7 @@ const GroupDetailPage = ({ history }) => {
   };
   const onEditClick = () => {
     // TODO
-    history.push(`/group/${group.id}/edit`);
+    // history.push(`/group/${group.id}/edit`);
   };
 
   const onDeleteClick = () => {
@@ -155,19 +155,20 @@ const GroupDetailPage = ({ history }) => {
                 </button>
               )
           }
-          {
-            group.leader.id === user.id ?
-              (
-                <>
-                  <button id="edit-button" onClick={onEditClick} type="button">
-                    Edit
-                  </button>
-                  <button id="delete-button" onClick={onDeleteClick} type="button">
-                    Delete
-                  </button>
-                </>
-              ) : null
-          }
+          {/* { */}
+          {/* group.leader.id === user.id ? */}
+          {/* true ? */}
+          {/* (
+            <> */}
+          <button id="edit-button" onClick={onEditClick} type="button">
+            Edit
+          </button>
+          <button id="delete-button" onClick={onDeleteClick} type="button">
+            Delete
+          </button>
+          {/* </> */}
+          {/* // ) : null */}
+          {/* } */}
         </div>
       </div>
     </div>

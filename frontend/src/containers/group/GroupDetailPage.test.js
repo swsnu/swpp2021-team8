@@ -35,12 +35,6 @@ describe('<GroupDetailPage />', () => {
     expect(component.find(GroupDetailPage).length).toBe(1);
   });
 
-  it('should render each field well', () => {
-    const component = mount(mockGroupDetailPage);
-
-    const wrapper = component.find('.groupdetail__field');
-  });
-
   it('should be redirected back when back button is clicked', () => {
     const component = mount(mockGroupDetailPage);
     component.find('#back-button').simulate('click');
