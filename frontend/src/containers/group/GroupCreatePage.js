@@ -1,31 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+// import { useDispatch } from 'react-redux';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
-import { createGroup } from '../../store/GroupStore';
+// import { createGroup } from '../../store/GroupStore';
 import netflixLogo from './temp/netflixLogo.png';
 import watchaLogo from './temp/watchaLogo.png';
 import tvingLogo from './temp/tvingLogo.png';
 import './GroupCreatePage.scss';
 
 const GroupCreatePage = ({ history }) => {
-  const user = {
-    id: 1,
-    username: 'swpp',
-  };
   const ottList = [
     {
+      id: 1,
       name: 'Netflix',
       logo: netflixLogo,
       max_people: 4,
       cost: 14500,
     },
     {
+      id: 0,
       name: 'Watcha',
       logo: watchaLogo,
       max_people: 4,
       cost: 12900,
     },
     {
+      id: 2,
       name: 'Tving',
       logo: tvingLogo,
       max_people: 4,
@@ -36,8 +35,8 @@ const GroupCreatePage = ({ history }) => {
   const [membership_, setMembership] = useState(null);
   const [people, setPeople] = useState(0);
   const [isPublic, setIsPublic] = useState(true);
-  const [password_, setPassword] = useState('');
-  const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [password_, setPassword] = useState(0);
+  const [passwordConfirm, setPasswordConfirm] = useState(0);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [isPasswordEqual, setIsPasswordEqual] = useState(true);
   const [title, setTitle] = useState('');
@@ -45,8 +44,8 @@ const GroupCreatePage = ({ history }) => {
   const [accountBank, setAccountBank] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [accountName, setAccountName] = useState('');
-  const [payday_, setPayday] = useState('');
-  const dispatch = useDispatch();
+  const [payday_, setPayday] = useState(0);
+  // const dispatch = useDispatch();
 
   const checkPasswordEqual = () => {
     if (password_ === passwordConfirm) {
@@ -57,7 +56,7 @@ const GroupCreatePage = ({ history }) => {
   };
   const checkPasswordValid = () => {
     if (
-      password_.match(/[0-9]{4}/)
+      password_.toString().match(/[0-9]{4}/)
     ) {
       setIsPasswordValid(true);
     } else {
@@ -124,31 +123,26 @@ const GroupCreatePage = ({ history }) => {
   };
 
   const onCancelClick = () => {
-    history.goBack();
+    history.push('/main');
   };
 
   const onCreateGroupClick = () => {
-    dispatch(createGroup({
-      name: title,
-      description: description_,
-      is_public: isPublic,
-      password: password_,
-      created_at: new Date(),
-      updated_at: new Date(),
-      will_be_deleted: false,
-      ott: selectedOtt,
-      membership: membership_,
-      payday: payday_,
-      account_bank: accountBank,
-      account_number: accountNumber,
-      account_name: accountName,
-      leader: user,
-      members: [user],
-      current_people: 1,
-    }));
-    history.push('/main');
+    // dispatch(createGroup({
+    //   name: title,
+    //   description: description_,
+    //   is_public: isPublic,
+    //   password: password_,
+    //   membership: selectedOtt.id,
+    //   payday: payday_,
+    //   account_bank: accountBank,
+    //   account_number: accountNumber,
+    //   account_name: accountName,
+    // }));
+    if (title && description_ && accountBank && accountNumber && accountName && payday_ !== 0) {
+      history.push('/main');
+    }
   };
-  const renderField = (category, content, section = 'membership') => {
+  const renderField = (category, content, section) => {
     const classname = 'groupcreate__'.concat(section, '__field ', category.toLowerCase());
     return (
       <div className={classname}>
@@ -166,7 +160,7 @@ const GroupCreatePage = ({ history }) => {
     return (
       <div className="ott__content__component">
         <input
-          id={ott.name.concat('-logo-button')}
+          id={ott.name.toLowerCase().concat('-logo-button')}
           className={'groupcreate__ott '.concat(ott.name.toLowerCase())}
           type="radio"
           name="ott"
@@ -174,8 +168,8 @@ const GroupCreatePage = ({ history }) => {
           checked={checked}
           onChange={onOttSelect}
         />
-        <label htmlFor={ott.name.concat('-logo-button')}>
-          <img className={checked ? 'logo checked' : 'logo unchecked'} src={ott.logo} alt={ott.name.concat('-logo')} />
+        <label htmlFor={ott.name.toLowerCase().concat('-logo-button')}>
+          <img className={checked ? 'logo checked' : 'logo unchecked'} src={ott.logo} alt={ott.name.toLowerCase().concat('-logo')} />
         </label>
       </div>
     );
@@ -246,9 +240,9 @@ const GroupCreatePage = ({ history }) => {
       <div className="password-validcheck">
         <span>
           {isPasswordValid ? (
-            <FaCheckCircle style={{ color: 'green' }} />
+            <FaCheckCircle className="isvalid" style={{ color: 'green' }} />
           ) : (
-            <FaTimesCircle style={{ color: 'red' }} />
+            <FaTimesCircle className="isnotvalid" style={{ color: 'red' }} />
           )}
         </span>
         4 digits
@@ -256,9 +250,9 @@ const GroupCreatePage = ({ history }) => {
       <div className="password-equalcheck">
         <span>
           {isPasswordEqual ? (
-            <FaCheckCircle style={{ color: 'green' }} />
+            <FaCheckCircle className="isequal" style={{ color: 'green' }} />
           ) : (
-            <FaTimesCircle style={{ color: 'red' }} />
+            <FaTimesCircle className="isnotequal" style={{ color: 'red' }} />
           )}
         </span>
         password match
@@ -290,7 +284,7 @@ const GroupCreatePage = ({ history }) => {
   const accountInputContent = (
     <>
       <select
-        id="acoount-bank-select"
+        id="account-bank-select"
         name="account-bank"
         type="text"
         onChange={onAccountBankChange}
