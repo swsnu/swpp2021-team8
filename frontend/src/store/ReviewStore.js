@@ -22,28 +22,28 @@ const _deleteReview = (id) => {
 
 export const getReviews = (contentId) => async (dispatch) => {
   try {
-    const res = await axios.get(`/api/content/${contentId}/review`);
+    const res = await axios.get(`/api/content/${contentId}/review/`);
     dispatch(_getReviews(res.data));
   } catch (e) {}
 };
 
-export const createReview = (review) => async (dispatch) => {
+export const createReview = (contentId, review) => async (dispatch) => {
   try {
-    const res = await axios.post('/api/review', review);
+    const res = await axios.post(`/api/content/${contentId}/review/`, review);
     dispatch(_createReview(res.data));
   } catch (e) {}
 };
 
 export const editReview = (reviewId, reviewContent) => async (dispatch) => {
   try {
-    const res = await axios.put(`/api/review/${reviewId}`, reviewContent);
+    const res = await axios.put(`/api/review/${reviewId}/`, reviewContent);
     dispatch(_editReview(res.data));
   } catch (e) {}
 };
 
 export const deleteReview = (reviewId) => async (dispatch) => {
   try {
-    await axios.delete(`/api/review/${reviewId}`);
+    await axios.delete(`/api/review/${reviewId}/`);
     dispatch(_deleteReview(reviewId));
   } catch (e) {}
 };
