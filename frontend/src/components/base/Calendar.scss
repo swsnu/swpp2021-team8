@@ -3,37 +3,45 @@
 .calendar {
     background-color:white;
     align-self: center;
+    padding-top: 5%;
+    height: 95%;
+    width:100%;
+    flex-shrink:0;
     .calendar__header {
-        margin: 20px 0 50px 0px;
+        margin: 3% 0 7% 0;
         text-align: center;
         vertical-align: middle;
     }
     .calendar__body {
         display: flex;
         .calendar__body__table {
-            height: 300px;
-            width: 500px;
-            margin: 0 20px 0 20px;
+            height: 100%;
+            width: 100%;
+            margin: 0 0 0 0;
+        }
+        #previous-button {
+            height: 3%;
+            width: 3%;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-content: middle;
+            margin: 15% 1% 0 3%;
+        }
+        #next-button {
+            height: 3%;
+            width: 3%;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-content: middle;
+            margin: 15% 1% 0 3%;
         }
     }
 }
-#previous-button {
-    height: 40px;
-    width: 40px;
-    border-radius: 50%;
-    text-align: center;
-    vertical-align: middle;
-    margin: 100px 0 0 5px;
-}
-#next-button {
-    height: 40px;
-    width: 40px;
-    border-radius: 50%;
-    text-align: center;
-    vertical-align: middle;
-    margin: 100px 5px 0 0;
-}
 .cell {
+    width: 10%;
+    height: 50px;
     text-align: center;
     vertical-align: middle;
 }
@@ -42,8 +50,8 @@
 }
 .today {
     background-color: red;
-    height: 30px;
-    width: 30px;
+    height: 3%;
+    width: 2%;
     border-radius: 50%;
     color:white;
 }
