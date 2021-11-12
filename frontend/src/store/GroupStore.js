@@ -1,19 +1,7 @@
 import axios from 'axios';
 
 const initialState = {
-  groups: [
-    {
-      id: 1,
-      platform: 'netflix',
-      title: 'Netflix Chillers',
-      leader: 'Netlover',
-      membership: 'Premium',
-      price: 5400,
-      curMember: 3,
-      maxMember: 4,
-      duration: 2,
-    },
-  ],
+  groups: [],
   selectedGroup: {},
 };
 
