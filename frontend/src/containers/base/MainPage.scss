@@ -3,14 +3,16 @@
 .main {
   display: flex;
   flex-direction: column;
+  font-size: 1em;
 
-  .main__header {
+  // Header Group/Content tab
+  &__header {
     display: flex;
 
     margin-bottom: 50px;
 
-    .main__header--tab {
-      font-size: 1.8em;
+    &__tab {
+      font-size: 1.5em;
       margin-left: 5px;
       padding: 12px 15px 5px 15px;
       border: 2px solid #3d3d3d;
@@ -20,77 +22,67 @@
       color: #868686;
       cursor: pointer;
     }
-    .main__header--placeholder {
+
+    &__placeholder {
       width: 100%;
       border-bottom: 2px solid #3d3d3d;
     }
 
-    .active {
+    &__active {
       color: #fcb70d;
       cursor: default;
     }
   }
 
-  // Search
-  .main__search {
-    width: 100%;
-    display: flex;
-    align-items: center;
-
-    input {
-      width: 50%;
-    }
-
-    button {
-      display: flex;
-      padding: 8px 15px;
-      margin-right: 10px;
-    }
-
-    .main__search--filter {
-      padding: 10px 10px;
-    }
-
-    .main__search--search {
-      margin-left: 10px;
-      background-color: #fcb70d;
-    }
-  }
-
-  // Group
-  .main__group-header,
-  .main__content-header {
+  // Group header
+  &__group-header {
     display: flex;
     margin-bottom: 30px;
-  }
 
-  .main__group-body {
-    display: flex;
-    flex-direction: column;
-
-    .main__group-body--header {
+    &__search {
+      width: 100%;
       display: flex;
-      color: #949494;
-      border-bottom: 1px solid #171717;
-      padding: 0px 10px 5px 10px;
-      margin-bottom: 10px;
+      align-items: center;
+
+      &__filter {
+        display: flex;
+        align-items: center;
+        padding: 10px 10px;
+      }
+
+      &__submit {
+        margin-left: 10px;
+        background-color: #fcb70d;
+      }
+
+      input {
+        font-size: 0.9em;
+        width: 50%;
+      }
     }
   }
 
-  .main__group-filter {
+  // Group Filter
+  &__group-filter {
     display: none;
     background-color: #d0c8c8;
     z-index: 100;
     position: absolute;
-    top: 285px;
-    width: 60%;
+    top: 275px;
+    border-radius: 5px;
 
     padding: 20px;
+    padding-right: 80px;
 
-    .main__group-filter--ott {
+    &__visible {
+      display: flex !important;
+    }
+
+    &__ott {
       display: flex;
       flex-direction: column;
-      .main__group-filter--ott-option {
+
+      &__option {
         display: flex;
         margin-top: 20px;
         align-items: center;
@@ -99,52 +91,76 @@
           border-radius: 10px;
         }
 
-        .main__group-filter--button {
+        &__button {
           cursor: pointer;
           display: flex;
-          font-size: 1em;
+          font-size: 0.8em;
           align-items: center;
           background-color: white;
           border-radius: 15px;
           margin-left: 10px;
           padding: 0px 20px;
           height: 60%;
+
+          &--active {
+            color: white;
+            background-color: #1985f1;
+          }
         }
-      }
-    }
-
-    .main__group-filter--setting {
-      display: flex;
-      flex-direction: column;
-      margin-left: 20px;
-
-      .main__group-filter--column {
-        display: flex;
-        flex-direction: column;
-        margin-right: 30px;
-        label {
-          margin-bottom: 10px;
-        }
-      }
-
-      .main__group-filter--member {
-        display: flex;
-        width: 100%;
-        margin-top: 20px;
       }
     }
   }
 
-  // Content
-  .main__content-body {
+  // Group list
+  &__group-list {
+    display: flex;
+    flex-direction: column;
+
+    &__header {
+      display: flex;
+      color: #949494;
+      border-bottom: 1px solid #171717;
+      padding: 0px 10px 5px 10px;
+      margin-bottom: 10px;
+      font-size: 1em;
+    }
+  }
+
+  // Content header
+  &__content-header {
+    display: flex;
+    margin-bottom: 30px;
+    &__search {
+      width: 100%;
+      display: flex;
+      align-items: center;
+
+      input {
+        font-size: 0.9em;
+      }
+
+      &__submit {
+        margin-left: 10px;
+        background-color: #fcb70d;
+      }
+    }
+
+    input {
+      width: 50%;
+    }
+  }
+
+  // Content list
+  &__content-list {
     margin-bottom: 50px;
-    .main__content-body--title {
+
+    &__title {
       color: white;
-      font-size: 1.5em;
+      font-size: 1.3em;
       margin-bottom: 30px;
     }
 
-    .main__content-body--poster {
+    &__poster {
       display: flex;
       justify-content: space-between;
 
@@ -153,8 +169,4 @@
       }
     }
   }
-}
-
-.visible {
-  display: flex !important;
 }

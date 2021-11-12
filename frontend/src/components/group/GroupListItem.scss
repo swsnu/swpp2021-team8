@@ -15,11 +15,11 @@
   width: 30%;
   justify-content: center;
   .group-item__title--title {
-    font-size: 1.5em;
+    font-size: 1.3em;
     margin-bottom: 10px;
   }
   .group-item__title--creator {
-    font-size: 1.2em;
+    font-size: 1em;
   }
 }
 .group-item__membership {
@@ -32,18 +32,18 @@
     margin-bottom: 10px;
   }
   .group-item__membership--price {
-    font-size: 1.1em;
+    font-size: 1em;
   }
 }
 .group-item__member {
   display: flex;
   align-items: center;
   width: 20%;
-  font-size: 1.2em;
+  font-size: 1em;
 }
 .group-item__duration {
   display: flex;
   align-items: center;
   width: 20%;
-  font-size: 1.2em;
+  font-size: 1em;
 }

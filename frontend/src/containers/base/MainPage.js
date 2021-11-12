@@ -1,16 +1,36 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { FaFilter } from 'react-icons/fa';
 import GroupListItem from '../../components/group/GroupListItem';
 import ContentListItem from '../../components/content/ContentListItem';
 import './MainPage.scss';
+import { getGroups } from '../../store/GroupStore';
 
 const MainPage = ({ history }) => {
   const [tab, setTab] = useState(
     localStorage.getItem('mainTab') ? localStorage.getItem('mainTab') : 'group',
   );
-  const [visibility, setVisibility] = useState(false);
 
+  const [groupSearchInput, setGroupSearchInput] = useState('');
+
+  // filter visibility
+  const [visibility, setVisibility] = useState(false);
+  const [filterOTT, setFilterOTT] = useState({
+    netflix: {
+      basic: false,
+      premium: false,
+    },
+    watcha: {
+      basic: false,
+      standard: false,
+      premium: false,
+    },
+    tving: {
+      basic: false,
+    },
+  });
+
+  const dispatch = useDispatch();
   const groups = useSelector((state) => state.group.groups);
   const recommendationContents = useSelector(
     (state) => state.content.recommendationContents,
@@ -19,6 +39,10 @@ const MainPage = ({ history }) => {
   const trendingContents = useSelector(
     (state) => state.content.trendingContents,
   );
+
+  useEffect(() => {
+    dispatch(getGroups());
+  }, []);
 
   const onGroupTabClick = () => {
     setTab('group');
@@ -34,10 +58,39 @@ const MainPage = ({ history }) => {
     history.push('/group/create');
   };
 
-  const onGroupSearchClick = () => {};
-  const onContentSearchClick = () => {};
+  const onGroupSearchChange = (e) => {
+    setGroupSearchInput(e.target.value);
+  };
+
+  const onGroupSearchClick = () => {
+    const queries = [];
+    if (groupSearchInput) {
+      queries.push(`name=${groupSearchInput}`);
+    }
+
+    Object.entries(filterOTT).forEach(([ott, membership]) => {
+      Object.entries(membership).forEach(([type, value]) => {
+        if (value) {
+          queries.push(`ott=${ott}__${type}`);
+        }
+      });
+    });
+
+    dispatch(getGroups(queries.join('&')));
+    setVisibility(false);
+  };
+  const onContentSearchClick = () => {}; // TODO
+
   const onFilterButtonClick = () => {
     setVisibility(!visibility);
+  };
+
+  const onFilterOTTClick = (e) => {
+    const { ott, membership } = e.target.dataset;
+    setFilterOTT({
+      ...filterOTT,
+      [ott]: { ...filterOTT[ott], [membership]: !filterOTT[ott][membership] },
+    });
   };
 
   return (
@@ -45,7 +98,9 @@ const MainPage = ({ history }) => {
       <div className="main">
         <div className="main__header">
           <div
-            className={`main__header--tab ${tab === 'group' ? 'active' : ''}`}
+            className={`main__header__tab ${
+              tab === 'group' ? 'main__header__active' : ''
+            }`}
             onClick={onGroupTabClick}
             role="button"
             tabIndex={0}
@@ -53,35 +108,39 @@ const MainPage = ({ history }) => {
             Group
           </div>
           <div
-            className={`main__header--tab ${tab === 'content' ? 'active' : ''}`}
+            className={`main__header__tab ${
+              tab === 'content' ? 'main__header__active' : ''
+            }`}
             onClick={onContentTabClick}
             role="button"
             tabIndex={0}
           >
             Content
           </div>
-          <div className="main__header--placeholder" />
+          <div className="main__header__placeholder" />
         </div>
         {tab === 'group' ? (
           <>
             <div className="main__group-header">
-              <div className="main__search">
+              <div className="main__group-header__search">
                 <input
                   id="group-search-input"
                   name="title"
                   placeholder="Search group title / creator"
+                  value={groupSearchInput}
+                  onChange={onGroupSearchChange}
                 />
                 <button
                   id="group-filter-button"
                   type="button"
-                  className="main__search--filter"
+                  className="main__group-header__search__filter"
                   onClick={onFilterButtonClick}
                 >
                   <FaFilter />
                 </button>
                 <button
                   id="group-search-button"
-                  className="main__search--search"
+                  className="main__group-header__search__submit"
                   onClick={onGroupSearchClick}
                   type="button"
                 >
@@ -97,69 +156,127 @@ const MainPage = ({ history }) => {
               </button>
             </div>
             <div
-              className={`main__group-filter ${visibility ? 'visible' : ''}`}
+              className={`main__group-filter ${
+                visibility ? 'main__group-filter__visible' : ''
+              }`}
             >
-              <div className="main__group-filter--ott">
-                <div className="main__group-filter--ott-title">
+              <div className="main__group-filter__ott">
+                <div className="main__group-filter__ott__title">
                   OTT Platform / Membership
                 </div>
-                <div className="main__group-filter--ott-option">
+                <div className="main__group-filter__ott__option">
                   <img
                     src="/images/netflix.png"
                     alt="netflix"
                     height="40"
                     width="40"
                   />
-                  <div className="main__group-filter--button">Basic</div>
-                  <div className="main__group-filter--button">Premium</div>
+                  <div
+                    className={`main__group-filter__ott__option__button ${
+                      filterOTT.netflix.basic
+                        ? 'main__group-filter__ott__option__button--active'
+                        : ''
+                    }`}
+                    onClick={onFilterOTTClick}
+                    role="button"
+                    tabIndex={0}
+                    data-ott="netflix"
+                    data-membership="basic"
+                  >
+                    Basic
+                  </div>
+                  <div
+                    className={`main__group-filter__ott__option__button ${
+                      filterOTT.netflix.premium
+                        ? 'main__group-filter__ott__option__button--active'
+                        : ''
+                    }`}
+                    onClick={onFilterOTTClick}
+                    role="button"
+                    tabIndex={0}
+                    data-ott="netflix"
+                    data-membership="premium"
+                  >
+                    Premium
+                  </div>
                 </div>
-                <div className="main__group-filter--ott-option">
+                <div className="main__group-filter__ott__option">
                   <img
                     src="/images/watcha.png"
                     alt="watcha"
                     height="40"
                     width="40"
                   />
-                  <div className="main__group-filter--button">Basic</div>
-                  <div className="main__group-filter--button">Standard</div>
-                  <div className="main__group-filter--button">Premium</div>
+                  <div
+                    className={`main__group-filter__ott__option__button ${
+                      filterOTT.watcha.basic
+                        ? 'main__group-filter__ott__option__button--active'
+                        : ''
+                    }`}
+                    onClick={onFilterOTTClick}
+                    role="button"
+                    tabIndex={0}
+                    data-ott="watcha"
+                    data-membership="basic"
+                  >
+                    Basic
+                  </div>
+                  <div
+                    className={`main__group-filter__ott__option__button ${
+                      filterOTT.watcha.standard
+                        ? 'main__group-filter__ott__option__button--active'
+                        : ''
+                    }`}
+                    onClick={onFilterOTTClick}
+                    role="button"
+                    tabIndex={0}
+                    data-ott="watcha"
+                    data-membership="standard"
+                  >
+                    Standard
+                  </div>
+                  <div
+                    className={`main__group-filter__ott__option__button ${
+                      filterOTT.watcha.premium
+                        ? 'main__group-filter__ott__option__button--active'
+                        : ''
+                    }`}
+                    onClick={onFilterOTTClick}
+                    role="button"
+                    tabIndex={0}
+                    data-ott="watcha"
+                    data-membership="premium"
+                  >
+                    Premium
+                  </div>
                 </div>
-                <div className="main__group-filter--ott-option">
+                <div className="main__group-filter__ott__option">
                   <img
                     src="/images/tving.png"
                     alt="tving"
                     height="40"
                     width="40"
                   />
-                  <div className="main__group-filter--button">Basic</div>
-                </div>
-              </div>
-              <div className="main__group-filter--setting">
-                <div className="main__group-filter--column">
-                  <label htmlFor="filter-duration">Duration</label>
-                  <select id="filter-duration" name="filter-duration">
-                    duration
-                  </select>
-                </div>
-                <div className="main__group-filter--member">
-                  <div className="main__group-filter--column">
-                    <label htmlFor="sits-left">Sits Left</label>
-                    <select id="sits-left" name="sits-left">
-                      Sits left
-                    </select>
-                  </div>
-                  <div className="main__group-filter--column">
-                    <label htmlFor="total-member">Total Member</label>
-                    <select id="total-member" name="total-member">
-                      Total member
-                    </select>
+                  <div
+                    className={`main__group-filter__ott__option__button ${
+                      filterOTT.tving.basic
+                        ? 'main__group-filter__ott__option__button--active'
+                        : ''
+                    }`}
+                    onClick={onFilterOTTClick}
+                    role="button"
+                    tabIndex={0}
+                    data-ott="tving"
+                    data-membership="basic"
+                  >
+                    Basic
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="main__group-body">
-              <div className="main__group-body--header">
+            <div className="main__group-list">
+              <div className="main__group-list__header">
                 <div className="group-item__platform">Platform</div>
                 <div className="group-item__title">Title / Creator</div>
                 <div className="group-item__membership">Membership / Price</div>
@@ -174,7 +291,7 @@ const MainPage = ({ history }) => {
         ) : (
           <>
             <div className="main__content-header">
-              <div className="main__search">
+              <div className="main__content-header__search">
                 <input
                   id="content-search-input"
                   name="title"
@@ -182,7 +299,7 @@ const MainPage = ({ history }) => {
                 />
                 <button
                   id="content-search-button"
-                  className="main__search--search"
+                  className="main__content-header__search__submit"
                   onClick={onContentSearchClick}
                   type="button"
                 >
@@ -190,19 +307,20 @@ const MainPage = ({ history }) => {
                 </button>
               </div>
             </div>
-            <div className="main__content-body">
-              <div className="main__content-body--title">
+
+            <div className="main__content-list">
+              <div className="main__content-list__title">
                 Recommendation Contents
               </div>
-              <div className="main__content-body--poster">
+              <div className="main__content-list__poster">
                 {recommendationContents.slice(0, 4).map((content) => {
                   return <ContentListItem content={content} key={content.id} />;
                 })}
               </div>
             </div>
-            <div className="main__content-body">
-              <div className="main__content-body--title">Trending Contents</div>
-              <div className="main__content-body--poster">
+            <div className="main__content-list">
+              <div className="main__content-list__title">Trending Contents</div>
+              <div className="main__content-list__poster">
                 {trendingContents.slice(4, 8).map((content) => {
                   return <ContentListItem content={content} key={content.id} />;
                 })}

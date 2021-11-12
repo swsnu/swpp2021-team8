@@ -39,8 +39,8 @@ const GroupListItem = ({ group, history }) => {
           <img
             src={`/images/${group.platform}.png`}
             alt={group.platform}
-            width="55"
-            height="70"
+            width="50"
+            height="50"
           />
         </div>
         <div className="group-item__title">
