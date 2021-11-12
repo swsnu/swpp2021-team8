@@ -59,6 +59,10 @@
     "eslint-plugin-react-hooks": "^4.2.0"
   },
   "jest": {
-    "resetMocks": false
+    "resetMocks": false,
+    "coveragePathIgnorePatterns": [
+      "index.js",
+      "reportWebVitals.js"
+    ]
   }
 }

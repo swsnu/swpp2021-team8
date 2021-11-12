@@ -296,6 +296,7 @@ const MainPage = ({ history }) => {
                   id="content-search-input"
                   name="title"
                   placeholder="Search movie title"
+                  value=""
                 />
                 <button
                   id="content-search-button"
