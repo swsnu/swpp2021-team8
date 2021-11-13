@@ -1,0 +1,213 @@
+@import '../../base.scss';
+
+.groupcreate{
+    display: flex;
+    margin:0 0 0 0;
+    .groupcreate__main {
+        color:white;
+        margin-left: 50px;
+        font-family: $font-base-stack;
+        .groupcreate__membership {
+            .groupcreate__membership__header {
+                display: flex;
+                margin: 20px 0 50px 0px;
+                text-align: center;
+                align-items: center;
+                .groupcreate__membership__info {
+                    font-size: 24pt;
+                    font-family: $font-base-stack;
+                    font-weight:bolder;
+                }
+            }
+            .groupcreate__membership__body {
+                .groupcreate__membership__field {
+                    display: flex;
+                    align-content: center;
+                    margin: 20px 0 20px 0;
+                    .category {
+                        font-size: 15pt;
+                        font-weight: bolder;
+                        align-content: center;
+                        width: 150px;
+                        white-space: pre-wrap;
+                        line-height: 1.5;
+                        margin-right: 20px;
+                    }
+                    .content {
+                        align-content: center;
+                        white-space: pre-wrap;
+                        line-height: 1.5;
+                    }                
+                }
+                .ott .content{
+                    display: flex;
+                    .ott__content__component {
+                        margin-right: 15px;
+                    }
+                    .groupcreate__ott {
+                        display: none;
+                    }
+                    .logo {
+                        height: 40px;
+                        width: 40px;
+                        border-radius: 10px;
+                    }
+                    .logo.unchecked {
+                        filter: brightness(40%);
+                    }
+                }
+                .membership {
+                    #membership-select {
+                        color: gray;
+                        width: 400px;
+                        height: 40px;
+                        font-size: 12pt;
+                    }
+                }
+                .people {
+                    #people-select {
+                        color: gray;
+                        width: 80px;
+                        height: 40px;
+                        font-size: 12pt;
+                    }
+                }
+                .cost .content{
+                    font-size:14pt;
+                    font-weight: bold;
+                    color: rgb(209, 204, 204);
+                }
+                .public .content{
+                    [type=checkbox]{
+                        display: none;
+                    }
+                    .round-slider-container{
+                        width: 55px;
+                        height: 30px;
+                        background: white;
+                        border-radius: 50px;
+                        cursor: pointer;
+                        display: flex;
+                        justify-content: space-around;
+                        align-items: center;
+                        position: relative;
+                        .round-slider {
+                            width: 25px;
+                            height: 26px;
+                            border-radius: 50%;
+                            background: rgb(187, 186, 186);
+                            top: 2px;
+                            left: 27px;
+                            position: absolute;
+                        }
+                    }
+                    #public-input:checked +.round-slider-container {
+                        background: white;
+                        .round-slider{
+                            transform: translateX(-25px);
+                        }
+                    }
+                }
+                .password .content {
+                    input {
+                        display: block;
+                        height: 30px;
+                        width: 200px;
+                    }
+                    .password-validcheck {
+                        margin-top: 15px;
+                    }
+                    div {
+                        font-size: 13pt;
+                    }
+                    span {
+                        margin-right: 10px;
+                    }
+                }
+            }
+        }
+        hr {
+            margin-top: 50px;
+            margin-bottom: 50px;
+            width : 800px;
+            color:white;
+            size: 5;
+        }
+        .groupcreate__group {
+            .groupcreate__group__header {
+                display: flex;
+                margin: 20px 0 50px 0px;
+                text-align: center;
+                align-items: center;
+                .groupcreate__group__info {
+                    font-size: 24pt;
+                    font-family: $font-base-stack;
+                    font-weight:bolder;
+                }
+            }
+            .groupcreate__group__body {
+                .groupcreate__group__field {
+                    display: flex;
+                    align-content: center;
+                    margin: 20px 0 20px 0;
+                    .category {
+                        flex-basis:150px;
+                        flex-shrink:0;
+                        font-size: 15pt;
+                        font-weight: bolder;
+                        align-content: center;
+                        width: 150px;
+                        white-space: pre-wrap;
+                        line-height: 1.5;
+                        margin-right: 20px;
+                    }
+                    .content {
+                        align-content: center;
+                        white-space: pre-wrap;
+                        line-height: 1.5;
+                        input, textarea, select{
+                            height : 30px;
+                            width : 400px;
+                            color: gray;
+                            font-size: 12pt;
+                        }
+                        textarea {
+                            height : 90px;
+                        }
+                        select {
+                            width: 408px;
+                        }
+                        #payday-select {
+                            width: 80px;
+                        }
+                    }                
+                }
+            }
+        }
+    }
+}
+#back-button {
+    display: flex;
+    background-color: black;
+    height: 40px;
+    width: 120px;
+    font-size: 15pt;
+    font-weight: bold;
+    justify-content: left;
+    align-items: center;
+    margin: 10px 0 0 0;
+    padding:0 0 0 0;
+}
+.groupcreate__buttons{
+    #cancel-button, #create-group-button {
+        width:290px;
+        height: 50px;
+        font-size: 15pt;
+        font-family: $font-title-stack;
+        font-weight: bolder;
+        background: #fcb70d;
+        margin-top: 30px;
+        margin-right: 50px;
+        margin-bottom: 50px;
+    }
+}
