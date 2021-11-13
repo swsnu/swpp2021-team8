@@ -1,19 +1,22 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 
-const ContentListItem = () => {
+const ContentListItem = ({ content, history }) => {
+  const onImageClick = () => {
+    history.push(`/content/${content.id}`);
+  };
   return (
     <>
-      <img alt="ContentListItem" id="content-image" />
-      <p>Content-title</p>
-      <p>array of images for platform</p>
-      <p>array of string for genre</p>
-      <p>summary</p>
-      <p>director</p>
-      <p>writer</p>
-      <p>starts</p>
-      <p>num favorite</p>
+      <div onClick={onImageClick} role="button" tabIndex={0}>
+        <img
+          src={`/images/posters/${content.id}.png`}
+          alt={`/images/posters/${content.id}.png`}
+          width={210}
+          height={280}
+        />
+      </div>
     </>
   );
 };
 
-export default ContentListItem;
+export default withRouter(ContentListItem);

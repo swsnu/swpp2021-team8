@@ -9,6 +9,7 @@ import json
 from json.decoder import JSONDecodeError
 from .models import Ott, Group, Content, Review
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 
 # user/: Get user's login status
 @ensure_csrf_cookie
@@ -88,15 +89,37 @@ def logout(request):
 def group_list(request):    
     if request.method == 'GET':
         if request.user.is_authenticated:
-            group_all_list = [group for group in Group.objects.all().values()]
-            #ERR 404 : Group Doesn't Exist
-            if not group_all_list:
-                return HttpResponse(status=404)
-            for group in group_all_list:
-                membership_id = group['membership_id']
-                membership = Ott.objects.filter(id=membership_id).values()[0]
-                group.pop('membership_id')
-                group['membership'] =  membership
+            query_name = request.GET.get("name", None)
+            query_ott = request.GET.getlist("ott", None)
+
+            groups = Group.objects.all()
+            group_all_list = []
+
+            if query_name:
+                groups = groups.filter(Q(name__icontains=query_name) | Q(leader__username__icontains=query_name))
+
+            if query_ott:
+                Q_ott = Q()
+                for _query in query_ott:
+                    [ott, membership] = _query.split('__')
+                    Q_ott.add(Q(membership__ott__iexact=ott) & Q(membership__membership__iexact=membership), Q.OR)
+
+                groups = groups.filter(Q_ott)
+
+            # TODO
+            # fix each name
+            group_all_list = [{
+                'id': group.id,
+                'platform': group.membership.ott,
+                'membership': group.membership.membership,
+                'title': group.name,
+                'leader': group.leader.username,
+                'price': group.membership.cost,
+                'curMember': group.current_people,
+                'maxMember': group.membership.max_people,
+                'duration': group.payday
+                }  for group in groups]
+
             return JsonResponse(group_all_list, safe=False, status=200)
         #ERR 401 : Not Authenticated
         else:

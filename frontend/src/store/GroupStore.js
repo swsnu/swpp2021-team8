@@ -35,7 +35,7 @@ const _deleteUserFromGroup = (groupId, userId) => {
 
 export const getGroups = (query) => async (dispatch) => {
   try {
-    const res = await axios.get(`/api/group/?${query}`);
+    const res = await axios.get(`/api/group/?${query ?? ''}`);
     dispatch(_getGroups(res.data));
   } catch (e) {
     // TODO
