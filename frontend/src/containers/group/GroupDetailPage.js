@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
-import ottLogo from './temp/netflix_macos_bigsur_icon_189917.png';
-import './GroupDetailPage.scss';
 // import { useDispatch, useSelector } from 'react-redux';
-// import { getGroupDetail } from '../../store/GroupStore';
-// import { addUserToGroup, deleteUserToGroup, deleteGroup } from '../../store/GroupStore';
+// import {
+//   getGroupDetail,
+//   addUserToGroup,
+//   deleteUserFromGroup,
+//   deleteGroup,
+// } from '../../store/GroupStore';
+import './GroupDetailPage.scss';
+import ottLogo from './temp/netflix_macos_bigsur_icon_189917.png';
+
 const GroupDetailPage = ({ history }) => {
   // const dispatch = useDispatch();
   // dispatch(getGroupDetail(props.match.params.id));
-  // const group = useSelector(state => state.group.selectedGroup);
+  // const group = useSelector((state) => state.group.selectedGroup);
   const user = {
     id: 1,
     username: 'swpp',
@@ -57,12 +62,17 @@ const GroupDetailPage = ({ history }) => {
   };
   const onJoinClick = () => {
     // dispatch(addUserToGroup(group.id, user.id));
-    setGroup({ ...group, members: [...group.members, user] });
-  };
-  const onQuitClick = () => {
-    // dispatch(deleteUserToGroup(group.id, user.id));
     setGroup({
       ...group,
+      current_people: group.current_people + 1,
+      members: [...group.members, user],
+    });
+  };
+  const onQuitClick = () => {
+    // dispatch(deleteUserFromGroup(group.id, user.id));
+    setGroup({
+      ...group,
+      current_people: group.current_people - 1,
       members: group.members.filter((member) => {
         return member.id !== user.id;
       }),
@@ -70,11 +80,12 @@ const GroupDetailPage = ({ history }) => {
   };
   const onEditClick = () => {
     // TODO
-    history.push(`/group/${group.id}/edit`);
+    // history.push(`/group/${group.id}/edit`);
   };
 
   const onDeleteClick = () => {
     // TODO
+    // dispatch(deleteGroup(props.match.params.id));
   };
   let members = group.members.map((member) => {
     return (
@@ -108,6 +119,7 @@ const GroupDetailPage = ({ history }) => {
       </div>
     );
   };
+  const cost = Math.floor(group.membership.cost / group.current_people);
   return (
     <div className="groupdetail">
       <button id="back-button" onClick={onBackClick} type="button">
@@ -122,7 +134,7 @@ const GroupDetailPage = ({ history }) => {
         </div>
         <div className="groupdetail__body">
           {renderField('Membership', group.membership.membership)}
-          {renderField('Cost', group.membership.cost.toString().concat(' Won'))}
+          {renderField('Cost', cost.toString().concat(' Won'))}
           {renderField('People', group.current_people)}
           {renderField('Members', members)}
           {renderField('Account\nInfo', group.account_bank.concat(' ', group.account_number, ' \n', group.account_name))}
@@ -143,19 +155,20 @@ const GroupDetailPage = ({ history }) => {
                 </button>
               )
           }
-          {
-            group.leader.id === user.id ?
-              (
-                <>
-                  <button id="edit-button" onClick={onEditClick} type="button">
-                    Edit
-                  </button>
-                  <button id="delete-button" onClick={onDeleteClick} type="button">
-                    Delete
-                  </button>
-                </>
-              ) : null
-          }
+          {/* { */}
+          {/* group.leader.id === user.id ? */}
+          {/* true ? */}
+          {/* (
+            <> */}
+          <button id="edit-button" onClick={onEditClick} type="button">
+            Edit
+          </button>
+          <button id="delete-button" onClick={onDeleteClick} type="button">
+            Delete
+          </button>
+          {/* </> */}
+          {/* // ) : null */}
+          {/* } */}
         </div>
       </div>
     </div>
