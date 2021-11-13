@@ -44,42 +44,42 @@ export const getGroups = (query) => async (dispatch) => {
 
 export const getGroupDetail = (id) => async (dispatch) => {
   try {
-    const res = await axios.get(`/api/group/${id}`);
+    const res = await axios.get(`/api/group/${id}/`);
     dispatch(_getGroupDetail(res.data));
   } catch (e) {}
 };
 
 export const createGroup = (groupInfo) => async (dispatch) => {
   try {
-    const res = await axios.post('/api/group', groupInfo);
+    const res = await axios.post('/api/group/', groupInfo);
     dispatch(_createGroup(res.data));
   } catch (e) {}
 };
 
 export const editGroup = (id, groupInfo) => async (dispatch) => {
   try {
-    const res = await axios.put(`/api/group/${id}`, groupInfo);
+    const res = await axios.put(`/api/group/${id}/`, groupInfo);
     dispatch(_editGroup(res.data));
   } catch (e) {}
 };
 
 export const deleteGroup = (id) => async (dispatch) => {
   try {
-    await axios.delete(`/api/group/${id}`);
+    await axios.delete(`/api/group/${id}/`);
     dispatch(_deleteGroup(id));
   } catch (e) {}
 };
 
 export const addUserToGroup = (groupId, userId) => async (dispatch) => {
   try {
-    await axios.post(`/api/group/${groupId}/user/${userId}`);
+    await axios.post(`/api/group/${groupId}/user/${userId}/`);
     dispatch(_addUserToGroup(groupId, userId));
   } catch (e) {}
 };
 
 export const deleteUserFromGroup = (groupId, userId) => async (dispatch) => {
   try {
-    await axios.delete(`/api/group/${groupId}/user/${userId}`);
+    await axios.delete(`/api/group/${groupId}/user/${userId}/`);
     dispatch(_deleteUserFromGroup(groupId, userId));
   } catch (e) {}
 };
