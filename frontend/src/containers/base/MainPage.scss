@@ -185,10 +185,19 @@
 
     &__poster {
       display: flex;
-      justify-content: space-between;
+      justify-content: space-around;
 
       div {
         cursor: pointer;
+      }
+
+      &__next,
+      &__previous {
+        display: flex;
+        align-items: center;
+        font-size: 1.5em;
+        padding: 0.5%;
+        background-color: #98999b;
       }
     }
   }
