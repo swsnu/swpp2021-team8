@@ -124,6 +124,29 @@
       margin-bottom: 10px;
       font-size: 1em;
     }
+
+    // Pagination
+    ul {
+      display: flex;
+      font-size: 1.2em;
+      margin-top: 15px;
+      color: white;
+      justify-content: center;
+
+      li {
+        cursor: pointer;
+        margin-bottom: 15px;
+
+        a {
+          padding: 15px;
+        }
+      }
+
+      .selected {
+        color: #fcb70d;
+        text-decoration: underline;
+      }
+    }
   }
 
   // Content header

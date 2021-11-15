@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FaFilter } from 'react-icons/fa';
+import ReactPaginate from 'react-paginate';
 import GroupListItem from '../../components/group/GroupListItem';
 import ContentListItem from '../../components/content/ContentListItem';
 import './MainPage.scss';
@@ -40,9 +41,24 @@ const MainPage = ({ history }) => {
     (state) => state.content.trendingContents,
   );
 
+  // Group Pagination
+  const [pageCount, setPageCount] = useState(0);
+  const [itemOffset, setItemOffset] = useState(0);
+  const itemsPerPage = 5;
+
+  useEffect(() => {
+    setPageCount(Math.ceil(groups.length / itemsPerPage));
+  }, [groups]);
+
   useEffect(() => {
     dispatch(getGroups());
   }, []);
+
+  // Invoke when user click to request another page.
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % groups.length;
+    setItemOffset(newOffset);
+  };
 
   const onGroupTabClick = () => {
     setTab('group');
@@ -283,9 +299,20 @@ const MainPage = ({ history }) => {
                 <div className="group-item__member">Members</div>
                 <div className="group-item__duration">Duration</div>
               </div>
-              {groups.map((group) => {
-                return <GroupListItem group={group} key={group.id} />;
-              })}
+              {groups
+                .slice(itemOffset, itemOffset + itemsPerPage)
+                .map((group) => {
+                  return <GroupListItem group={group} key={group.id} />;
+                })}
+              <ReactPaginate
+                breakLabel="..."
+                nextLabel=">"
+                onPageChange={handlePageClick}
+                pageRangeDisplayed={5}
+                pageCount={pageCount}
+                previousLabel="<"
+                renderOnZeroPageCount={null}
+              />
             </div>
           </>
         ) : (
