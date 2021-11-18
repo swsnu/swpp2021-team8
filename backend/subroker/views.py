@@ -351,11 +351,17 @@ def content_detail(request, content_id):
                     id = data['id']
                     name = data['title']
                     genres = []
-                    for genre in data['genres']:
-                        genres.append(genre['name'])
+                    for genre in data['genres'][: -1]:
+                        genres.append(genre['name'] + ", ")
+                    genres.append(data['genres'][-1]['name'])
+                    countries = []
+                    for country in data['production_countries'][: -1]:
+                        countries.append(country['name'] + ", ")
+                    countries.append(data['production_countries'][-1]['name'])
                     poster = data['poster_path']
                     overview = data['overview']
                     release_date = data['release_date']
+                    rate = data['vote_average']
                     #check if the content is in DB
                     try:
                         content = Content.objects.get(id=content_id)
@@ -367,9 +373,11 @@ def content_detail(request, content_id):
                         "id": id,
                         "name": name,
                         "genre": genres,
+                        "countries": countries,
                         "poster": 'https://image.tmdb.org/t/p/original/' + poster,
                         "description": overview,
                         "release_date": release_date,
+                        "rate": rate,
                         "favorite_users": [],
                         "favorite_cnt": 0
                         }, status=200)
@@ -380,9 +388,11 @@ def content_detail(request, content_id):
                         "id": id,
                         "name": name,
                         "genre": genres,
+                        "countries": countries,
                         "poster": 'https://image.tmdb.org/t/p/original/' + poster,
                         "description": overview,
                         "release_date": release_date,
+                        "rate": rate,
                         "favorite_users": favorite_users,
                         "favorite_cnt": favorite_cnt
                         }, status=200)

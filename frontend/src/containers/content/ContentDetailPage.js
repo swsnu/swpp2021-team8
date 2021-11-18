@@ -90,8 +90,14 @@ const ContentDetailPage = ({ history }) => {
             <div className="contentdetail__category">
               {content.category}
             </div>
+            <div className="contentdetail__rate">
+              {content.rate}
+            </div>
             <div className="contentdetail__genre">
               {content.genre}
+            </div>
+            <div className="contentdetail__countries">
+              {content.countries}
             </div>
             <div className="contentdetail__releasedate">
               {content.release_date}
