@@ -19,7 +19,7 @@ function App({ history }) {
 
   useEffect(() => {
     dispatch(getLoginStatus());
-  }, []);
+  }, [isLoggedIn]);
 
   const onLogOutClick = () => {
     dispatch(logOut());
