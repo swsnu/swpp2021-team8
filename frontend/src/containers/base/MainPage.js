@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FaFilter } from 'react-icons/fa';
+import ReactPaginate from 'react-paginate';
 import GroupListItem from '../../components/group/GroupListItem';
 import ContentListItem from '../../components/content/ContentListItem';
 import './MainPage.scss';
@@ -40,9 +41,56 @@ const MainPage = ({ history }) => {
     (state) => state.content.trendingContents,
   );
 
+  // Group Pagination
+  const [pageCount, setPageCount] = useState(0);
+  const [itemOffset, setItemOffset] = useState(0);
+  const itemsPerPage = 5;
+
+  useEffect(() => {
+    setPageCount(Math.ceil(groups.length / itemsPerPage));
+  }, [groups]);
+
+  // Content Pagination
+  const [recommendationItemOffset, setRecommendationItemOffset] = useState(0);
+  const [trendingItemOffset, setTrendingItemOffset] = useState(0);
+
   useEffect(() => {
     dispatch(getGroups());
   }, []);
+
+  // Invoke when user click to request another page.
+  const onHandlePageClick = (e) => {
+    const newOffset = (e.selected * itemsPerPage) % groups.length;
+    setItemOffset(newOffset);
+  };
+
+  // Content previous and next button click
+  const onContentPreviousClick = (e) => {
+    if (e.target.dataset.type === 'recommendation') {
+      setRecommendationItemOffset(
+        Math.max(recommendationItemOffset - itemsPerPage, 0),
+      );
+    } else if (e.target.dataset.type === 'trending') {
+      setTrendingItemOffset(Math.max(trendingItemOffset - itemsPerPage, 0));
+    }
+  };
+  const onContentNextClick = (e) => {
+    if (e.target.dataset.type === 'recommendation') {
+      setRecommendationItemOffset(
+        Math.min(
+          recommendationItemOffset + itemsPerPage,
+          recommendationContents.length - itemsPerPage,
+        ),
+      );
+    } else if (e.target.dataset.type === 'trending') {
+      setTrendingItemOffset(
+        Math.min(
+          trendingItemOffset + itemsPerPage,
+          trendingContents.length - itemsPerPage,
+        ),
+      );
+    }
+  };
 
   const onGroupTabClick = () => {
     setTab('group');
@@ -283,9 +331,20 @@ const MainPage = ({ history }) => {
                 <div className="group-item__member">Members</div>
                 <div className="group-item__duration">Duration</div>
               </div>
-              {groups.map((group) => {
-                return <GroupListItem group={group} key={group.id} />;
-              })}
+              {groups
+                .slice(itemOffset, itemOffset + itemsPerPage)
+                .map((group) => {
+                  return <GroupListItem group={group} key={group.id} />;
+                })}
+              <ReactPaginate
+                breakLabel="..."
+                nextLabel=">"
+                onPageChange={onHandlePageClick}
+                pageRangeDisplayed={5}
+                pageCount={pageCount}
+                previousLabel="<"
+                renderOnZeroPageCount={null}
+              />
             </div>
           </>
         ) : (
@@ -314,17 +373,66 @@ const MainPage = ({ history }) => {
                 Recommendation Contents
               </div>
               <div className="main__content-list__poster">
-                {recommendationContents.slice(0, 4).map((content) => {
-                  return <ContentListItem content={content} key={content.id} />;
-                })}
+                <div
+                  className="main__content-list__poster__previous"
+                  onClick={onContentPreviousClick}
+                  role="button"
+                  tabIndex={0}
+                  data-type="recommendation"
+                >
+                  &lt;
+                </div>
+
+                {recommendationContents
+                  .slice(
+                    recommendationItemOffset,
+                    recommendationItemOffset + itemsPerPage,
+                  )
+                  .map((content) => {
+                    return (
+                      <ContentListItem content={content} key={content.id} />
+                    );
+                  })}
+
+                <div
+                  className="main__content-list__poster__next"
+                  onClick={onContentNextClick}
+                  role="button"
+                  tabIndex={0}
+                  data-type="recommendation"
+                >
+                  &gt;
+                </div>
               </div>
             </div>
             <div className="main__content-list">
               <div className="main__content-list__title">Trending Contents</div>
               <div className="main__content-list__poster">
-                {trendingContents.slice(4, 8).map((content) => {
-                  return <ContentListItem content={content} key={content.id} />;
-                })}
+                <div
+                  className="main__content-list__poster__previous"
+                  onClick={onContentPreviousClick}
+                  role="button"
+                  tabIndex={0}
+                  data-type="trending"
+                >
+                  &lt;
+                </div>
+                {trendingContents
+                  .slice(trendingItemOffset, trendingItemOffset + itemsPerPage)
+                  .map((content) => {
+                    return (
+                      <ContentListItem content={content} key={content.id} />
+                    );
+                  })}
+                <div
+                  className="main__content-list__poster__next"
+                  onClick={onContentNextClick}
+                  role="button"
+                  tabIndex={0}
+                  data-type="trending"
+                >
+                  &gt;
+                </div>
               </div>
             </div>
           </>
