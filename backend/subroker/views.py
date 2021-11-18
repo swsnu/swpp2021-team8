@@ -8,8 +8,9 @@ from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 import json
 from json.decoder import JSONDecodeError
 from .models import Ott, Group, Content, Review
-from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
+import pip._vendor.requests as requests
+import time
 
 # user/: Get user's login status
 @ensure_csrf_cookie
@@ -107,7 +108,6 @@ def group_list(request):
                 groups = groups.filter(Q_ott)
 
             # TODO
-            # fix each name
             group_all_list = [{
                 'id': group.id,
                 'platform': group.membership.ott,
@@ -312,28 +312,108 @@ def group_add_user(request, group_id):
 def content_list(request, content_id):
     return HttpResponse("content search")
 
+#search from the-movie-db by search string
+def content_search(request, search_str):
+    if request.method == 'GET':
+        # keep track of how many times we've retried
+        MAX_RETRIES = 2
+        attempt_num = 0  
+        while attempt_num < MAX_RETRIES:
+            url = 'https://api.themoviedb.org/3/search/movie'
+            params={'api_key':'e50a928b29c2b7ed1f82ba2e6ce4982c','query':search_str.replace(" ","+")}
+            r = requests.get(url, params = params)
+            if r.status_code == 200:
+                data = r.json()
+                return JsonResponse(data, status=200)
+            else:
+                attempt_num += 1
+                # Wait for 5 seconds before re-trying
+                time.sleep(5)  
+        return HttpResponse(status=405)
+    else:
+        return HttpResponseNotAllowed(['GET'])
+
 def content_detail(request, content_id):
     if request.method == 'GET':
         if request.user.is_authenticated:
-            try:
-                content = Content.objects.get(id=content_id)
-            #ERR 404 : Content Doesn't Exist
-            except (Content.DoesNotExist) as e:
-                return HttpResponse(status=404)
-            fav_users = [user for user in content.favorite_users.all().values()]
-            return JsonResponse({
-                "id": content.id, 
-                "the_movie_id": content.the_movie_id,
-                "name": content.name,
-                "favorite_count": content.favorite_cnt,
-                "favorite_users": fav_users
-                }, status=200)
+            # keep track of how many times we've retried
+            MAX_RETRIES = 2
+            attempt_num = 0  
+
+            #get content from TMDB
+            while attempt_num < MAX_RETRIES:
+                url = 'https://api.themoviedb.org/3/movie/' + str(content_id)
+                params={'api_key':'e50a928b29c2b7ed1f82ba2e6ce4982c'}
+                r = requests.get(url, params = params)
+                #got content from TMDB
+                if r.status_code == 200:
+                    data = r.json()
+                    id = data['id']
+                    name = data['title']
+                    genres = []
+                    for genre in data['genres']:
+                        genres.append(genre['name'])
+                    poster = data['poster_path']
+                    overview = data['overview']
+                    release_date = data['release_date']
+                    #check if the content is in DB
+                    try:
+                        content = Content.objects.get(id=content_id)
+                    #Content is not in our DB
+                    except(Content.DoesNotExist) as e:
+                        create_url = 'http://localhost:8000/api/content/' +  str(content_id) + '/'
+                        r = requests.post(create_url, headers=request.headers)
+                        return JsonResponse({
+                        "id": id,
+                        "name": name,
+                        "genre": genres,
+                        "poster": 'https://image.tmdb.org/t/p/original/' + poster,
+                        "description": overview,
+                        "release_date": release_date,
+                        "favorite_users": [],
+                        "favorite_cnt": 0
+                        }, status=200)
+                    #Content is in our DB
+                    favorite_users = [user for user in content.favorite_users.all().values()]
+                    favorite_cnt = content.favorite_cnt
+                    return JsonResponse({
+                        "id": id,
+                        "name": name,
+                        "genre": genres,
+                        "poster": 'https://image.tmdb.org/t/p/original/' + poster,
+                        "description": overview,
+                        "release_date": release_date,
+                        "favorite_users": favorite_users,
+                        "favorite_cnt": favorite_cnt
+                        }, status=200)
+                else:
+                    attempt_num += 1
+                    # Wait for 5 seconds before re-trying
+                    time.sleep(5)  
+            return HttpResponse(status=405)
         #ERR 401 : Not Authenticated
         else:
             return HttpResponse(status=401)
+
+    elif request.method == 'POST':
+        if request.user.is_authenticated:
+            favorite_users = []
+            favorite_cnt = 0
+
+            content = Content(
+                id=content_id,
+                favorite_cnt=favorite_cnt
+            )
+            content.favorite_users.set(favorite_users),
+            content.save()
+            response_dict = {'id': content.id} 
+            return JsonResponse(response_dict, status=201)
+        else:
+            HttpResponse(status=403)
+
     #ERR 405 : METHOD NOT ALLOWED
     else:
-        return HttpResponseNotAllowed(['GET'])
+        return HttpResponseNotAllowed(['GET', 'POST'])
 
 def content_recommendation(request, user_id):
     return HttpResponse("recommendation")

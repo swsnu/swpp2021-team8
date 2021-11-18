@@ -1,34 +1,30 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-// import { useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import ReviewList from '../../components/review/ReviewList';
-import { addFavoriteContent } from '../../store/ContentStore';
+import { addFavoriteContent, getContentDetail } from '../../store/ContentStore';
 import { createReview } from '../../store/ReviewStore';
 import './ContentDetailPage.scss';
-import posterTmp from './temp/best_offer.png';
+// import posterTmp from './temp/best_offer.png';
 
 const ContentDetailPage = ({ history }) => {
-  // const location = useLocation();
-  // const path = location.pathname.split('/')[2];
+  const location = useLocation();
+  const path = location.pathname.split('/')[2];
   const user1 = {
     id: 1,
     username: 'swpp',
   };
 
-  const dispatch = useDispatch();
-
-  const [content, setContent] = useState({
-    id: 1,
-    the_movie_id: 1,
-    name: 'Best Offer',
-    description: 'A lonely art expert working for a mysterious and reclusive heiress finds not only her art worth examining.',
-    favorite_cnt: 0,
-    favorite_users: [],
-    poster: posterTmp,
-    category: 'Crime, Drama',
-    staff: 'Director | Giuseppe Tornatore\nWriter | Giuseppe Tornatore\nStars | Geoffrey, RushJim, SturgessSylvia Hoeks',
-  });
   const [newComment, setnewComment] = useState('');
+  const [commentAdded, setCommentAdded] = useState(false);
+
+  const dispatch = useDispatch();
+  const content = useSelector((state) => state.content.selectedContent);
+
+  useEffect(() => {
+    dispatch(getContentDetail(path));
+    console.log(path);
+  }, [path, commentAdded]);
 
   const gradientStyle = {
     background: 'linear-gradient(#C99208 5%, #000000 60%)',
@@ -43,11 +39,8 @@ const ContentDetailPage = ({ history }) => {
   };
 
   const onFavoriteClick = () => {
-    setContent({
-      ...content,
-      favorite_users: [...content.favorite_users, user1],
-    });
-    dispatch(addFavoriteContent(user1.id, content.id));
+    console.log(content.id);
+    dispatch(addFavoriteContent(user1.id, path));
   };
 
   const onCreateReviewClick = () => {
@@ -56,7 +49,8 @@ const ContentDetailPage = ({ history }) => {
       detail: newComment,
       user: user1,
     };
-    dispatch(createReview(content.id, Review));
+    setCommentAdded(!commentAdded);
+    dispatch(createReview(path, Review));
   };
 
   const renderField = (category, detail) => {
@@ -96,8 +90,11 @@ const ContentDetailPage = ({ history }) => {
             <div className="contentdetail__category">
               {content.category}
             </div>
-            <div className="contentdetail__staff">
-              {content.staff}
+            <div className="contentdetail__genre">
+              {content.genre}
+            </div>
+            <div className="contentdetail__releasedate">
+              {content.release_date}
             </div>
           </div>
         </div>
