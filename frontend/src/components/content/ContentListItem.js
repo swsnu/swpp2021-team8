@@ -14,8 +14,8 @@ const ContentListItem = ({ content, history }) => {
         style={{ margin: '0px 10px' }}
       >
         <img
-          src={`/images/posters/${content.id}.png`}
-          alt={`/images/posters/${content.id}.png`}
+          src={content.poster}
+          alt={content.poster}
           width="100%"
           height="100%"
         />

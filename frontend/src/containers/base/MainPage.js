@@ -6,6 +6,10 @@ import GroupListItem from '../../components/group/GroupListItem';
 import ContentListItem from '../../components/content/ContentListItem';
 import './MainPage.scss';
 import { getGroups } from '../../store/GroupStore';
+import {
+  getRecommendationContents,
+  getTrendingContents,
+} from '../../store/ContentStore';
 
 const MainPage = ({ history }) => {
   const [tab, setTab] = useState(
@@ -56,6 +60,9 @@ const MainPage = ({ history }) => {
 
   useEffect(() => {
     dispatch(getGroups());
+    // TODO
+    dispatch(getRecommendationContents(1));
+    dispatch(getTrendingContents());
   }, []);
 
   // Invoke when user click to request another page.
