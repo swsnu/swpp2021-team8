@@ -324,7 +324,20 @@ def content_search(request, search_str):
             r = requests.get(url, params = params)
             if r.status_code == 200:
                 data = r.json()
-                return JsonResponse(data, status=200)
+                result = []
+                for content in data['results']:
+                    id = content['id']
+                    poster = content['poster_path']
+                    if poster == None:
+                        poster=""
+                    title = content['title']
+                    result.append({
+                        "id": id,
+                        "poster": 'https://image.tmdb.org/t/p/original/' + poster,
+                        "title": title
+                    })
+
+                return JsonResponse(result, status=200, safe=False)
             else:
                 attempt_num += 1
                 # Wait for 5 seconds before re-trying
@@ -350,14 +363,8 @@ def content_detail(request, content_id):
                     data = r.json()
                     id = data['id']
                     name = data['title']
-                    genres = []
-                    for genre in data['genres'][: -1]:
-                        genres.append(genre['name'] + ", ")
-                    genres.append(data['genres'][-1]['name'])
-                    countries = []
-                    for country in data['production_countries'][: -1]:
-                        countries.append(country['name'] + ", ")
-                    countries.append(data['production_countries'][-1]['name'])
+                    genres = ",".join([genre['name'] for genre in data['genres']])
+                    countries = ",".join([country['name'] for country in data['production_countries']])
                     poster = data['poster_path']
                     overview = data['overview']
                     release_date = data['release_date']
@@ -367,8 +374,9 @@ def content_detail(request, content_id):
                         content = Content.objects.get(id=content_id)
                     #Content is not in our DB
                     except(Content.DoesNotExist) as e:
-                        create_url = 'http://localhost:8000/api/content/' +  str(content_id) + '/'
-                        r = requests.post(create_url, headers=request.headers)
+                        content = Content()
+                        content.id = id
+                        content.save()
                         return JsonResponse({
                         "id": id,
                         "name": name,

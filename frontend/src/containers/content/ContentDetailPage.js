@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import ReviewList from '../../components/review/ReviewList';
 import { addFavoriteContent, getContentDetail } from '../../store/ContentStore';
 import { createReview } from '../../store/ReviewStore';
@@ -8,8 +8,7 @@ import './ContentDetailPage.scss';
 // import posterTmp from './temp/best_offer.png';
 
 const ContentDetailPage = ({ history }) => {
-  const location = useLocation();
-  const path = location.pathname.split('/')[2];
+  const { id } = useParams();
   const user1 = {
     id: 1,
     username: 'swpp',
@@ -17,14 +16,14 @@ const ContentDetailPage = ({ history }) => {
 
   const [newComment, setnewComment] = useState('');
   const [commentAdded, setCommentAdded] = useState(false);
+  // const [favorite, setFavorite] = useState(false);
 
   const dispatch = useDispatch();
   const content = useSelector((state) => state.content.selectedContent);
 
   useEffect(() => {
-    dispatch(getContentDetail(path));
-    console.log(path);
-  }, [path, commentAdded]);
+    dispatch(getContentDetail(id));
+  }, [id, commentAdded]);
 
   const gradientStyle = {
     background: 'linear-gradient(#C99208 5%, #000000 60%)',
@@ -39,18 +38,17 @@ const ContentDetailPage = ({ history }) => {
   };
 
   const onFavoriteClick = () => {
-    console.log(content.id);
-    dispatch(addFavoriteContent(user1.id, path));
+    dispatch(addFavoriteContent(user1.id, id));
   };
 
   const onCreateReviewClick = () => {
-    const Review = {
+    const review = {
       content: content.id,
       detail: newComment,
       user: user1,
     };
     setCommentAdded(!commentAdded);
-    dispatch(createReview(path, Review));
+    dispatch(createReview(id, review));
   };
 
   const renderField = (category, detail) => {
