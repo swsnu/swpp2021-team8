@@ -7,12 +7,17 @@ const ContentListItem = ({ content, history }) => {
   };
   return (
     <>
-      <div onClick={onImageClick} role="button" tabIndex={0}>
+      <div
+        onClick={onImageClick}
+        role="button"
+        tabIndex={0}
+        style={{ margin: '0px 10px' }}
+      >
         <img
           src={`/images/posters/${content.id}.png`}
           alt={`/images/posters/${content.id}.png`}
-          width={210}
-          height={280}
+          width="100%"
+          height="100%"
         />
       </div>
     </>
