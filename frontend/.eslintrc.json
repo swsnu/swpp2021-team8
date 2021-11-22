@@ -19,6 +19,7 @@
     "no-underscore-dangle": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "no-empty": "off",
+    "no-console": "off",
     "no-else-return": "off",
     "arrow-body-style": "off",
     "react/prop-types": "off",
