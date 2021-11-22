@@ -7,7 +7,6 @@ import {
   deleteGroup,
 } from '../../store/GroupStore';
 import './GroupDetailPage.scss';
-import ottLogo from './temp/netflix_macos_bigsur_icon_189917.png';
 
 const GroupDetailPage = ({ history, match }) => {
   const dispatch = useDispatch();
@@ -37,11 +36,10 @@ const GroupDetailPage = ({ history, match }) => {
     dispatch(deleteGroup(group.id));
     history.push('/main/');
   };
-  let members = [];
   let cost = '';
   let account = '';
   let payday = '';
-  members = group.members ? group.members.map((member) => {
+  let members = group.members ? group.members.map((member) => {
     return (
       <div className="groupdetail__member">
         <div className="groupdetail__member__index" />
@@ -82,7 +80,15 @@ const GroupDetailPage = ({ history, match }) => {
       </button>
       <div className="groupdetail__main">
         <div className="groupdetail__header">
-          <img className="groupdetail__ottlogo" src={ottLogo} alt="logo" />
+          { group.platform ?
+            (
+              <img className="groupdetail__ottlogo" src={group.platform ? `/images/${group.platform.toLowerCase()}.png/` : null} alt="logo" />
+            )
+            :
+            (
+              <>
+              </>
+            )}
           <h1 className="groupdetail__name">
             {group.name}
           </h1>

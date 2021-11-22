@@ -86,6 +86,7 @@ def logout(request):
         return HttpResponseNotAllowed(['GET'])
 
 #Group
+@csrf_exempt
 def group_list(request):    
     if request.method == 'GET':
         if request.user.is_authenticated:
@@ -131,18 +132,17 @@ def group_list(request):
                 req_data = json.loads(request.body.decode())
                 group_name = req_data['name']
                 group_description = req_data['description']
-                group_is_public = bool(req_data['is_public'])
+                group_is_public = bool(req_data['isPublic'])
                 group_password = int(req_data['password'])
                 group_payday = int(req_data['payday'])
-                group_account_bank = req_data['account_bank']
-                group_account_number = req_data['account_number']
-                group_account_name = req_data['account_name']
-                group_leader = request.user
+                group_account_bank = req_data['accountBank']
+                group_account_number = req_data['accountNumber']
+                group_account_name = req_data['accountName']
             #ERR 400 : JSONDecodeErr
             except (JSONDecodeError, KeyError) as e:
                 return HttpResponseBadRequest()
             try:
-                group_membership = Ott.objects.get(id=req_data['membership'])
+                group_ott_plan = Ott.objects.get(id=req_data['ottPlanId'])
             #ERR 404 : Ott Doesn't Exist
             except (Ott.DoesNotExist) as e:
                 return HttpResponse(status=404)
@@ -151,13 +151,16 @@ def group_list(request):
                 description=group_description, 
                 is_public=group_is_public, 
                 password=group_password, 
-                membership=group_membership, 
+                membership=group_ott_plan, 
                 payday=group_payday, 
-                account_bank = group_account_bank, 
+                account_bank = group_account_bank,
                 account_number=group_account_number, 
                 account_name=group_account_name, 
-                leader=group_leader
+                leader=request.user,
                 )
+            group.save()
+            user = User.objects.get(id=request.user.id)
+            group.members.add(user.id)
             group.save()
             response_dict = {'id': group.id, 'name': group.name, 'leader': group.leader.id} 
             return JsonResponse(response_dict, status=201)
@@ -187,6 +190,7 @@ def group_detail(request, group_id):
             response_dict = {
                 "id":   group.id, 
                 "name": group.name, 
+                "platform": group.membership.ott, 
                 "membership": group.membership.membership, 
                 "cost": group.membership.cost,
                 "maxPeople": group.membership.max_people,
@@ -322,6 +326,47 @@ def group_add_user(request, group_id):
     #ERR 405 : METHOD NOT ALLOWED
     else:
         return HttpResponseNotAllowed(['PUT', 'DELETE'])
+
+def ott_list(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated:
+            otts = Ott.objects.all()
+            ott_names = set([ott['ott'] for ott in otts.values()])
+            ott_all_list = [{
+                'name': name,
+            } for name in ott_names]
+            print(ott_all_list)
+            return JsonResponse(ott_all_list, safe=False, status=200)
+        #ERR 401 : Not Authenticated
+        else:
+            return HttpResponse(status=401)
+    #ERR 405 : METHOD NOT ALLOWED
+    else:
+        return HttpResponseNotAllowed(['GET'])
+
+def ott_detail(request, ott_plan):
+    if request.method == 'GET':
+        if request.user.is_authenticated:
+            ott_platform, ott_membership = ott_plan.split('_')
+            try:
+                ott = Ott.objects.get(ott=ott_platform.capitalize(), membership=ott_membership.capitalize())
+            #ERR 404 : Ott Doesn't Exist
+            except (Ott.DoesNotExist) as e:
+                return HttpResponse(status=404)
+            response_dict = {
+                'id': ott.id,
+                'platform': ott.ott,
+                'membership': ott.membership,
+                'maxPeople': ott.max_people,
+                'cost': ott.cost,
+            }
+            return JsonResponse(response_dict, safe=False, status=200)
+        #ERR 401 : Not Authenticated
+        else:
+            return HttpResponse(status=401)
+    #ERR 405 : METHOD NOT ALLOWED
+    else:
+        return HttpResponseNotAllowed(['GET'])
 
 #Content
 def content_list(request, content_id):

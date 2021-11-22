@@ -101,7 +101,10 @@ export default function GroupReducer(state = initialState, action) {
       return {
         ...state,
         selectedGroup: action.group,
-        groups: state.groups.concat(action.group),
+        groups: [
+          ...state.groups,
+          action.group,
+        ],
       };
 
     case 'group/EDIT_GROUP':

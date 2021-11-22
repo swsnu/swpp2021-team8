@@ -22,6 +22,10 @@ urlpatterns = [
     path('content/<int:user_id>/favorite/', views.user_favorite_list),
     path('content/<int:user_id>/favorite/<int:content_id>/', views.content_favorite),
 
+    #Ott
+    path('ott/', views.ott_list),
+    path('ott/<slug:ott_plan>/', views.ott_detail),
+
     #Review
     path('content/<int:content_id>/review/', views.review_content),
     path('review/<int:review_id>/', views.review_detail)
