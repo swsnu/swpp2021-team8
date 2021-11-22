@@ -168,6 +168,7 @@ def group_list(request):
     else:
         return HttpResponseNotAllowed(['GET', 'POST'])
 
+@csrf_exempt
 def group_detail(request, group_id):
     if request.method == 'GET':
         if request.user.is_authenticated:
@@ -176,26 +177,29 @@ def group_detail(request, group_id):
             #ERR 404 : Group Doesn't Exist
             except (Group.DoesNotExist) as e:
                 return HttpResponse(status=404)
-            membership = Ott.objects.filter(id=group.membership.id).values()[0]
-            members = [member for member in group.members.all().values()]
             leader = User.objects.filter(id=group.leader.id).values()[0]
-            return JsonResponse({
-                "id": group.id, 
+            members = [
+                {
+                    "id": member.id,
+                    "username": member.username,
+                }
+            for member in group.members.all()]
+            response_dict = {
+                "id":   group.id, 
                 "name": group.name, 
-                "description": group.description, 
-                "is_public": group.is_public, 
-                "password": group.password, 
-                "created_at": group.created_at,
-                "will_be_deleted": group.will_be_deleted,
-                "membership": membership, 
-                "payday": group.payday, 
-                "account_bank": group.account_bank, 
-                "account_number": group.account_number, 
-                "account_name": group.account_name, 
-                "leader": leader,
+                "membership": group.membership.membership, 
+                "cost": group.membership.cost,
+                "maxPeople": group.membership.max_people,
+                "currentPeople": group.current_people,
                 "members": members,
-                "current_people": group.current_people
-                }, status=200)
+                "accountBank": group.account_bank, 
+                "accountNumber": group.account_number, 
+                "accountName": group.account_name, 
+                "description": group.description, 
+                "payday": group.payday, 
+                "leader": leader,
+            }
+            return JsonResponse(response_dict, safe = False, status=200)
         #ERR 401 : METHOD NOT ALLOWED
         else:
             return HttpResponse(status=401)
@@ -237,7 +241,7 @@ def group_detail(request, group_id):
                 "account_number": group.account_number, 
                 "account_name": group.account_name, 
                 "leader": group.leader.id,
-                "current_people": group.current_people
+                "current_people": group.current_people,
             }
             return JsonResponse(response_dict, status=200)
         else:
@@ -250,8 +254,16 @@ def group_detail(request, group_id):
             #ERR 404 : Group Doesn't Exist
             except(Group.DoesNotExist) as e:
                 return HttpResponse(status=404)
-            group.delete()
-            return HttpResponse(status=200)
+            group.will_be_deleted = True
+            group.save()
+            print(f"group: {group}")
+            # group.delete()
+            response_dict = {
+                "id": group.id,
+                "willBeDeleted": group.will_be_deleted,
+            }
+            return JsonResponse(response_dict, status=200)
+            # return HttpResponse(status=200)
         #ERR 401 : Not Authenticated
         else:
             return HttpResponse(status=401)
@@ -259,26 +271,27 @@ def group_detail(request, group_id):
     else:
         return HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
 
+@csrf_exempt
 def group_add_user(request, group_id):
     if request.method == 'PUT':
         if request.user.is_authenticated:
-            new_member = request.user
             try:
                 group = Group.objects.get(id=group_id)
             #ERR 404 : Group Doesn't Exist
             except(Group.DoesNotExist) as e:
                 return HttpResponse(status=404)
             #ERR 400 : Group Is Full
-            if(group.current_people >= group.membership.max_people):
+            # print(f"curPeo: {group.current_people}, mem: {group.members.all().values()} before add")
+            if(group.current_people > group.membership.max_people):
                 return HttpResponseBadRequest()
-            group.members.add(new_member)
-            group.current_people = group.current_people+1
+            group.members.add(request.user)
+            group.current_people = group.current_people + 1
             group.save()
             members = [member for member in group.members.all().values()]
             response_dict = {
                 "id": group.id, 
                 "members": members,
-                "current_people": group.current_people
+                "currentPeople": group.current_people,
             }
             return JsonResponse(response_dict, status=200)
         #ERR 401 : Not Authenticated
@@ -292,13 +305,15 @@ def group_add_user(request, group_id):
             #ERR 404 : Group Doesn't Exist
             except(Group.DoesNotExist) as e:
                 return HttpResponse(status=404)
+            # print(f"curPeo: {group.current_people}, mem: {group.members.all().values()} before add")
             group.members.remove(request.user)
-            group.current_people= group.current_people-1
+            group.current_people= group.current_people - 1
+            group.save()
             members = [member for member in group.members.all().values()]
             response_dict = {
                 "id": group.id, 
                 "members": members,
-                "current_people": group.current_people
+                "currentPeople": group.current_people,
             }
             return JsonResponse(response_dict, status=200)
         #ERR 401 : Not Authenticated

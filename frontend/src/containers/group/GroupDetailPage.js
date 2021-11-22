@@ -37,11 +37,6 @@ const GroupDetailPage = ({ history, match }) => {
     dispatch(deleteGroup(group.id));
     history.push('/main/');
   };
-  useEffect(() => {
-    console.log('group members: ', group.members, ', group cur: ', group.currentPeople);
-  }, [group]);
-  console.log('currently max is ', group.maxPeople, ', cur is ', group.currentPeople);
-  console.log('currently members are ', group.members);
   let members = [];
   let cost = '';
   let account = '';
