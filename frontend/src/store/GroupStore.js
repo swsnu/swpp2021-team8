@@ -21,16 +21,16 @@ const _editGroup = (group) => {
   return { type: 'group/EDIT_GROUP', group };
 };
 
-const _deleteGroup = (id) => {
-  return { type: 'group/DELETE_GROUP', id };
+const _deleteGroup = (group) => {
+  return { type: 'group/DELETE_GROUP', id: group.id, willBeDeleted: group.willBeDeleted };
 };
 
-const _addUserToGroup = (groupId, userId) => {
-  return { type: 'group/ADD_USER_TO_GROUP', groupId, userId };
+const _addUserToGroup = (group) => {
+  return { type: 'group/ADD_USER_TO_GROUP', group };
 };
 
-const _deleteUserFromGroup = (groupId, userId) => {
-  return { type: 'group/DELETE_USER_FROM_GROUP', groupId, userId };
+const _deleteUserFromGroup = (group) => {
+  return { type: 'group/DELETE_USER_FROM_GROUP', group };
 };
 
 export const getGroups = (query) => async (dispatch) => {
@@ -46,7 +46,8 @@ export const getGroupDetail = (id) => async (dispatch) => {
   try {
     const res = await axios.get(`/api/group/${id}/`);
     dispatch(_getGroupDetail(res.data));
-  } catch (e) {}
+  } catch (e) {
+  }
 };
 
 export const createGroup = (groupInfo) => async (dispatch) => {
@@ -65,22 +66,22 @@ export const editGroup = (id, groupInfo) => async (dispatch) => {
 
 export const deleteGroup = (id) => async (dispatch) => {
   try {
-    await axios.delete(`/api/group/${id}/`);
-    dispatch(_deleteGroup(id));
+    const res = await axios.delete(`/api/group/${id}/`);
+    dispatch(_deleteGroup(res.data));
   } catch (e) {}
 };
 
-export const addUserToGroup = (groupId, userId) => async (dispatch) => {
+export const addUserToGroup = (group) => async (dispatch) => {
   try {
-    await axios.post(`/api/group/${groupId}/user/${userId}/`);
-    dispatch(_addUserToGroup(groupId, userId));
+    const res = await axios.put(`/api/group/${group.id}/user/`, group);
+    dispatch(_addUserToGroup(res.data));
   } catch (e) {}
 };
 
-export const deleteUserFromGroup = (groupId, userId) => async (dispatch) => {
+export const deleteUserFromGroup = (group) => async (dispatch) => {
   try {
-    await axios.delete(`/api/group/${groupId}/user/${userId}/`);
-    dispatch(_deleteUserFromGroup(groupId, userId));
+    const res = await axios.delete(`/api/group/${group.id}/user/`);
+    dispatch(_deleteUserFromGroup(res.data));
   } catch (e) {}
 };
 
@@ -96,7 +97,10 @@ export default function GroupReducer(state = initialState, action) {
       return {
         ...state,
         selectedGroup: action.group,
-        groups: state.groups.concat(action.group),
+        groups: [
+          ...state.groups,
+          action.group,
+        ],
       };
 
     case 'group/EDIT_GROUP':
@@ -118,22 +122,46 @@ export default function GroupReducer(state = initialState, action) {
         groups: state.groups.filter((group) => group.id !== action.id),
       };
 
-    // TODO: add user to group
     case 'group/ADD_USER_TO_GROUP':
       return {
         ...state,
         groups: state.groups.map((group) => {
-          return group;
+          if (group.id === action.group.id) {
+            return {
+              ...group,
+              members: action.group.members,
+              currentPeople: action.group.currentPeople,
+            };
+          } else {
+            return group;
+          }
         }),
+        selectedGroup: {
+          ...state.selectedGroup,
+          members: action.group.members,
+          currentPeople: action.group.currentPeople,
+        },
       };
 
-    // TODO: delete user from group
     case 'group/DELETE_USER_FROM_GROUP':
       return {
         ...state,
         groups: state.groups.map((group) => {
-          return group;
+          if (group.id === action.group.id) {
+            return {
+              ...group,
+              members: action.group.members,
+              currentPeople: action.group.currentPeople,
+            };
+          } else {
+            return group;
+          }
         }),
+        selectedGroup: {
+          ...state.selectedGroup,
+          members: action.group.members,
+          currentPeople: action.group.currentPeople,
+        },
       };
 
     default:

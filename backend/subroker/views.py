@@ -149,22 +149,17 @@ def group_list(request):
         
     elif request.method == 'POST':
         if request.user.is_authenticated:
+            req_data = json.loads(request.body.decode())
+            group_name = req_data['name']
+            group_description = req_data['description']
+            group_is_public = bool(req_data['isPublic'])
+            group_password = int(req_data['password'])
+            group_payday = int(req_data['payday'])
+            group_account_bank = req_data['accountBank']
+            group_account_number = req_data['accountNumber']
+            group_account_name = req_data['accountName']
             try:
-                req_data = json.loads(request.body.decode())
-                group_name = req_data['name']
-                group_description = req_data['description']
-                group_is_public = bool(req_data['is_public'])
-                group_password = int(req_data['password'])
-                group_payday = int(req_data['payday'])
-                group_account_bank = req_data['account_bank']
-                group_account_number = req_data['account_number']
-                group_account_name = req_data['account_name']
-                group_leader = request.user
-            #ERR 400 : JSONDecodeErr
-            except (JSONDecodeError, KeyError) as e:
-                return HttpResponseBadRequest()
-            try:
-                group_membership = Ott.objects.get(id=req_data['membership'])
+                group_ott_plan = Ott.objects.get(id=req_data['ottPlanId'])
             #ERR 404 : Ott Doesn't Exist
             except (Ott.DoesNotExist) as e:
                 return HttpResponse(status=404)
@@ -173,13 +168,16 @@ def group_list(request):
                 description=group_description, 
                 is_public=group_is_public, 
                 password=group_password, 
-                membership=group_membership, 
+                membership=group_ott_plan, 
                 payday=group_payday, 
-                account_bank = group_account_bank, 
+                account_bank = group_account_bank,
                 account_number=group_account_number, 
                 account_name=group_account_name, 
-                leader=group_leader
+                leader=request.user,
                 )
+            group.save()
+            user = User.objects.get(id=request.user.id)
+            group.members.add(user.id)
             group.save()
             response_dict = {'id': group.id, 'name': group.name, 'leader': group.leader.id} 
             return JsonResponse(response_dict, status=201)
@@ -198,26 +196,30 @@ def group_detail(request, group_id):
             #ERR 404 : Group Doesn't Exist
             except (Group.DoesNotExist) as e:
                 return HttpResponse(status=404)
-            membership = Ott.objects.filter(id=group.membership.id).values()[0]
-            members = [member for member in group.members.all().values()]
             leader = User.objects.filter(id=group.leader.id).values()[0]
-            return JsonResponse({
-                "id": group.id, 
+            members = [
+                {
+                    "id": member.id,
+                    "username": member.username,
+                }
+            for member in group.members.all()]
+            response_dict = {
+                "id":   group.id, 
                 "name": group.name, 
-                "description": group.description, 
-                "is_public": group.is_public, 
-                "password": group.password, 
-                "created_at": group.created_at,
-                "will_be_deleted": group.will_be_deleted,
-                "membership": membership, 
-                "payday": group.payday, 
-                "account_bank": group.account_bank, 
-                "account_number": group.account_number, 
-                "account_name": group.account_name, 
-                "leader": leader,
+                "platform": group.membership.ott, 
+                "membership": group.membership.membership, 
+                "cost": group.membership.cost,
+                "maxPeople": group.membership.max_people,
+                "currentPeople": group.current_people,
                 "members": members,
-                "current_people": group.current_people
-                }, status=200)
+                "accountBank": group.account_bank, 
+                "accountNumber": group.account_number, 
+                "accountName": group.account_name, 
+                "description": group.description, 
+                "payday": group.payday, 
+                "leader": leader,
+            }
+            return JsonResponse(response_dict, safe = False, status=200)
         #ERR 401 : METHOD NOT ALLOWED
         else:
             return HttpResponse(status=401)
@@ -253,13 +255,13 @@ def group_detail(request, group_id):
                 "id": group.id, 
                 "name": group.name, 
                 "description": group.description, 
-                "is_public": group.is_public, 
+                "isPublic": group.is_public, 
                 "password": group.password, 
-                "account_bank": group.account_bank, 
-                "account_number": group.account_number, 
-                "account_name": group.account_name, 
+                "accountBank": group.account_bank, 
+                "accountNumber": group.account_number, 
+                "accountName": group.account_name, 
                 "leader": group.leader.id,
-                "current_people": group.current_people
+                "currentPeople": group.current_people,
             }
             return JsonResponse(response_dict, status=200)
         else:
@@ -272,8 +274,15 @@ def group_detail(request, group_id):
             #ERR 404 : Group Doesn't Exist
             except(Group.DoesNotExist) as e:
                 return HttpResponse(status=404)
-            group.delete()
-            return HttpResponse(status=200)
+            group.will_be_deleted = True
+            group.save()
+            # group.delete()
+            response_dict = {
+                "id": group.id,
+                "willBeDeleted": group.will_be_deleted,
+            }
+            return JsonResponse(response_dict, status=200)
+            # return HttpResponse(status=200)
         #ERR 401 : Not Authenticated
         else:
             return HttpResponse(status=401)
@@ -284,23 +293,23 @@ def group_detail(request, group_id):
 def group_add_user(request, group_id):
     if request.method == 'PUT':
         if request.user.is_authenticated:
-            new_member = request.user
             try:
                 group = Group.objects.get(id=group_id)
             #ERR 404 : Group Doesn't Exist
             except(Group.DoesNotExist) as e:
                 return HttpResponse(status=404)
             #ERR 400 : Group Is Full
-            if(group.current_people >= group.membership.max_people):
+            # print(f"curPeo: {group.current_people}, mem: {group.members.all().values()} before add")
+            if(group.current_people > group.membership.max_people):
                 return HttpResponseBadRequest()
-            group.members.add(new_member)
-            group.current_people = group.current_people+1
+            group.members.add(request.user)
+            group.current_people = group.current_people + 1
             group.save()
             members = [member for member in group.members.all().values()]
             response_dict = {
                 "id": group.id, 
                 "members": members,
-                "current_people": group.current_people
+                "currentPeople": group.current_people,
             }
             return JsonResponse(response_dict, status=200)
         #ERR 401 : Not Authenticated
@@ -314,13 +323,15 @@ def group_add_user(request, group_id):
             #ERR 404 : Group Doesn't Exist
             except(Group.DoesNotExist) as e:
                 return HttpResponse(status=404)
+            # print(f"curPeo: {group.current_people}, mem: {group.members.all().values()} before add")
             group.members.remove(request.user)
-            group.current_people= group.current_people-1
+            group.current_people= group.current_people - 1
+            group.save()
             members = [member for member in group.members.all().values()]
             response_dict = {
                 "id": group.id, 
                 "members": members,
-                "current_people": group.current_people
+                "currentPeople": group.current_people,
             }
             return JsonResponse(response_dict, status=200)
         #ERR 401 : Not Authenticated
@@ -329,6 +340,46 @@ def group_add_user(request, group_id):
     #ERR 405 : METHOD NOT ALLOWED
     else:
         return HttpResponseNotAllowed(['PUT', 'DELETE'])
+
+def ott_list(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated:
+            otts = Ott.objects.all()
+            ott_names = set([ott['ott'] for ott in otts.values()])
+            ott_all_list = [{
+                'name': name,
+            } for name in ott_names]
+            return JsonResponse(ott_all_list, safe=False, status=200)
+        #ERR 401 : Not Authenticated
+        else:
+            return HttpResponse(status=401)
+    #ERR 405 : METHOD NOT ALLOWED
+    else:
+        return HttpResponseNotAllowed(['GET'])
+
+def ott_detail(request, ott_plan):
+    if request.method == 'GET':
+        if request.user.is_authenticated:
+            ott_platform, ott_membership = ott_plan.split('_')
+            try:
+                ott = Ott.objects.get(ott=ott_platform.capitalize(), membership=ott_membership.capitalize())
+            #ERR 404 : Ott Doesn't Exist
+            except (Ott.DoesNotExist) as e:
+                return HttpResponse(status=404)
+            response_dict = {
+                'id': ott.id,
+                'platform': ott.ott,
+                'membership': ott.membership,
+                'maxPeople': ott.max_people,
+                'cost': ott.cost,
+            }
+            return JsonResponse(response_dict, safe=False, status=200)
+        #ERR 401 : Not Authenticated
+        else:
+            return HttpResponse(status=401)
+    #ERR 405 : METHOD NOT ALLOWED
+    else:
+        return HttpResponseNotAllowed(['GET'])
 
 #Content
 def content_list(request, content_id):

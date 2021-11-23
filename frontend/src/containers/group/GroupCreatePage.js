@@ -1,54 +1,58 @@
 import React, { useState, useEffect } from 'react';
-// import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
-// import { createGroup } from '../../store/GroupStore';
-import netflixLogo from './temp/netflixLogo.png';
-import watchaLogo from './temp/watchaLogo.png';
-import tvingLogo from './temp/tvingLogo.png';
+import { createGroup } from '../../store/GroupStore';
+import { getOtts, getOttPlan } from '../../store/OttStore';
 import './GroupCreatePage.scss';
 
 const GroupCreatePage = ({ history }) => {
-  const ottList = [
-    {
-      id: 1,
-      name: 'Netflix',
-      logo: netflixLogo,
-      max_people: 4,
-      cost: 14500,
-    },
-    {
-      id: 0,
-      name: 'Watcha',
-      logo: watchaLogo,
-      max_people: 4,
-      cost: 12900,
-    },
-    {
-      id: 2,
-      name: 'Tving',
-      logo: tvingLogo,
-      max_people: 4,
-      cost: 13900,
-    },
-  ];
-  const [selectedOtt, setSelectedOtt] = useState(null);
-  const [membership_, setMembership] = useState(null);
-  const [people, setPeople] = useState(0);
+  const [platform, setPlatform] = useState(null);
+  const [membership, setMembership] = useState('Basic');
   const [isPublic, setIsPublic] = useState(true);
-  const [password_, setPassword] = useState(0);
+  const [password, setPassword] = useState(0);
   const [passwordConfirm, setPasswordConfirm] = useState(0);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [isPasswordEqual, setIsPasswordEqual] = useState(true);
   const [title, setTitle] = useState('');
-  const [description_, setDescription] = useState('');
-  const [accountBank, setAccountBank] = useState('');
+  const [description, setDescription] = useState('');
+  const [accountBank, setAccountBank] = useState('NongHyeop');
   const [accountNumber, setAccountNumber] = useState('');
   const [accountName, setAccountName] = useState('');
-  const [payday_, setPayday] = useState(0);
-  // const dispatch = useDispatch();
+  const [payday, setPayday] = useState(1);
 
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getOtts());
+  }, []);
+  useEffect(() => {
+    dispatch(getOttPlan(platform, membership));
+  }, [platform, membership]);
+  const ottList = useSelector((state) => state.ott.otts);
+  const ottPlan = useSelector((state) => state.ott.selectedOttPlan);
+
+  const onBackClick = () => {
+    history.goBack();
+  };
+
+  const onPlatformSelect = (e) => {
+    setPlatform(ottList.find((ott) => {
+      return ott.name === e.target.value;
+    }));
+  };
+  const onMembershipSelect = (e) => {
+    setMembership(e.target.value);
+  };
+  const onPublicToggle = () => {
+    setIsPublic(!isPublic);
+  };
+  const onPasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+  const onPasswordConfirmChange = (e) => {
+    setPasswordConfirm(e.target.value);
+  };
   const checkPasswordEqual = () => {
-    if (password_ === passwordConfirm) {
+    if (password === passwordConfirm) {
       setIsPasswordEqual(true);
     } else {
       setIsPasswordEqual(false);
@@ -56,7 +60,7 @@ const GroupCreatePage = ({ history }) => {
   };
   const checkPasswordValid = () => {
     if (
-      password_.toString().match(/[0-9]{4}/)
+      password.toString().match(/[0-9]{4}/)
     ) {
       setIsPasswordValid(true);
     } else {
@@ -66,58 +70,23 @@ const GroupCreatePage = ({ history }) => {
   useEffect(() => {
     checkPasswordValid();
     checkPasswordEqual();
-  }, [password_, passwordConfirm]);
-
-  const onBackClick = () => {
-    history.goBack();
-  };
-
-  const onOttSelect = (e) => {
-    setSelectedOtt(ottList.find((ott) => {
-      return ott.name === e.target.value;
-    }));
-  };
-
-  const onMembershipSelect = (e) => {
-    setMembership(e.target.value);
-  };
-
-  const onPeopleSelect = (e) => {
-    setPeople(e.target.value);
-  };
-
-  const onPublicToggle = () => {
-    setIsPublic(!isPublic);
-  };
-
-  const onPasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
-
-  const onPasswordConfirmChange = (e) => {
-    setPasswordConfirm(e.target.value);
-  };
+  }, [password, passwordConfirm]);
 
   const onTitleChange = (e) => {
     setTitle(e.target.value);
   };
-
   const onDescriptionChange = (e) => {
     setDescription(e.target.value);
   };
-
   const onAccountBankChange = (e) => {
     setAccountBank(e.target.value);
   };
-
   const onAccountNumberChange = (e) => {
     setAccountNumber(e.target.value);
   };
-
   const onAccountNameChange = (e) => {
     setAccountName(e.target.value);
   };
-
   const onPaydayChange = (e) => {
     setPayday(e.target.value);
   };
@@ -125,23 +94,21 @@ const GroupCreatePage = ({ history }) => {
   const onCancelClick = () => {
     history.push('/main');
   };
-
   const onCreateGroupClick = () => {
-    // dispatch(createGroup({
-    //   name: title,
-    //   description: description_,
-    //   is_public: isPublic,
-    //   password: password_,
-    //   membership: selectedOtt.id,
-    //   payday: payday_,
-    //   account_bank: accountBank,
-    //   account_number: accountNumber,
-    //   account_name: accountName,
-    // }));
-    if (title && description_ && accountBank && accountNumber && accountName && payday_ !== 0) {
-      history.push('/main');
-    }
+    dispatch(createGroup({
+      name: title,
+      description,
+      isPublic,
+      password,
+      ottPlanId: ottPlan.id,
+      payday,
+      accountBank,
+      accountNumber,
+      accountName,
+    }));
+    history.push('/main/');
   };
+
   const renderField = (category, content, section) => {
     const classname = 'groupcreate__'.concat(section, '__field ', category.toLowerCase());
     return (
@@ -155,8 +122,8 @@ const GroupCreatePage = ({ history }) => {
       </div>
     );
   };
-  const ottSelectContent = ottList.map((ott) => {
-    const checked = selectedOtt ? selectedOtt.name === ott.name : false;
+  const platformSelectContent = ottList.map((ott) => {
+    const checked = platform ? platform.name === ott.name : false;
     return (
       <div className="ott__content__component">
         <input
@@ -166,10 +133,10 @@ const GroupCreatePage = ({ history }) => {
           name="ott"
           value={ott.name}
           checked={checked}
-          onChange={onOttSelect}
+          onChange={onPlatformSelect}
         />
         <label htmlFor={ott.name.toLowerCase().concat('-logo-button')}>
-          <img className={checked ? 'logo checked' : 'logo unchecked'} src={ott.logo} alt={ott.name.toLowerCase().concat('-logo')} />
+          <img className={checked ? 'logo checked' : 'logo unchecked'} src={`images/${ott.name.toLowerCase()}.png`} alt={ott.name.toLowerCase().concat('-logo')} />
         </label>
       </div>
     );
@@ -179,7 +146,7 @@ const GroupCreatePage = ({ history }) => {
       id="membership-select"
       name="membership"
       onChange={onMembershipSelect}
-      disabled={!selectedOtt}
+      disabled={!platform}
     >
       <option value="Basic">
         Basic
@@ -192,26 +159,31 @@ const GroupCreatePage = ({ history }) => {
       </option>
     </select>
   );
-  const peopleSelectContent = (
-    <select
-      id="people-select"
-      name="membership"
-      onChange={onPeopleSelect}
-      disabled={!membership_}
-    >
-      <option value={1}>1</option>
-      <option value={2}>2</option>
-      <option value={3}>3</option>
-      <option value={4}>4</option>
-    </select>
+  const peopleContent = (
+    <div className="people__text">
+      {
+        ottPlan && ottPlan.maxPeople ?
+          (
+            <>
+              {ottPlan.maxPeople}
+            </>
+          )
+          :
+          (
+            <>
+              0
+            </>
+          )
+      }
+    </div>
   );
   const costContent = (
     <div className="cost__text">
       {
-        selectedOtt && membership_ && people ?
+        ottPlan && ottPlan.cost ?
           (
             <>
-              {Math.floor(selectedOtt.cost / people).toString().concat(' Won')}
+              {Math.floor(ottPlan.cost / ottPlan.maxPeople).toString().concat(' Won')}
             </>
           )
           :
@@ -276,7 +248,7 @@ const GroupCreatePage = ({ history }) => {
         id="description-input"
         name="description"
         type="text"
-        value={description_}
+        value={description}
         onChange={onDescriptionChange}
       />
     </>
@@ -289,10 +261,18 @@ const GroupCreatePage = ({ history }) => {
         type="text"
         onChange={onAccountBankChange}
       >
-        <option value="KB">KB</option>
-        <option value="Woori">Woori</option>
-        <option value="NH">NH</option>
+        <option value="NongHyup">NongHyup</option>
+        <option value="KookMin">KookMin</option>
         <option value="Shinhan">Shinhan</option>
+        <option value="Woori">Woori</option>
+        <option value="IBK">IBK</option>
+        <option value="Hana">Hana</option>
+        <option value="Saemaeul">Saemaeul</option>
+        <option value="DaegooBank">DaegooBank</option>
+        <option value="PostOffice">PostOffice</option>
+        <option value="Toss">Toss</option>
+        <option value="CitiBank">CitiBank</option>
+        <option value="KDB">KDB</option>
       </select>
       <input
         id="account-number-input"
@@ -339,9 +319,9 @@ const GroupCreatePage = ({ history }) => {
             </h1>
           </div>
           <div className="groupcreate__membership__body">
-            {renderField('OTT', ottSelectContent, 'membership')}
+            {renderField('OTT', platformSelectContent, 'membership')}
             {renderField('Membership', membershipSelectContent, 'membership')}
-            {renderField('People', peopleSelectContent, 'membership')}
+            {renderField('People', peopleContent, 'membership')}
             {renderField('Cost', costContent, 'membership')}
             {renderField('Public', isPublicContent, 'membership')}
             {
@@ -378,6 +358,9 @@ const GroupCreatePage = ({ history }) => {
             id="create-group-button"
             onClick={onCreateGroupClick}
             type="button"
+            disabled={
+              !ottPlan || !title || !description || !accountBank || !accountName || !accountNumber
+            }
           >
             Create Group
           </button>

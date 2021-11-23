@@ -8,6 +8,7 @@ import thunk from 'redux-thunk';
 import auth from './AuthStore';
 import content from './ContentStore';
 import group from './GroupStore';
+import ott from './OttStore';
 import review from './ReviewStore';
 
 export const history = createBrowserHistory();
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   auth,
   content,
   group,
+  ott,
   review,
   router: connectRouter(history),
 });
