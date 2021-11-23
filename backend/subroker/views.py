@@ -104,8 +104,6 @@ def login(request):
         return HttpResponseNotAllowed(['POST'])
 
 # logout/ : User Log Out
-
-
 def logout(request):
     if request.method == 'GET':
         if request.user.is_authenticated:
@@ -118,8 +116,6 @@ def logout(request):
         return HttpResponseNotAllowed(['GET'])
 
 # Group
-
-
 def group_list(request):
     if request.method == 'GET':
         if request.user.is_authenticated:
@@ -246,11 +242,11 @@ def group_detail(request, group_id):
             req_data = json.loads(request.body.decode())
             group_name = req_data['name']
             group_description = req_data['description']
-            group_is_public = req_data['is_public']
+            group_is_public = req_data['isPublic']
             group_password = req_data['password']
-            group_account_bank = req_data['account_bank']
-            group_account_number = req_data['account_number']
-            group_account_name = req_data['account_name']
+            group_account_bank = req_data['accountBank']
+            group_account_number = req_data['accountNumber']
+            group_account_name = req_data['accountName']
             try:
                 group = Group.objects.get(id=group_id)
             # ERR 404 : Group Doesn't Exist
@@ -532,7 +528,7 @@ def content_detail(request, content_id):
             response_dict = {'id': content.id}
             return JsonResponse(response_dict, status=201)
         else:
-            HttpResponse(status=403)
+            return HttpResponse(status=403)
 
     # ERR 405 : METHOD NOT ALLOWED
     else:
