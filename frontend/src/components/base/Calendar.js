@@ -83,9 +83,7 @@ const Calendar = () => {
   return (
     <div className="calendar">
       <div className="calendar__header">
-        {year}
-        .
-        {month}
+        {year}.{month}
       </div>
       <div className="calendar__body">
         <button id="previous-button" onClick={onPreviousClick} type="button">

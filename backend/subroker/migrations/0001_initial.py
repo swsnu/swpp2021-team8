@@ -17,17 +17,52 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Content',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                << << << < Updated upstream
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
+                == == ===
+                ('id', models.BigAutoField(auto_created=True,
+                                           primary_key=True, serialize=False, verbose_name='ID')),
+                ('the_movie_id', models.IntegerField(default=0)),
+                ('name', models.CharField(default='', max_length=200)),
+                >>>>>> > Stashed changes
                 ('favorite_cnt', models.IntegerField(default=0)),
-                ('favorite_users', models.ManyToManyField(blank=True, related_name='favorite_contents', to=settings.AUTH_USER_MODEL)),
+                ('favorite_users', models.ManyToManyField(
+                    blank=True, related_name='favorite_contents', to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
             name='Ott',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('ott', models.CharField(choices=[('Watcha', 'Watcha'), ('Netflix', 'Netflix'), ('Tving', 'Tving'), ('Youtube', 'Youtube'), ('Disney', 'Disney'), ('CoupangPlay', 'CoupangPlay'), ('Wavve', 'Wavve')], max_length=15)),
-                ('membership', models.CharField(choices=[('Basic', 'Basic'), ('Standard', 'Standard'), ('Premium', 'Premium')], max_length=10)),
+                << << << < Updated upstream
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
+                ('ott',
+                 models.CharField(choices=[('Watcha',
+                                            'Watcha'),
+                                           ('Netflix',
+                                            'Netflix'),
+                                           ('Tving',
+                                            'Tving'),
+                                           ('Youtube',
+                                            'Youtube'),
+                                           ('Disney',
+                                            'Disney'),
+                                           ('CoupangPlay',
+                                            'CoupangPlay'),
+                                           ('Wavve',
+                                            'Wavve')],
+                                  max_length=15)),
+                ('membership', models.CharField(choices=[
+                 ('Basic', 'Basic'), ('Standard', 'Standard'), ('Premium', 'Premium')], max_length=10)),
+                == == ===
+                ('id', models.BigAutoField(auto_created=True,
+                                           primary_key=True, serialize=False, verbose_name='ID')),
+                ('ott', models.CharField(choices=[('Watcha', 'Watcha'), ('Netflix', 'Netflix'), ('Tving', 'Tving'), (
+                    'Youtube', 'Youtube'), ('Disney', 'Disney'), ('CoupangPlay', 'CoupangPlay'), ('Wavve', 'Wavve')], max_length=15)),
+                ('membership', models.CharField(choices=[
+                 ('Basic', 'Basic'), ('Standard', 'Standard'), ('Premium', 'Premium')], max_length=10)),
+                >>>>>> > Stashed changes
                 ('max_people', models.IntegerField(default=1)),
                 ('cost', models.IntegerField(default=0)),
                 ('image', models.ImageField(upload_to='ott_image')),
@@ -36,17 +71,31 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Review',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                << << << < Updated upstream
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
+                == == ===
+                ('id', models.BigAutoField(auto_created=True,
+                                           primary_key=True, serialize=False, verbose_name='ID')),
+                >>>>>> > Stashed changes
                 ('detail', models.TextField(default='')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('content', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='content_reviews', to='subroker.content')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='user_reviews', to=settings.AUTH_USER_MODEL)),
+                ('content', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                              related_name='content_reviews', to='subroker.content')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                           related_name='user_reviews', to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
             name='Group',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                << << << < Updated upstream
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
+                == == ===
+                ('id', models.BigAutoField(auto_created=True,
+                                           primary_key=True, serialize=False, verbose_name='ID')),
+                >>>>>> > Stashed changes
                 ('name', models.CharField(default='New Group', max_length=64)),
                 ('description', models.TextField(default='')),
                 ('is_public', models.BooleanField(default=True)),
@@ -55,13 +104,17 @@ class Migration(migrations.Migration):
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('will_be_deleted', models.BooleanField(default=False)),
                 ('payday', models.IntegerField(default=1)),
-                ('account_bank', models.CharField(choices=[('NongHyup', 'NongHyup'), ('KookMin', 'KookMin'), ('KakaoBank', 'KakaoBank'), ('ShinHan', 'ShinHan'), ('Woori', 'Woori'), ('IBK', 'IBK'), ('Hana', 'Hana'), ('Saemaeul', 'Saemaeul'), ('DaegooBank', 'DaegooBank'), ('PostOffice', 'PostOffice'), ('Toss', 'Toss'), ('CitiBank', 'CitiBank'), ('KDB', 'KDB')], max_length=15)),
+                ('account_bank', models.CharField(choices=[('NongHyup', 'NongHyup'), ('KookMin', 'KookMin'), ('KakaoBank', 'KakaoBank'), ('ShinHan', 'ShinHan'), ('Woori', 'Woori'), ('IBK', 'IBK'), (
+                    'Hana', 'Hana'), ('Saemaeul', 'Saemaeul'), ('DaegooBank', 'DaegooBank'), ('PostOffice', 'PostOffice'), ('Toss', 'Toss'), ('CitiBank', 'CitiBank'), ('KDB', 'KDB')], max_length=15)),
                 ('account_number', models.CharField(max_length=20)),
                 ('account_name', models.CharField(max_length=30)),
                 ('current_people', models.IntegerField(default=1)),
-                ('leader', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='group_leader', to=settings.AUTH_USER_MODEL)),
-                ('members', models.ManyToManyField(blank=True, related_name='user_groups', to=settings.AUTH_USER_MODEL)),
-                ('membership', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='membership_groups', to='subroker.ott')),
+                ('leader', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                             related_name='group_leader', to=settings.AUTH_USER_MODEL)),
+                ('members', models.ManyToManyField(blank=True,
+                                                   related_name='user_groups', to=settings.AUTH_USER_MODEL)),
+                ('membership', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                                 related_name='membership_groups', to='subroker.ott')),
             ],
         ),
     ]

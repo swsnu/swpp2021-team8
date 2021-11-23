@@ -147,10 +147,16 @@ disable=print-statement,
         too-many-branches,
         too-many-return-statements,
         too-many-locals,
+        line-too-long,
         fixme,
         C0114,
         C0115,
         C0116,
+        invalid-name,
+        consider-using-set-comprehension,
+        unused-argument,
+        redefined-builtin,
+        inconsistent-return-statements
 
 
 # Enable the message, report, category or checker with the given id(s). You can

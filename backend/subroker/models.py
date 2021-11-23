@@ -1,36 +1,36 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 
-# Create your models here.
 
 class Ott(models.Model):
     ott_type = (
-        ('Watcha', 'Watcha'), 
-        ('Netflix', 'Netflix'), 
-        ('Tving', 'Tving'), 
-        ('Youtube', 'Youtube'), 
-        ('Disney', 'Disney'), 
-        ('CoupangPlay', 'CoupangPlay'), 
+        ('Watcha', 'Watcha'),
+        ('Netflix', 'Netflix'),
+        ('Tving', 'Tving'),
+        ('Youtube', 'Youtube'),
+        ('Disney', 'Disney'),
+        ('CoupangPlay', 'CoupangPlay'),
         ('Wavve', 'Wavve')
-        )
+    )
     ott = models.CharField(choices=ott_type, max_length=15)
     membership_type = (
-        ('Basic', 'Basic'), 
-        ('Standard', 'Standard'), 
+        ('Basic', 'Basic'),
+        ('Standard', 'Standard'),
         ('Premium', 'Premium')
-        )
+    )
     membership = models.CharField(choices=membership_type, max_length=10)
     max_people = models.IntegerField(default=1)
     cost = models.IntegerField(default=0)
     image = models.ImageField(upload_to="ott_image")
-    
+
     def __str__(self):
         name = self.ott + ' / ' + self.membership
         return name
 
+
 class Group(models.Model):
-    #Basic Group Settings
-    name = models.CharField(max_length= 64, default="New Group")    
+    # Basic Group Settings
+    name = models.CharField(max_length=64, default="New Group")
     description = models.TextField(default="")
     is_public = models.BooleanField(default=True)
     password = models.IntegerField(default=0)
@@ -38,24 +38,24 @@ class Group(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     will_be_deleted = models.BooleanField(default=False)
 
-    #Membership Settings
+    # Membership Settings
     membership = models.ForeignKey(
         Ott,
         on_delete=models.CASCADE,
         related_name='membership_groups'
     )
 
-    #Payment Settings
+    # Payment Settings
     payday = models.IntegerField(default=1)
     account_bank_type = (
         ('NongHyup', 'NongHyup'),
         ('KookMin', 'KookMin'),
         ('KakaoBank', 'KakaoBank'),
         ('ShinHan', 'ShinHan'),
-        ('Woori', 'Woori'), 
+        ('Woori', 'Woori'),
         ('IBK', 'IBK'),
         ('Hana', 'Hana'),
-        ('Saemaeul', 'Saemaeul'), 
+        ('Saemaeul', 'Saemaeul'),
         ('DaegooBank', 'DaegooBank'),
         ('PostOffice', 'PostOffice'),
         ('Toss', 'Toss'),
@@ -66,7 +66,7 @@ class Group(models.Model):
     account_number = models.CharField(max_length=20)
     account_name = models.CharField(max_length=30)
 
-    #People
+    # People
     leader = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -74,7 +74,7 @@ class Group(models.Model):
     )
     members = models.ManyToManyField(
         User,
-        blank = True,
+        blank=True,
         related_name='user_groups'
     )
     current_people = models.IntegerField(default=1)
@@ -88,9 +88,10 @@ class Content(models.Model):
     favorite_cnt = models.IntegerField(default=0)
     favorite_users = models.ManyToManyField(
         User,
-        blank  = True,
+        blank=True,
         related_name='favorite_contents'
     )
+
     def __str__(self):
         content_id = str(self.id)
         return content_id
