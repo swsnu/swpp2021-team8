@@ -392,4 +392,24 @@ describe('<MainPage /> GroupTab', () => {
 
     expect(component.find('.content-list-item').at(0).text()).toBe('1');
   });
+
+  it('should set content search input with user input', () => {
+    mockMainPage = (
+      <Provider store={mockPaginationStore}>
+        <ConnectedRouter history={history}>
+          <Route path="/" component={MainPage} exact />
+        </ConnectedRouter>
+      </Provider>
+    );
+    localStorage.setItem('mainTab', 'content');
+    const component = mount(mockMainPage);
+
+    component
+      .find('#content-search-input')
+      .simulate('change', { target: { value: 'mockInput' } });
+
+    expect(component.find('#content-search-input').props().value).toBe(
+      'mockInput',
+    );
+  });
 });
