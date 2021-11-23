@@ -1,11 +1,11 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import GroupDetailPage from './GroupDetailPage';
 import { Provider } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { ConnectedRouter } from 'connected-react-router';
+import GroupDetailPage from './GroupDetailPage';
 import { history } from '../../test-utils/mock';
-import store from '../../store'
+import store from '../../store';
 
 describe('<GroupDetailPage />', () => {
   let mockGroupDetailPage;

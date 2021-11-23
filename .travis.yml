@@ -19,7 +19,7 @@ jobs:
         - yarn global add coveralls
         - gem install coveralls-lcov
       script:
-        - cd frontend
+        - cd ~/frontend
         - ./node_modules/.bin/eslint src
         - yarn test --coverage --watchAll=false
         - coveralls-lcov -v -n coverage/lcov.info > coverage.json

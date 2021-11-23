@@ -1,10 +1,10 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import MainPage from './MainPage';
 import { Provider } from 'react-redux';
 import * as redux from 'react-redux';
 import { Route } from 'react-router-dom';
 import { ConnectedRouter } from 'connected-react-router';
+import MainPage from './MainPage';
 import { getMockStore, history } from '../../test-utils/mock';
 import * as AuthReducer from '../../store/AuthStore';
 import * as GroupReducer from '../../store/GroupStore';
@@ -264,7 +264,7 @@ describe('<MainPage /> GroupTab', () => {
       .find('#group-search-input')
       .simulate('change', { target: { value: 'mockInput' } });
 
-    expect(component.find('#group-search-input').props()['value']).toBe(
+    expect(component.find('#group-search-input').props().value).toBe(
       'mockInput',
     );
   });
@@ -282,7 +282,7 @@ describe('<MainPage /> GroupTab', () => {
       { ott: 'tving', membership: 'basic' },
     ];
 
-    for (let i = 0; i < wrapper.length; ++i) {
+    for (let i = 0; i < wrapper.length; i += 1) {
       wrapper.at(i).simulate('click');
       expect(
         component
@@ -323,7 +323,7 @@ describe('<MainPage /> GroupTab', () => {
       { ott: 'tving', membership: 'basic' },
     ];
 
-    for (let i = 0; i < wrapper.length; ++i) {
+    for (let i = 0; i < wrapper.length; i += 1) {
       wrapper.at(i).simulate('click');
     }
 

@@ -1,13 +1,13 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import SignUpPage from './SignUpPage';
 import { Provider } from 'react-redux';
 import * as redux from 'react-redux';
 import { Route } from 'react-router-dom';
 import { ConnectedRouter } from 'connected-react-router';
+import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import { getMockStore, history } from '../../test-utils/mock';
 import * as AuthReducer from '../../store/AuthStore';
-import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import SignUpPage from './SignUpPage';
 
 const mockStore = getMockStore({}, {}, {}, {});
 const mockStoreError = getMockStore({ signUpError: 'SignUpError' }, {}, {}, {});
@@ -63,9 +63,7 @@ describe('<SignUp />', () => {
       .find('#username-input')
       .simulate('change', { target: { value: testUsername } });
 
-    expect(component.find('#username-input').props()['value']).toBe(
-      testUsername,
-    );
+    expect(component.find('#username-input').props().value).toBe(testUsername);
   });
 
   it('should dispatch action and return true when create account button is clicked', () => {

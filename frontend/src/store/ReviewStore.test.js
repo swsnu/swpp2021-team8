@@ -1,12 +1,12 @@
 import axios from 'axios';
+import { applyMiddleware, createStore } from 'redux';
+import thunk from 'redux-thunk';
 import review, {
   createReview,
   deleteReview,
   editReview,
   getReviews,
 } from './ReviewStore';
-import { applyMiddleware, createStore } from 'redux';
-import thunk from 'redux-thunk';
 
 const store = createStore(review, applyMiddleware(thunk));
 

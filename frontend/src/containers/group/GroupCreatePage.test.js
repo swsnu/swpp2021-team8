@@ -1,12 +1,10 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import GroupCreatePage from './GroupCreatePage';
 import { Provider } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { ConnectedRouter } from 'connected-react-router';
-import { history } from '../../store/index';
-import store from '../../store'
-import { FaCheckCircle } from 'react-icons/fa';
+import store, { history } from '../../store/index';
+import GroupCreatePage from './GroupCreatePage';
 
 describe('<GroupCreatePage />', () => {
   let mockGroupCreatePage;
@@ -55,98 +53,90 @@ describe('<GroupCreatePage />', () => {
 
   it('should check password matchs', () => {
     const component = mount(mockGroupCreatePage);
-    component.find('#public-input').simulate('change', {target: {checked: true}});
+    component
+      .find('#public-input')
+      .simulate('change', { target: { checked: true } });
     expect(component.find('#password-input').length).toBe(1);
     component
-        .find('#password-input')
-        .simulate('change', {target: {value:'1234'}});
+      .find('#password-input')
+      .simulate('change', { target: { value: '1234' } });
     component
-        .find('#password-confirm-input')
-        .simulate('change', {target: {value:'1234'}});
+      .find('#password-confirm-input')
+      .simulate('change', { target: { value: '1234' } });
     expect(component.find(GroupCreatePage, '.isequal').length).toBe(1);
   });
 
   it('should check password does not match', () => {
     const component = mount(mockGroupCreatePage);
-    component.find('#public-input').simulate('change', {target: {checked: true}});
+    component
+      .find('#public-input')
+      .simulate('change', { target: { checked: true } });
     expect(component.find('#password-input').length).toBe(1);
     component
-        .find('#password-input')
-        .simulate('change', {target: {value:'1234'}});
+      .find('#password-input')
+      .simulate('change', { target: { value: '1234' } });
     component
-        .find('#password-confirm-input')
-        .simulate('change', {target: {value:'1235'}});
+      .find('#password-confirm-input')
+      .simulate('change', { target: { value: '1235' } });
     expect(component.find(GroupCreatePage, '.isnotequal').length).toBe(1);
   });
 
   it('should check ott, membership, people selection', () => {
     const component = mount(mockGroupCreatePage);
     component
-        .find('#netflix-logo-button')
-        .simulate('change', {target: {value: 'Netflix'}});
+      .find('#netflix-logo-button')
+      .simulate('change', { target: { value: 'Netflix' } });
     expect(component.find('#membership-select').length).toBe(1);
     component
-        .find('#membership-select')
-        .simulate('change', {target: {value:'Premium'}});
+      .find('#membership-select')
+      .simulate('change', { target: { value: 'Premium' } });
     expect(component.find('#people-select').length).toBe(1);
     component
-        .find('#people-select')
-        .simulate('change', {target: {value: 4}});
+      .find('#people-select')
+      .simulate('change', { target: { value: 4 } });
     expect(component.find('.cost__text').text()).toBe('3625 Won');
   });
 
   it('should enable group create button when all input changes', () => {
     const component = mount(mockGroupCreatePage);
     component
-        .find('#group-title-input')
-        .simulate('change', {target: {value: 'title'}});
-    component
-        .find('#create-group-button')
-        .simulate('click');
+      .find('#group-title-input')
+      .simulate('change', { target: { value: 'title' } });
+    component.find('#create-group-button').simulate('click');
     expect(history.push).toHaveBeenCalledTimes(0);
     component
-        .find('#description-input')
-        .simulate('change', {target: {value: 'description'}});
-    component
-        .find('#create-group-button')
-        .simulate('click');
+      .find('#description-input')
+      .simulate('change', { target: { value: 'description' } });
+    component.find('#create-group-button').simulate('click');
     expect(history.push).toHaveBeenCalledTimes(0);
     component
-        .find('#account-bank-select')
-        .simulate('change', {target: {value: 'KB'}});
-    component
-        .find('#create-group-button')
-        .simulate('click');
-    expect(history.push).toHaveBeenCalledTimes(0);    
-    component
-        .find('#account-number-input')
-        .simulate('change', {target: {value: 'number'}});
-    component
-        .find('#create-group-button')
-        .simulate('click');
+      .find('#account-bank-select')
+      .simulate('change', { target: { value: 'KB' } });
+    component.find('#create-group-button').simulate('click');
     expect(history.push).toHaveBeenCalledTimes(0);
     component
-        .find('#account-name-input')
-        .simulate('change', {target: {value: 'name'}});
-    component
-        .find('#create-group-button')
-        .simulate('click');
+      .find('#account-number-input')
+      .simulate('change', { target: { value: 'number' } });
+    component.find('#create-group-button').simulate('click');
     expect(history.push).toHaveBeenCalledTimes(0);
     component
-        .find('#payday-select')
-        .simulate('change', {target: {value: 1}});
+      .find('#account-name-input')
+      .simulate('change', { target: { value: 'name' } });
+    component.find('#create-group-button').simulate('click');
+    expect(history.push).toHaveBeenCalledTimes(0);
     component
-        .find('#create-group-button')
-        .simulate('click');
+      .find('#payday-select')
+      .simulate('change', { target: { value: 1 } });
+    component.find('#create-group-button').simulate('click');
     expect(history.push).toHaveBeenCalledTimes(1);
   });
 
   //   it('should set state well when join, quit button is clicked', () => {
-//     const component = mount(mockGroupCreatePage);
-//     component.find('#join-button').simulate('click');
-//     const wrapper = component.find('.people .content');
-//     expect(wrapper.text()).toBe('4');
-//     component.find('#quit-button').simulate('click');
-//     expect(wrapper.text()).toBe('3');
-//   });
-}); 
+  //     const component = mount(mockGroupCreatePage);
+  //     component.find('#join-button').simulate('click');
+  //     const wrapper = component.find('.people .content');
+  //     expect(wrapper.text()).toBe('4');
+  //     component.find('#quit-button').simulate('click');
+  //     expect(wrapper.text()).toBe('3');
+  //   });
+});
