@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import ReviewList from '../../components/review/ReviewList';
 import { addFavoriteContent, getContentDetail } from '../../store/ContentStore';
 import { createReview } from '../../store/ReviewStore';
