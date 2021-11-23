@@ -86,7 +86,6 @@ def logout(request):
         return HttpResponseNotAllowed(['GET'])
 
 #Group
-@csrf_exempt
 def group_list(request):    
     if request.method == 'GET':
         if request.user.is_authenticated:
@@ -128,19 +127,15 @@ def group_list(request):
         
     elif request.method == 'POST':
         if request.user.is_authenticated:
-            try:
-                req_data = json.loads(request.body.decode())
-                group_name = req_data['name']
-                group_description = req_data['description']
-                group_is_public = bool(req_data['isPublic'])
-                group_password = int(req_data['password'])
-                group_payday = int(req_data['payday'])
-                group_account_bank = req_data['accountBank']
-                group_account_number = req_data['accountNumber']
-                group_account_name = req_data['accountName']
-            #ERR 400 : JSONDecodeErr
-            except (JSONDecodeError, KeyError) as e:
-                return HttpResponseBadRequest()
+            req_data = json.loads(request.body.decode())
+            group_name = req_data['name']
+            group_description = req_data['description']
+            group_is_public = bool(req_data['isPublic'])
+            group_password = int(req_data['password'])
+            group_payday = int(req_data['payday'])
+            group_account_bank = req_data['accountBank']
+            group_account_number = req_data['accountNumber']
+            group_account_name = req_data['accountName']
             try:
                 group_ott_plan = Ott.objects.get(id=req_data['ottPlanId'])
             #ERR 404 : Ott Doesn't Exist
@@ -171,7 +166,6 @@ def group_list(request):
     else:
         return HttpResponseNotAllowed(['GET', 'POST'])
 
-@csrf_exempt
 def group_detail(request, group_id):
     if request.method == 'GET':
         if request.user.is_authenticated:
@@ -239,13 +233,13 @@ def group_detail(request, group_id):
                 "id": group.id, 
                 "name": group.name, 
                 "description": group.description, 
-                "is_public": group.is_public, 
+                "isPublic": group.is_public, 
                 "password": group.password, 
-                "account_bank": group.account_bank, 
-                "account_number": group.account_number, 
-                "account_name": group.account_name, 
+                "accountBank": group.account_bank, 
+                "accountNumber": group.account_number, 
+                "accountName": group.account_name, 
                 "leader": group.leader.id,
-                "current_people": group.current_people,
+                "currentPeople": group.current_people,
             }
             return JsonResponse(response_dict, status=200)
         else:
@@ -260,7 +254,6 @@ def group_detail(request, group_id):
                 return HttpResponse(status=404)
             group.will_be_deleted = True
             group.save()
-            print(f"group: {group}")
             # group.delete()
             response_dict = {
                 "id": group.id,
@@ -275,7 +268,6 @@ def group_detail(request, group_id):
     else:
         return HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
 
-@csrf_exempt
 def group_add_user(request, group_id):
     if request.method == 'PUT':
         if request.user.is_authenticated:
@@ -335,7 +327,6 @@ def ott_list(request):
             ott_all_list = [{
                 'name': name,
             } for name in ott_names]
-            print(ott_all_list)
             return JsonResponse(ott_all_list, safe=False, status=200)
         #ERR 401 : Not Authenticated
         else:

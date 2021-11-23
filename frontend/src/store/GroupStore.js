@@ -22,7 +22,6 @@ const _editGroup = (group) => {
 };
 
 const _deleteGroup = (group) => {
-  console.log('del2');
   return { type: 'group/DELETE_GROUP', id: group.id, willBeDeleted: group.willBeDeleted };
 };
 
@@ -66,13 +65,10 @@ export const editGroup = (id, groupInfo) => async (dispatch) => {
 };
 
 export const deleteGroup = (id) => async (dispatch) => {
-  console.log('del1');
   try {
     const res = await axios.delete(`/api/group/${id}/`);
     dispatch(_deleteGroup(res.data));
-  } catch (e) {
-    console.log('error');
-  }
+  } catch (e) {}
 };
 
 export const addUserToGroup = (group) => async (dispatch) => {
@@ -121,7 +117,6 @@ export default function GroupReducer(state = initialState, action) {
       };
 
     case 'group/DELETE_GROUP':
-      console.log('del3');
       return {
         ...state,
         groups: state.groups.filter((group) => group.id !== action.id),
