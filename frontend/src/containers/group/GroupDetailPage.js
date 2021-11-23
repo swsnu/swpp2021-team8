@@ -41,15 +41,15 @@ const GroupDetailPage = ({ history, match }) => {
   let payday = '';
   let members = group.members
     ? group.members.map((member) => {
-        return (
-          <div className="groupdetail__member">
-            <div className="groupdetail__member__index" />
-            <div className="groupdetail__member__username">
-              {member.username}
-            </div>
+      return (
+        <div className="groupdetail__member">
+          <div className="groupdetail__member__index" />
+          <div className="groupdetail__member__username">
+            {member.username}
           </div>
-        );
-      })
+        </div>
+      );
+    })
     : null;
   const empty = (
     <div className="groupdetail__member--empty">
@@ -122,11 +122,11 @@ const GroupDetailPage = ({ history, match }) => {
             <button id="quit-button" onClick={onQuitClick} type="button">
               Quit
             </button>
-          ) : (
-            <button id="join-button" onClick={onJoinClick} type="button">
-              Join
-            </button>
-          )}
+            ) : (
+              <button id="join-button" onClick={onJoinClick} type="button">
+                Join
+              </button>
+            )}
           {group.leader && group.leader.id === user.id ? (
             <>
               <button id="edit-button" onClick={onEditClick} type="button">

@@ -447,7 +447,6 @@ class SubrokerTestCase(TestCase):
                     content_type='application/json')
         response = client.put('/api/group/2/user/')
         self.assertEqual(response.status_code, 200)
-        group = json.loads(response.content.decode())
 
         # PUT ERR no group exists : 404
         response = client.put('/api/group/10/user/')
@@ -471,7 +470,6 @@ class SubrokerTestCase(TestCase):
                     content_type='application/json')
         response = client.delete('/api/group/1/user/')
         self.assertEqual(response.status_code, 200)
-        group = json.loads(response.content.decode())
 
         # DELETE ERR no group exists : 404
         response = client.delete('/api/group/5/user/')

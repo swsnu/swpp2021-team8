@@ -16,6 +16,7 @@ const ReviewListItem = () => {
   };
 
   const onEditClick = () => {
+    /* eslint no-alert: ['off'] */
     const changedDetail = prompt('Edit Review', review.detail);
     if (changedDetail !== null) {
       if (changedDetail === '') {
@@ -32,15 +33,9 @@ const ReviewListItem = () => {
   return (
     <>
       <div className="review">
-        <div className="review__detail">
-          {review.detail}
-        </div>
-        <div className="review__user">
-          {review.user}
-        </div>
-        <div className="review__createdat">
-          {review.created_at}
-        </div>
+        <div className="review__detail">{review.detail}</div>
+        <div className="review__user">{review.user}</div>
+        <div className="review__createdat">{review.created_at}</div>
         <div className="buttons">
           <button id="edit-button" onClick={onEditClick} type="button">
             Edit

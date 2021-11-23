@@ -92,7 +92,11 @@ describe('GroupStore', () => {
       };
     });
 
-    axios.delete = jest.fn(async () => {});
+    axios.delete = jest.fn(async () => {
+      return {
+        data: { id: 2, willBeDeleted: true },
+      };
+    });
 
     await store.dispatch(getGroups());
     await store.dispatch(deleteGroup(2));
