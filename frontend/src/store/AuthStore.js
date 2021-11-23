@@ -4,10 +4,14 @@ const initialState = {
   loginError: '',
   signUpError: '',
   isLoggedIn: JSON.parse(localStorage.getItem('isLoggedIn')),
+  user: {
+    id: '',
+    username: '',
+  },
 };
 
-const _getLoginStatus = ({ isLoggedIn }) => {
-  return { type: 'auth/GET_LOGIN_STATUS', status: isLoggedIn };
+const _getLoginStatus = ({ isLoggedIn, id, username }) => {
+  return { type: 'auth/GET_LOGIN_STATUS', status: isLoggedIn, id, username };
 };
 
 const _logIn = () => {
@@ -85,7 +89,14 @@ export default function AuthReducer(state = initialState, action) {
   switch (action.type) {
     case 'auth/GET_LOGIN_STATUS':
       localStorage.setItem('isLoggedIn', JSON.stringify(action.status));
-      return { ...state, isLoggedIn: action.status };
+      return {
+        ...state,
+        isLoggedIn: action.status,
+        user: {
+          id: action.id,
+          username: action.username,
+        },
+      };
 
     case 'auth/LOG_IN':
       localStorage.setItem('isLoggedIn', JSON.stringify(true));
