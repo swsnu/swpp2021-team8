@@ -39,16 +39,18 @@ const GroupDetailPage = ({ history, match }) => {
   let cost = '';
   let account = '';
   let payday = '';
-  let members = group.members ? group.members.map((member) => {
-    return (
-      <div className="groupdetail__member">
-        <div className="groupdetail__member__index" />
-        <div className="groupdetail__member__username">
-          {member.username}
+  let members = group.members
+    ? group.members.map((member) => {
+      return (
+        <div className="groupdetail__member">
+          <div className="groupdetail__member__index" />
+          <div className="groupdetail__member__username">
+            {member.username}
+          </div>
         </div>
-      </div>
-    );
-  }) : null;
+      );
+    })
+    : null;
   const empty = (
     <div className="groupdetail__member--empty">
       <div className="groupdetail__member__index--empty" />
@@ -57,9 +59,19 @@ const GroupDetailPage = ({ history, match }) => {
   for (let i = group.currentPeople; i < group.maxPeople; i += 1) {
     members = [...members, empty];
   }
-  cost = Math.floor(parseInt(group.cost, 10) / parseInt(group.currentPeople, 10)).toString();
-  account = account.concat(group.accountBank, ' ', group.accountNumber, ' \n', group.accountName);
-  payday = group.payday ? 'Every'.concat(' ', group.payday.toString(), 'th') : 'None';
+  cost = Math.floor(
+    parseInt(group.cost, 10) / parseInt(group.currentPeople, 10),
+  ).toString();
+  account = account.concat(
+    group.accountBank,
+    ' ',
+    group.accountNumber,
+    ' \n',
+    group.accountName,
+  );
+  payday = group.payday
+    ? 'Every'.concat(' ', group.payday.toString(), 'th')
+    : 'None';
   const renderField = (category, content) => {
     const classname = 'groupdetail__field '.concat(category.toLowerCase());
     return (
@@ -80,18 +92,20 @@ const GroupDetailPage = ({ history, match }) => {
       </button>
       <div className="groupdetail__main">
         <div className="groupdetail__header">
-          { group.platform ?
-            (
-              <img className="groupdetail__ottlogo" src={group.platform ? `/images/${group.platform.toLowerCase()}.png/` : null} alt="logo" />
-            )
-            :
-            (
-              <>
-              </>
-            )}
-          <h1 className="groupdetail__name">
-            {group.name}
-          </h1>
+          {group.platform ? (
+            <img
+              className="groupdetail__ottlogo"
+              src={
+                group.platform
+                  ? `/images/${group.platform.toLowerCase()}.png/`
+                  : null
+              }
+              alt="logo"
+            />
+          ) : (
+            <></>
+          )}
+          <h1 className="groupdetail__name">{group.name}</h1>
         </div>
         <div className="groupdetail__body">
           {renderField('Membership', group.membership)}
@@ -103,32 +117,26 @@ const GroupDetailPage = ({ history, match }) => {
           {renderField('Description', group.description)}
         </div>
         <div className="groupdetail__footer">
-          {
-            group.members && group.members.find((member) => member.id === user.id) ?
-              (
-                <button id="quit-button" onClick={onQuitClick} type="button">
-                  Quit
-                </button>
-              ) :
-              (
-                <button id="join-button" onClick={onJoinClick} type="button">
-                  Join
-                </button>
-              )
-          }
-          {
-            group.leader && group.leader.id === user.id ?
-              (
-                <>
-                  <button id="edit-button" onClick={onEditClick} type="button">
-                    Edit
-                  </button>
-                  <button id="delete-button" onClick={onDeleteClick} type="button">
-                    Delete
-                  </button>
-                </>
-              ) : null
-          }
+          {group.members &&
+          group.members.find((member) => member.id === user.id) ? (
+            <button id="quit-button" onClick={onQuitClick} type="button">
+              Quit
+            </button>
+            ) : (
+              <button id="join-button" onClick={onJoinClick} type="button">
+                Join
+              </button>
+            )}
+          {group.leader && group.leader.id === user.id ? (
+            <>
+              <button id="edit-button" onClick={onEditClick} type="button">
+                Edit
+              </button>
+              <button id="delete-button" onClick={onDeleteClick} type="button">
+                Delete
+              </button>
+            </>
+          ) : null}
         </div>
       </div>
     </div>

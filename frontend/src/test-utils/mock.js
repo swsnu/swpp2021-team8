@@ -6,10 +6,10 @@ import { createBrowserHistory } from 'history';
 import thunk from 'redux-thunk';
 
 const getMockReducer = jest.fn(
-  (initialState) =>
-    (state = initialState, action) => {
-      return state;
-    },
+  /* eslint no-unused-vars: ["off"]  */
+  (initialState) => (state = initialState, action) => {
+    return state;
+  },
 );
 
 export const history = createBrowserHistory();

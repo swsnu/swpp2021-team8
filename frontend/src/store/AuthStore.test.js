@@ -1,9 +1,16 @@
 import axios from 'axios';
-import auth, { getLoginStatus, logIn, logOut, signUp } from './AuthStore';
 import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
+import auth, { getLoginStatus, logIn, logOut, signUp } from './AuthStore';
 
 const store = createStore(auth, applyMiddleware(thunk));
+
+class TestError extends Error {
+  constructor(status) {
+    super();
+    this.response = { status };
+  }
+}
 
 describe('AuthStore', () => {
   afterEach(() => {
@@ -32,12 +39,6 @@ describe('AuthStore', () => {
   });
 
   it('should set proper text to LoginError when it gets error from server', async () => {
-    class TestError extends Error {
-      constructor(status) {
-        super();
-        this.response = { status };
-      }
-    }
     axios.post = jest.fn(async () => {
       throw new TestError(401);
     });
@@ -83,12 +84,6 @@ describe('AuthStore', () => {
   });
 
   it('should set proper text to signUpError when it gets error from server', async () => {
-    class TestError extends Error {
-      constructor(status) {
-        super();
-        this.response = { status };
-      }
-    }
     axios.post = jest.fn(async () => {
       throw new TestError(409);
     });

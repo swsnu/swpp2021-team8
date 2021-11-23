@@ -1,11 +1,11 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import MyPage from './MyPage';
 import { Provider } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { ConnectedRouter } from 'connected-react-router';
+import MyPage from './MyPage';
 import { history } from '../../test-utils/mock';
-import store from '../../store'
+import store from '../../store';
 
 describe('<MyPage />', () => {
   let mockMyPage;

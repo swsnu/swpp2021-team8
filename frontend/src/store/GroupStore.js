@@ -22,7 +22,11 @@ const _editGroup = (group) => {
 };
 
 const _deleteGroup = (group) => {
-  return { type: 'group/DELETE_GROUP', id: group.id, willBeDeleted: group.willBeDeleted };
+  return {
+    type: 'group/DELETE_GROUP',
+    id: group.id,
+    willBeDeleted: group.willBeDeleted,
+  };
 };
 
 const _addUserToGroup = (group) => {
@@ -46,8 +50,7 @@ export const getGroupDetail = (id) => async (dispatch) => {
   try {
     const res = await axios.get(`/api/group/${id}/`);
     dispatch(_getGroupDetail(res.data));
-  } catch (e) {
-  }
+  } catch (e) {}
 };
 
 export const createGroup = (groupInfo) => async (dispatch) => {
@@ -97,10 +100,7 @@ export default function GroupReducer(state = initialState, action) {
       return {
         ...state,
         selectedGroup: action.group,
-        groups: [
-          ...state.groups,
-          action.group,
-        ],
+        groups: [...state.groups, action.group],
       };
 
     case 'group/EDIT_GROUP':

@@ -17,6 +17,7 @@ const MainPage = ({ history }) => {
   );
 
   const [groupSearchInput, setGroupSearchInput] = useState('');
+  const [contentSearchInput, setContentSearchInput] = useState('');
 
   // filter visibility
   const [visibility, setVisibility] = useState(false);
@@ -115,6 +116,10 @@ const MainPage = ({ history }) => {
 
   const onGroupSearchChange = (e) => {
     setGroupSearchInput(e.target.value);
+  };
+
+  const onContentSearchChange = (e) => {
+    setContentSearchInput(e.target.value);
   };
 
   const onGroupSearchClick = () => {
@@ -362,7 +367,8 @@ const MainPage = ({ history }) => {
                   id="content-search-input"
                   name="title"
                   placeholder="Search movie title"
-                  value=""
+                  value={contentSearchInput}
+                  onChange={onContentSearchChange}
                 />
                 <button
                   id="content-search-button"

@@ -17,7 +17,7 @@ describe('<Calendar />', () => {
     component.find('#previous-button').simulate('click');
     expect(component.find('.calendar__header').text()).toBe('2021.11');
   });
-  
+
   it('should render today well', () => {
     const component = mount(<Calendar />);
     expect(component.find('.cell .today').length).toBe(1);

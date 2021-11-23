@@ -1,10 +1,10 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import LoginPage from './LoginPage';
 import { Provider } from 'react-redux';
 import * as redux from 'react-redux';
 import { Route } from 'react-router-dom';
 import { ConnectedRouter } from 'connected-react-router';
+import LoginPage from './LoginPage';
 import { getMockStore, history } from '../../test-utils/mock';
 import * as AuthReducer from '../../store/AuthStore';
 
@@ -45,7 +45,7 @@ describe('<LoginPage />', () => {
 
     usernameWrapper.simulate('change', { target: { value: testUsername } });
 
-    expect(component.find('#username-input').props()['value']).toBe(
+    expect(component.find('#username-input').props().value).toBe(
       testUsername,
     );
   });
@@ -58,7 +58,7 @@ describe('<LoginPage />', () => {
 
     passwordWrapper.simulate('change', { target: { value: testPassword } });
 
-    expect(component.find('#password-input').props()['value']).toBe(
+    expect(component.find('#password-input').props().value).toBe(
       testPassword,
     );
   });

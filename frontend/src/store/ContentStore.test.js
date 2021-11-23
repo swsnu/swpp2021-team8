@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { applyMiddleware, createStore } from 'redux';
+import thunk from 'redux-thunk';
 import content, {
   addFavoriteContent,
   deleteFavoriteContent,
@@ -8,8 +10,6 @@ import content, {
   getSearchContents,
   getTrendingContents,
 } from './ContentStore';
-import { applyMiddleware, createStore } from 'redux';
-import thunk from 'redux-thunk';
 
 const store = createStore(content, applyMiddleware(thunk));
 

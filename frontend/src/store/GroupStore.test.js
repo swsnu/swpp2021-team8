@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { applyMiddleware, createStore } from 'redux';
+import thunk from 'redux-thunk';
 import group, {
   addUserToGroup,
   createGroup,
@@ -8,8 +10,6 @@ import group, {
   getGroupDetail,
   getGroups,
 } from './GroupStore';
-import { applyMiddleware, createStore } from 'redux';
-import thunk from 'redux-thunk';
 
 const store = createStore(group, applyMiddleware(thunk));
 
@@ -92,7 +92,11 @@ describe('GroupStore', () => {
       };
     });
 
-    axios.delete = jest.fn(async () => {});
+    axios.delete = jest.fn(async () => {
+      return {
+        data: { id: 2, willBeDeleted: true },
+      };
+    });
 
     await store.dispatch(getGroups());
     await store.dispatch(deleteGroup(2));

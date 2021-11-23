@@ -20,7 +20,7 @@ describe('<GroupListItem />', () => {
     );
 
     expect(
-      JSON.stringify(component.find('.group-item').props()['style']),
+      JSON.stringify(component.find('.group-item').props().style),
     ).toMatch('linear-gradient(to right, #C99208 0%, #CD3131 0%)');
   });
 
@@ -31,7 +31,7 @@ describe('<GroupListItem />', () => {
     );
 
     expect(
-      JSON.stringify(component.find('.group-item').props()['style']),
+      JSON.stringify(component.find('.group-item').props().style),
     ).toMatch('linear-gradient(to right, #C99208 100%, #CD3131 0%)');
   });
 

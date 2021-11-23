@@ -35,9 +35,11 @@ const GroupCreatePage = ({ history }) => {
   };
 
   const onPlatformSelect = (e) => {
-    setPlatform(ottList.find((ott) => {
-      return ott.name === e.target.value;
-    }));
+    setPlatform(
+      ottList.find((ott) => {
+        return ott.name === e.target.value;
+      }),
+    );
   };
   const onMembershipSelect = (e) => {
     setMembership(e.target.value);
@@ -59,9 +61,7 @@ const GroupCreatePage = ({ history }) => {
     }
   };
   const checkPasswordValid = () => {
-    if (
-      password.toString().match(/[0-9]{4}/)
-    ) {
+    if (password.toString().match(/[0-9]{4}/)) {
       setIsPasswordValid(true);
     } else {
       setIsPasswordValid(false);
@@ -95,22 +95,28 @@ const GroupCreatePage = ({ history }) => {
     history.push('/main');
   };
   const onCreateGroupClick = () => {
-    dispatch(createGroup({
-      name: title,
-      description,
-      isPublic,
-      password,
-      ottPlanId: ottPlan.id,
-      payday,
-      accountBank,
-      accountNumber,
-      accountName,
-    }));
+    dispatch(
+      createGroup({
+        name: title,
+        description,
+        isPublic,
+        password,
+        ottPlanId: ottPlan.id,
+        payday,
+        accountBank,
+        accountNumber,
+        accountName,
+      }),
+    );
     history.push('/main/');
   };
 
   const renderField = (category, content, section) => {
-    const classname = 'groupcreate__'.concat(section, '__field ', category.toLowerCase());
+    const classname = 'groupcreate__'.concat(
+      section,
+      '__field ',
+      category.toLowerCase(),
+    );
     return (
       <div className={classname}>
         <div className={category.toLowerCase().concat(' category')}>
@@ -136,7 +142,11 @@ const GroupCreatePage = ({ history }) => {
           onChange={onPlatformSelect}
         />
         <label htmlFor={ott.name.toLowerCase().concat('-logo-button')}>
-          <img className={checked ? 'logo checked' : 'logo unchecked'} src={`images/${ott.name.toLowerCase()}.png`} alt={ott.name.toLowerCase().concat('-logo')} />
+          <img
+            className={checked ? 'logo checked' : 'logo unchecked'}
+            src={`images/${ott.name.toLowerCase()}.png`}
+            alt={ott.name.toLowerCase().concat('-logo')}
+          />
         </label>
       </div>
     );
@@ -148,56 +158,37 @@ const GroupCreatePage = ({ history }) => {
       onChange={onMembershipSelect}
       disabled={!platform}
     >
-      <option value="Basic">
-        Basic
-      </option>
-      <option value="Standard">
-        Standard
-      </option>
-      <option value="Premium">
-        Premium
-      </option>
+      <option value="Basic">Basic</option>
+      <option value="Standard">Standard</option>
+      <option value="Premium">Premium</option>
     </select>
   );
   const peopleContent = (
     <div className="people__text">
-      {
-        ottPlan && ottPlan.maxPeople ?
-          (
-            <>
-              {ottPlan.maxPeople}
-            </>
-          )
-          :
-          (
-            <>
-              0
-            </>
-          )
-      }
+      {ottPlan && ottPlan.maxPeople ? <>{ottPlan.maxPeople}</> : <>0</>}
     </div>
   );
   const costContent = (
     <div className="cost__text">
-      {
-        ottPlan && ottPlan.cost ?
-          (
-            <>
-              {Math.floor(ottPlan.cost / ottPlan.maxPeople).toString().concat(' Won')}
-            </>
-          )
-          :
-          (
-            <>
-              0 Won
-            </>
-          )
-      }
+      {ottPlan && ottPlan.cost ? (
+        <>
+          {Math.floor(ottPlan.cost / ottPlan.maxPeople)
+            .toString()
+            .concat(' Won')}
+        </>
+      ) : (
+        <>0 Won</>
+      )}
     </div>
   );
   const isPublicContent = (
     <>
-      <input type="checkbox" name="public" id="public-input" onChange={onPublicToggle} />
+      <input
+        type="checkbox"
+        name="public"
+        id="public-input"
+        onChange={onPublicToggle}
+      />
       <label htmlFor="public-input" className="round-slider-container">
         <div />
         <div />
@@ -207,8 +198,18 @@ const GroupCreatePage = ({ history }) => {
   );
   const passwordContent = (
     <>
-      <input id="password-input" name="password" type="password" onChange={onPasswordChange} />
-      <input id="password-confirm-input" name="password-confirm" type="password" onChange={onPasswordConfirmChange} />
+      <input
+        id="password-input"
+        name="password"
+        type="password"
+        onChange={onPasswordChange}
+      />
+      <input
+        id="password-confirm-input"
+        name="password-confirm"
+        type="password"
+        onChange={onPasswordConfirmChange}
+      />
       <div className="password-validcheck">
         <span>
           {isPasswordValid ? (
@@ -291,7 +292,11 @@ const GroupCreatePage = ({ history }) => {
     </>
   );
   const paydayOptions = [...Array(31).keys()].map((day) => {
-    return <option value={day + 1}>{day + 1}</option>;
+    return (
+      <option value={day + 1} key={`payday_${day + 1}`}>
+        {day + 1}
+      </option>
+    );
   });
   const paydayInputContent = (
     <>
@@ -314,9 +319,7 @@ const GroupCreatePage = ({ history }) => {
       <div className="groupcreate__main">
         <div className="groupcreate__membership">
           <div className="groupcreate__membership__header">
-            <h1 className="groupcreate__membership__info">
-              Membership Info
-            </h1>
+            <h1 className="groupcreate__membership__info">Membership Info</h1>
           </div>
           <div className="groupcreate__membership__body">
             {renderField('OTT', platformSelectContent, 'membership')}
@@ -324,24 +327,15 @@ const GroupCreatePage = ({ history }) => {
             {renderField('People', peopleContent, 'membership')}
             {renderField('Cost', costContent, 'membership')}
             {renderField('Public', isPublicContent, 'membership')}
-            {
-              isPublic ?
-                (
-                  null
-                )
-                :
-                (
-                  renderField('Password', passwordContent, 'membership')
-                )
-            }
+            {isPublic
+              ? null
+              : renderField('Password', passwordContent, 'membership')}
           </div>
         </div>
         <hr />
         <div className="groupcreate__group">
           <div className="groupcreate__group__header">
-            <h1 className="groupcreate__group__info">
-              Group Info
-            </h1>
+            <h1 className="groupcreate__group__info">Group Info</h1>
           </div>
           <div className="groupcreate__group__body">
             {renderField('Title', titleInputContent, 'group')}
@@ -359,7 +353,12 @@ const GroupCreatePage = ({ history }) => {
             onClick={onCreateGroupClick}
             type="button"
             disabled={
-              !ottPlan || !title || !description || !accountBank || !accountName || !accountNumber
+              !ottPlan ||
+              !title ||
+              !description ||
+              !accountBank ||
+              !accountName ||
+              !accountNumber
             }
           >
             Create Group

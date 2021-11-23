@@ -4,7 +4,7 @@ import { Table } from 'semantic-ui-react';
 import './Calendar.scss';
 
 const CALENDAR_TABLE_HEADER = (
-  <Table.Header classname="calendar__table__header">
+  <Table.Header className="calendar__table__header">
     <Table.Row>
       <Table.HeaderCell className="sunday">Sun</Table.HeaderCell>
       <Table.HeaderCell>Mon</Table.HeaderCell>
@@ -18,7 +18,7 @@ const CALENDAR_TABLE_HEADER = (
 );
 const CalendarTableBody = (year, month) => {
   const dates = [];
-  const maxDate = (new Date(year, month + 1, 0)).getDate();
+  const maxDate = new Date(year, month + 1, 0).getDate();
   const today = new Date();
   for (let date = 1; date <= maxDate; date += 1) {
     dates.push(new Date(year, month, date));
@@ -30,17 +30,25 @@ const CalendarTableBody = (year, month) => {
     for (let day = 0; day < 7; day += 1) {
       const date = dates[i];
       if (date !== undefined && day === date.getDay()) {
-        if (date.getFullYear() === today.getFullYear()
-        && date.getMonth() === today.getMonth()
-        && date.getDate() === today.getDate()) {
+        if (
+          date.getFullYear() === today.getFullYear() &&
+          date.getMonth() === today.getMonth() &&
+          date.getDate() === today.getDate()
+        ) {
           row.push(
-            <Table.Cell className={`cell ${day === 0 && 'sunday'} today`} key={7 * week + day}>
+            <Table.Cell
+              className={`cell ${day === 0 && 'sunday'} today`}
+              key={7 * week + day}
+            >
               <div className="date">{date.getDate()}</div>
             </Table.Cell>,
           );
         } else {
           row.push(
-            <Table.Cell className={`cell ${day === 0 && 'sunday'}`} key={7 * week + day}>
+            <Table.Cell
+              className={`cell ${day === 0 && 'sunday'}`}
+              key={7 * week + day}
+            >
               <div className="date">{date.getDate()}</div>
             </Table.Cell>,
           );
@@ -54,7 +62,10 @@ const CalendarTableBody = (year, month) => {
   }
   return (
     <Table.Body className="calendar__body__table__body">
-      {rows.map((row) => (<Table.Row>{row}</Table.Row>))}
+      {rows.map((row, index) => (
+        /* eslint react/no-array-index-key: ['off'] */
+        <Table.Row key={`table.row-${index}`}>{row}</Table.Row>
+      ))}
     </Table.Body>
   );
 };
