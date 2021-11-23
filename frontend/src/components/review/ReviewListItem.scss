@@ -1,0 +1,28 @@
+.review{
+    margin: 20px 0;
+    display: flex;
+    .review__detail{
+        margin: 5px 10px 0 0;
+    }
+    .review__user{
+        margin: 7px 10px 0 30px;
+        font-size: smaller;
+        color: grey;
+    }
+    .review__createdat{
+        margin: 9px 20px 0 0;
+        font-size: smaller;
+        color: grey;
+        opacity: 80%;
+    }
+    .buttons{
+        margin-left: auto;
+    }
+    #edit-button{
+        margin: 0 10px;
+        font-size: 13px;        
+    }
+    #delete-button{
+        font-size: 13px;
+    }
+}

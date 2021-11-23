@@ -85,8 +85,6 @@ class Group(models.Model):
 
 
 class Content(models.Model):
-    the_movie_id = models.IntegerField(default=0)    
-    name = models.CharField(default="", max_length=200)
     favorite_cnt = models.IntegerField(default=0)
     favorite_users = models.ManyToManyField(
         User,
@@ -94,7 +92,8 @@ class Content(models.Model):
         related_name='favorite_contents'
     )
     def __str__(self):
-        return self.name
+        content_id = str(self.id)
+        return content_id
 
 
 class Review(models.Model):

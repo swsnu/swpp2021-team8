@@ -1,0 +1,140 @@
+@import '../../base.scss';
+.contentdetail{
+    display: flex;
+    margin:0 0 0 0;
+    .contentdetail__main {
+        color:white;
+        padding: 0px 20px 0px 20px;
+        // justify-self: center;
+        .contentdetail__header {
+            display: flex;
+            margin: 30px 0 50px 0px;
+            text-align: left;
+            align-items: center;
+            .contentdetail__poster {
+                display: flex;
+                height: 280px;
+                width: 210px;
+                border: 1px solid;
+                border-color: white;
+            }
+            .contentdetail__right{
+                margin-left: 20px;
+                line-height: 1.5;
+                .contentdetail__name {
+                    font-size: 32pt;
+                    font-family: $font-title-stack;
+                    font-weight: bolder;
+                }
+                .contentdetail__favorite {
+                    display: flex;
+                    margin: 20px 0px 60px 0px;
+                    #heart{
+                        background: url(./temp/heart_white.png);
+                        background-repeat: no-repeat;
+                        background-size: 100%;
+                        height: 40px;
+                        width: 20px;
+                        color: rgb(255, 60, 60);
+                    }
+                    #heart:focus{
+                        background: url(./temp/heart.png);
+                        background-repeat: no-repeat;
+                        background-size: 100%;
+                    }
+                    .contentdetail__favoritecount{
+                        margin: 6px 0 0 12px;
+                    }
+                }
+                .contentdetail__category{
+                    font-weight: lighter;
+                    margin: 10px 0px;
+                }
+                .contentdetail__rate{
+                    font-weight: bolder;
+                }
+                .contentdetail__genre{
+                    font-weight: lighter; 
+                }
+                .contentdetail__releasedate{
+                    font-weight: lighter;
+                }
+            }
+        }
+        .contentdetail__body {
+            .contentdetail__field {
+                display: flex;
+                align-content: center;
+                margin: 20px 0 20px 0;
+                .category {
+                    font-size: 15pt;
+                    font-weight: bold;
+                    align-content: center;
+                    width: 200px;
+                    white-space: pre-wrap;
+                    line-height: 1.5;
+                    margin-right: 20px;
+                }
+                .detail {
+                    align-content: center;
+                    white-space: pre-wrap;
+                    line-height: 1.5;
+                }                
+            }
+            .description{
+                display: block;
+                .detail {
+                    margin-top: 10px;
+                    display: flex;
+                }
+            }
+        }
+        .contentdetail__footer {
+                margin-bottom: 50px;
+            .contentdetail__name {
+                font-size: 15pt;
+                font-weight: bold;
+                color : rgb(255, 60, 60);
+                align-content: center;
+                width: 200px;
+                white-space: pre-wrap;
+                line-height: 1.5;
+                margin-right: 20px;
+            }
+            .contentdetail__review {
+                display: flex;
+                font-size: 13px;
+
+                #new-review-content-input{
+                    width: 92%;
+                    margin: 0 10px 10px 0;
+                }
+                #create-review-button{
+                    margin-left: auto;
+                    height: 35px;
+                }
+                #create-review-button:disabled{
+                    padding: 10px 15px;
+                    background-color: grey;
+                    cursor:default
+                }
+
+            }
+            .contentdetail__reviewlist{
+                margin-top: 50px;
+            }
+        }
+    }
+}
+#back-button {
+    display: flex;
+    background-color: black;
+    height: 40px;
+    width: 120px;
+    font-size: 15pt;
+    font-weight: bold;
+    justify-content: left;
+    align-items: center;
+    margin: 10px 0 0 0;
+    padding:0 0 0 0;
+}

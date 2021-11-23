@@ -56,7 +56,7 @@ const _getContentDetail = (content) => {
 
 export const getSearchContents = (query) => async (dispatch) => {
   try {
-    const res = await axios.get(`/api/content/?${query}`);
+    const res = await axios.get(`/api/content/search/${query}/`);
     dispatch(_getSearchContents(res.data));
   } catch (e) {}
 };
