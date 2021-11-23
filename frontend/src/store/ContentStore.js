@@ -63,21 +63,21 @@ export const getSearchContents = (query) => async (dispatch) => {
 
 export const getContentDetail = (contentId) => async (dispatch) => {
   try {
-    const res = await axios.get(`/api/content/${contentId}`);
+    const res = await axios.get(`/api/content/${contentId}/`);
     dispatch(_getContentDetail(res.data));
   } catch (e) {}
 };
 
 export const getRecommendationContents = (userId) => async (dispatch) => {
   try {
-    const res = await axios.get(`/api/content/${userId}/recommendation`);
+    const res = await axios.get(`/api/content/${userId}/recommendation/`);
     dispatch(_getRecommendationContents(res.data));
   } catch (e) {}
 };
 
 export const getFavoriteContents = (userId) => async (dispatch) => {
   try {
-    const res = await axios.get(`/api/content/${userId}/favorite`);
+    const res = await axios.get(`/api/content/${userId}/favorite/`);
     dispatch(_getFavoriteContents(res.data));
   } catch (e) {}
 };
@@ -85,7 +85,7 @@ export const getFavoriteContents = (userId) => async (dispatch) => {
 export const addFavoriteContent = (userId, contentId) => async (dispatch) => {
   try {
     const res = await axios.post(
-      `/api/content/${userId}/favorite/${contentId}`,
+      `/api/content/${userId}/favorite/${contentId}/`,
     );
     dispatch(_addFavoriteContent(res.data));
   } catch (e) {}
@@ -94,14 +94,14 @@ export const addFavoriteContent = (userId, contentId) => async (dispatch) => {
 export const deleteFavoriteContent =
   (userId, contentId) => async (dispatch) => {
     try {
-      await axios.delete(`/api/content/${userId}/favorite/${contentId}`);
+      await axios.delete(`/api/content/${userId}/favorite/${contentId}/`);
       dispatch(_deleteFavoriteContent(contentId));
     } catch (e) {}
   };
 
 export const getTrendingContents = () => async (dispatch) => {
   try {
-    const res = await axios.get('/api/content/trending');
+    const res = await axios.get('/api/content/trending/');
     dispatch(_getTrendingContents(res.data));
   } catch (e) {}
 };

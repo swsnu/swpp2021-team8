@@ -5,11 +5,36 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.views.decorators import csrf
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
-import json
 from json.decoder import JSONDecodeError
 from .models import Ott, Group, Content, Review
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
+from django.conf import settings
+
+import json
+import time
+import requests
+import random
+
+# Request the movie api with url and params
+# _params should be dictionary type
+def request_the_movie_api(url, _params):
+    MAX_RETRIES = 2
+    SLEEP_TIME = 5
+    attempt_num = 0
+    params = {'api_key': settings.THE_MOVIE_API_KEY}
+    params.update(_params)
+
+    while attempt_num < MAX_RETRIES:
+        r = requests.get(url, params=params)
+        if r.status_code == 200:
+            return r.json()
+        else:
+            attempt_num += 1
+            time.sleep(SLEEP_TIME)
+    
+    return None
+
 
 # user/: Get user's login status
 @ensure_csrf_cookie
@@ -336,7 +361,56 @@ def content_detail(request, content_id):
         return HttpResponseNotAllowed(['GET'])
 
 def content_recommendation(request, user_id):
-    return HttpResponse("recommendation")
+    if request.method == "GET":
+        if not request.user.is_authenticated:
+            #ERR 401 : Not Authenticated
+            return HttpResponse(status=401)
+
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            #ERR 404 : User Doesn't Exist
+            return HttpResponse(status=404)
+
+        fav_contents_id = [content["id"] for content in user.favorite_contents.all()]
+        recommendation_contents = []
+        recommendation_url = 'https://api.themoviedb.org/3/movie/{0}/recommendations'
+        placeholder = 'https://via.placeholder.com/150?text=No+Content'
+
+        # If user has no favorite contents
+        if not fav_contents_id:
+            DEFAULT_CONTENT_ID = 68718 # Django Unchained
+            url = recommendation_url.format(DEFAULT_CONTENT_ID)
+            data = request_the_movie_api(url, dict())
+
+            # if data is not provided retrun placeholder images
+            if not data:
+                recommendation_contents = [{"id": 0, "poster": placeholder}] * 5
+
+            else:
+                recommendation_contents = [ {"id": content["id"], "poster": 'https://image.tmdb.org/t/p/original/' + content["poster_path"]} for content in data["results"]]
+
+        # If user has favorite contents
+        else:
+            # generate recommendation only using last 5
+            for favorite_id in fav_contents_id[:-5]:
+                url = recommendation_url.format(favorite_id)
+                data = request_the_movie_api(url, dict())
+
+                if data:
+                    recommendation_contents.append({"id": content["id"], "poster": 'https://image.tmdb.org/t/p/original/' + content["poster_path"]} for content in data["results"])
+
+            if not recommendation_contents:
+                recommendation_contents = [{"id": 0, "poster": placeholder}] * 5
+
+            else:
+                # pick only 21 samples
+                recommendation_contents = random.sample(recommendation_contents, min(len(recommendation_contents), 21))
+
+        return JsonResponse(recommendation_contents, safe=False, status=200)
+
+    else:
+        return HttpResponseNotAllowed(['GET'])
 
 def user_favorite_list(request, user_id):
     if request.method == 'GET':
@@ -408,7 +482,27 @@ def content_favorite(request, user_id, content_id):
         return HttpResponseNotAllowed(['PUT', 'DELETE'])
 
 def content_trending(request):
-    return HttpResponse("trending")
+    if request.method == "GET":
+        if not request.user.is_authenticated:
+            #ERR 401 : Not Authenticated
+            return HttpResponse(status=401)
+
+        placeholder = 'https://via.placeholder.com/150?text=No+Content'
+        trending_url = 'https://api.themoviedb.org/3/movie/popular'
+
+        data = request_the_movie_api(trending_url, dict())
+
+        # if data is not provided retrun placeholder images
+        if not data:
+            trending_contents = [{"id": 0, "poster": placeholder}] * 5
+
+        else:
+            trending_contents = [ {"id": content["id"], "poster": 'https://image.tmdb.org/t/p/original/' + content["poster_path"]} for content in data["results"]]
+
+        return JsonResponse(trending_contents, safe=False, status=200)
+
+    else:
+        return HttpResponseNotAllowed(['GET'])
 
 #Review
 def review_content(request, content_id):
