@@ -37,7 +37,7 @@ jest.mock('../../components/content/ContentListItem', () => {
   return jest.fn(({ content }) => {
     return (
       <>
-        <div>{content.id}</div>
+        <div className="content-list-item">{content.id}</div>
       </>
     );
   });
@@ -71,6 +71,114 @@ const mockStore = getMockStore(
     groups: [
       {
         id: 1,
+        platform: 'netflix',
+        title: 'mock Group',
+        leader: 'mock Leader',
+        membership: 'Premium',
+        price: 9999,
+        curMember: 1,
+        maxMember: 4,
+        duration: 0,
+      },
+    ],
+  },
+  {},
+);
+
+const mockPaginationStore = getMockStore(
+  { isLoggedIn: true },
+  {
+    recommendationContents: [
+      { id: 1 },
+      { id: 2 },
+      { id: 3 },
+      { id: 4 },
+      { id: 5 },
+      { id: 6 },
+      { id: 7 },
+      { id: 8 },
+    ],
+    trendingContents: [
+      { id: 1 },
+      { id: 2 },
+      { id: 3 },
+      { id: 4 },
+      { id: 5 },
+      { id: 6 },
+      { id: 7 },
+      { id: 8 },
+    ],
+  },
+  {
+    groups: [
+      {
+        id: 1,
+        platform: 'netflix',
+        title: 'mock Group',
+        leader: 'mock Leader',
+        membership: 'Premium',
+        price: 9999,
+        curMember: 1,
+        maxMember: 4,
+        duration: 0,
+      },
+      {
+        id: 2,
+        platform: 'netflix',
+        title: 'mock Group',
+        leader: 'mock Leader',
+        membership: 'Premium',
+        price: 9999,
+        curMember: 1,
+        maxMember: 4,
+        duration: 0,
+      },
+      {
+        id: 3,
+        platform: 'netflix',
+        title: 'mock Group',
+        leader: 'mock Leader',
+        membership: 'Premium',
+        price: 9999,
+        curMember: 1,
+        maxMember: 4,
+        duration: 0,
+      },
+      {
+        id: 4,
+        platform: 'netflix',
+        title: 'mock Group',
+        leader: 'mock Leader',
+        membership: 'Premium',
+        price: 9999,
+        curMember: 1,
+        maxMember: 4,
+        duration: 0,
+      },
+      {
+        id: 5,
+        platform: 'netflix',
+        title: 'mock Group',
+        leader: 'mock Leader',
+        membership: 'Premium',
+        price: 9999,
+        curMember: 1,
+        maxMember: 4,
+        duration: 0,
+      },
+      {
+        id: 6,
+        platform: 'netflix',
+        title: 'mock Group',
+        leader: 'mock Leader',
+        membership: 'Premium',
+        price: 9999,
+        curMember: 1,
+        maxMember: 4,
+        duration: 0,
+      },
+      {
+        id: 7,
         platform: 'netflix',
         title: 'mock Group',
         leader: 'mock Leader',
@@ -237,5 +345,51 @@ describe('<MainPage /> GroupTab', () => {
     component.find('#group-filter-button').simulate('click');
 
     expect(component.find('.main__group-filter__visible').length).toBe(1);
+  });
+
+  it('should render new groups when page button clicks', () => {
+    mockMainPage = (
+      <Provider store={mockPaginationStore}>
+        <ConnectedRouter history={history}>
+          <Route path="/" component={MainPage} exact />
+        </ConnectedRouter>
+      </Provider>
+    );
+    const component = mount(mockMainPage);
+
+    const wrapper = component.find('.main__group-list ul li a');
+
+    wrapper.at(2).simulate('click');
+
+    expect(component.find('.group-item').length).toBe(2);
+  });
+
+  it('should render previous/next content when press click button', () => {
+    mockMainPage = (
+      <Provider store={mockPaginationStore}>
+        <ConnectedRouter history={history}>
+          <Route path="/" component={MainPage} exact />
+        </ConnectedRouter>
+      </Provider>
+    );
+    localStorage.setItem('mainTab', 'content');
+    const component = mount(mockMainPage);
+
+    const previousButtonWrapper = component.find(
+      '.main__content-list__poster__previous',
+    );
+    const nextButtonWrapper = component.find(
+      '.main__content-list__poster__next',
+    );
+
+    nextButtonWrapper.at(0).simulate('click');
+    nextButtonWrapper.at(1).simulate('click');
+
+    expect(component.find('.content-list-item').at(0).text()).toBe('4');
+
+    previousButtonWrapper.at(0).simulate('click');
+    previousButtonWrapper.at(1).simulate('click');
+
+    expect(component.find('.content-list-item').at(0).text()).toBe('1');
   });
 });

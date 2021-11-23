@@ -64,7 +64,6 @@ export const getSearchContents = (query) => async (dispatch) => {
 export const getContentDetail = (contentId) => async (dispatch) => {
   try {
     const res = await axios.get(`/api/content/${contentId}/`);
-    console.log(res);
     dispatch(_getContentDetail(res.data));
   } catch (e) {}
 };
