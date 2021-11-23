@@ -369,18 +369,18 @@ def content_recommendation(request, user_id):
         try:
             user = User.objects.get(id=user_id)
         except User.DoesNotExist:
-            #ERR 404 : Group Doesn't Exist
+            #ERR 404 : User Doesn't Exist
             return HttpResponse(status=404)
 
         fav_contents_id = [content["id"] for content in user.favorite_contents.all()]
         recommendation_contents = []
-        default_url = 'https://api.themoviedb.org/3/movie/{0}/recommendations'
+        recommendation_url = 'https://api.themoviedb.org/3/movie/{0}/recommendations'
         placeholder = 'https://via.placeholder.com/150?text=No+Content'
 
         # If user has no favorite contents
         if not fav_contents_id:
             DEFAULT_CONTENT_ID = 68718 # Django Unchained
-            url = default_url.format(DEFAULT_CONTENT_ID)
+            url = recommendation_url.format(DEFAULT_CONTENT_ID)
             data = request_the_movie_api(url, dict())
 
             # if data is not provided retrun placeholder images
@@ -394,7 +394,7 @@ def content_recommendation(request, user_id):
         else:
             # generate recommendation only using last 5
             for favorite_id in fav_contents_id[:-5]:
-                url = default_url.format(favorite_id)
+                url = recommendation_url.format(favorite_id)
                 data = request_the_movie_api(url, dict())
 
                 if data:
@@ -488,9 +488,9 @@ def content_trending(request):
             return HttpResponse(status=401)
 
         placeholder = 'https://via.placeholder.com/150?text=No+Content'
-        url = 'https://api.themoviedb.org/3/movie/popular'
+        trending_url = 'https://api.themoviedb.org/3/movie/popular'
 
-        data = request_the_movie_api(url, dict())
+        data = request_the_movie_api(trending_url, dict())
 
         # if data is not provided retrun placeholder images
         if not data:
