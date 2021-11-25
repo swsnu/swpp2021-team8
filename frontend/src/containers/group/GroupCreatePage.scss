@@ -20,25 +20,6 @@
                 }
             }
             .groupcreate__membership__body {
-                .groupcreate__membership__field {
-                    display: flex;
-                    align-content: center;
-                    margin: 20px 0 20px 0;
-                    .category {
-                        font-size: 15pt;
-                        font-weight: bolder;
-                        align-content: center;
-                        width: 150px;
-                        white-space: pre-wrap;
-                        line-height: 1.5;
-                        margin-right: 20px;
-                    }
-                    .content {
-                        align-content: center;
-                        white-space: pre-wrap;
-                        line-height: 1.5;
-                    }                
-                }
                 .ott .content{
                     display: flex;
                     .ott__content__component {
@@ -95,7 +76,7 @@
                             width: 25px;
                             height: 26px;
                             border-radius: 50%;
-                            background: rgb(187, 186, 186);
+                            background: rgb(186, 186, 186);
                             top: 2px;
                             left: 27px;
                             position: absolute;
@@ -147,24 +128,11 @@
             }
             .groupcreate__group__body {
                 .groupcreate__group__field {
-                    display: flex;
-                    align-content: center;
-                    margin: 20px 0 20px 0;
                     .category {
                         flex-basis:150px;
                         flex-shrink:0;
-                        font-size: 15pt;
-                        font-weight: bolder;
-                        align-content: center;
-                        width: 150px;
-                        white-space: pre-wrap;
-                        line-height: 1.5;
-                        margin-right: 20px;
                     }
                     .content {
-                        align-content: center;
-                        white-space: pre-wrap;
-                        line-height: 1.5;
                         input, textarea, select{
                             height : 30px;
                             width : 400px;

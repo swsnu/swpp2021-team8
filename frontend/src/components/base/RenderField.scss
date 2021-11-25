@@ -1,0 +1,20 @@
+@import '../../base.scss';
+.groupcreate__group__field {
+    display: flex;
+    align-content: center;
+    margin: 20px 0 20px 0;
+    .category {
+        font-size: 15pt;
+        font-weight: bolder;
+        align-content: center;
+        width: 150px;
+        white-space: pre-wrap;
+        line-height: 1.5;
+        margin-right: 20px;
+    }
+    .content {
+        align-content: center;
+        white-space: pre-wrap;
+        line-height: 1.5;
+    }
+}
