@@ -20,21 +20,23 @@
                 }
             }
             .groupcreate__membership__body {
-                .ott .content{
-                    display: flex;
-                    .ott__content__component {
-                        margin-right: 15px;
-                    }
-                    .groupcreate__ott {
-                        display: none;
-                    }
-                    .logo {
-                        height: 40px;
-                        width: 40px;
-                        border-radius: 10px;
-                    }
-                    .logo.unchecked {
-                        filter: brightness(40%);
+                .ott{
+                    .content{
+                        display: flex;
+                        .ott__content__component {
+                            margin-right: 15px;
+                        }
+                        .groupcreate__ott {
+                            display: none;
+                        }
+                        .logo {
+                            height: 40px;
+                            width: 40px;
+                            border-radius: 10px;
+                        }
+                        .logo.unchecked {
+                            filter: brightness(40%);
+                        }
                     }
                 }
                 .membership {
@@ -53,58 +55,65 @@
                         font-size: 12pt;
                     }
                 }
-                .cost .content{
-                    font-size:14pt;
-                    font-weight: bold;
-                    color: rgb(209, 204, 204);
-                }
-                .public .content{
-                    [type=checkbox]{
-                        display: none;
+                .cost {
+                    .content{
+                        font-size:14pt;
+                        font-weight: bold;
+                        color: rgb(209, 204, 204);
                     }
-                    .round-slider-container{
-                        width: 55px;
-                        height: 30px;
-                        background: white;
-                        border-radius: 50px;
-                        cursor: pointer;
-                        display: flex;
-                        justify-content: space-around;
-                        align-items: center;
-                        position: relative;
-                        .round-slider {
-                            width: 25px;
-                            height: 26px;
-                            border-radius: 50%;
-                            background: rgb(186, 186, 186);
-                            top: 2px;
-                            left: 27px;
-                            position: absolute;
+                }
+                .public {
+                    .content{
+                        [type=checkbox]{
+                            display: none;
+                        }
+                        .round-slider-container{
+                            width: 55px;
+                            height: 30px;
+                            background: #50c878;
+                            border-radius: 50px;
+                            cursor: pointer;
+                            display: flex;
+                            justify-content: space-around;
+                            align-items: center;
+                            position: relative;
+                            .round-slider {
+                                width: 25px;
+                                height: 26px;
+                                border-radius: 50%;
+                                background: rgb(186, 186, 186);
+                                top: 2px;
+                                left: 27px;
+                                position: absolute;
+                            }
+                        }
+                        #public-input:checked +.round-slider-container {
+                            background: #87ceeb;
+                            .round-slider{
+                                transform: translateX(-25px);
+                            }
                         }
                     }
-                    #public-input:checked +.round-slider-container {
-                        background: white;
-                        .round-slider{
-                            transform: translateX(-25px);
+                }
+                .password {
+                    .content {
+                        input {
+                            display: block;
+                            height: 30px;
+                            width: 200px;
+                            margin-top: 2%;
+                        }
+                        .password-validcheck {
+                            margin-top: 15px;
+                        }
+                        div {
+                            font-size: 13pt;
+                        }
+                        span {
+                            margin-right: 10px;
                         }
                     }
-                }
-                .password .content {
-                    input {
-                        display: block;
-                        height: 30px;
-                        width: 200px;
-                    }
-                    .password-validcheck {
-                        margin-top: 15px;
-                    }
-                    div {
-                        font-size: 13pt;
-                    }
-                    span {
-                        margin-right: 10px;
-                    }
-                }
+                }    
             }
         }
         hr {
@@ -127,28 +136,27 @@
                 }
             }
             .groupcreate__group__body {
-                .groupcreate__group__field {
-                    .category {
-                        flex-basis:150px;
-                        flex-shrink:0;
+                .content {
+                    input, textarea, select{
+                        height : 35px;
+                        width : 400px;
+                        color: gray;
+                        font-size: 12pt;
                     }
+                    textarea {
+                        height : 90px;
+                    }
+                    #payday-select {
+                        width: 80px;
+                    }
+                }                
+                .account {
                     .content {
-                        input, textarea, select{
-                            height : 30px;
-                            width : 400px;
-                            color: gray;
-                            font-size: 12pt;
+                        display: grid;
+                        input{
+                            margin-top: 1%;
                         }
-                        textarea {
-                            height : 90px;
-                        }
-                        select {
-                            width: 408px;
-                        }
-                        #payday-select {
-                            width: 80px;
-                        }
-                    }                
+                    }
                 }
             }
         }

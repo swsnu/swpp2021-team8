@@ -83,6 +83,7 @@ const mockStore = getMockStore(
     ],
   },
   {},
+  {},
 );
 
 const mockPaginationStore = getMockStore(
@@ -190,6 +191,7 @@ const mockPaginationStore = getMockStore(
       },
     ],
   },
+  {},
   {},
 );
 

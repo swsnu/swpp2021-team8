@@ -3,7 +3,7 @@ import time
 import random
 from json.decoder import JSONDecodeError
 import requests
-from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseBadRequest, JsonResponse
+from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseBadRequest, JsonResponse, response
 from django.contrib.auth.models import User
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
@@ -40,9 +40,19 @@ def request_the_movie_api(url, _params):
 def user(request):
     if request.method == 'GET':
         if request.user.is_authenticated:
-            return JsonResponse({"isLoggedIn": True}, status=200)
+            response_dict = {
+                "id": request.user.id,
+                "username": request.user.username,
+                "isLoggedIn": True,
+            }
+            return JsonResponse(response_dict, status=200)
         else:
-            return JsonResponse({"isLoggedIn": False}, status=200)
+            response_dict = {
+                "id": '',
+                "username": '',
+                "isLoggedIn": False,
+            }
+            return JsonResponse(response_dict, status=200)
     else:
         return HttpResponseNotAllowed(['GET'])
 
@@ -315,7 +325,7 @@ def group_add_user(request, group_id):
                 return HttpResponse(status=404)
             # ERR 400 : Group Is Full
             # print(f"curPeo: {group.current_people}, mem: {group.members.all().values()} before add")
-            if(group.current_people > group.membership.max_people):
+            if(group.current_people >= group.membership.max_people):
                 return HttpResponseBadRequest()
             group.members.add(request.user)
             group.current_people = group.current_people + 1

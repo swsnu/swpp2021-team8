@@ -9,8 +9,8 @@ import { getMockStore, history } from '../../test-utils/mock';
 import * as AuthReducer from '../../store/AuthStore';
 import SignUpPage from './SignUpPage';
 
-const mockStore = getMockStore({}, {}, {}, {});
-const mockStoreError = getMockStore({ signUpError: 'SignUpError' }, {}, {}, {});
+const mockStore = getMockStore({}, {}, {}, {}, {});
+const mockStoreError = getMockStore({ signUpError: 'SignUpError' }, {}, {}, {}, {});
 
 describe('<SignUp />', () => {
   let mockSignUpPage;

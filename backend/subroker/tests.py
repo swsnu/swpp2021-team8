@@ -1,6 +1,7 @@
 import json
 import tempfile
 from django.contrib.auth.models import User
+from django.http import response
 from django.test import TestCase, Client
 from .models import Review, Content, Group, Ott
 
@@ -89,6 +90,19 @@ class SubrokerTestCase(TestCase):
             leader=new_user1,
             current_people=1)
         new_group2.save()
+
+    def test_user(self):
+        client = Client()
+        response=client.put('/api/user/')
+        self.assertEqual(response.status_code, 405)
+        response=client.get('/api/user/')
+        self.assertEqual(response.status_code, 200)
+        client.post('/api/login/',
+                    json.dumps({'username': 'user1',
+                                'password': 'user1_password'}),
+                    content_type='application/json')
+        response=client.get('/api/user/')
+        self.assertEqual(response.status_code, 200)
 
     def test_signup(self):
         client = Client()
@@ -454,7 +468,7 @@ class SubrokerTestCase(TestCase):
 
         # PUT ERR group is full : 400
         response = client.put('/api/group/1/user/')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
 
     # group add user : DELETE
     def test_group_add_user_delete(self):
@@ -481,6 +495,36 @@ class SubrokerTestCase(TestCase):
         # POST : NOT ALLOWED
         response = client.post('/api/group/1/user/')
         self.assertEqual(response.status_code, 405)
+
+    # ott list : GET
+    def test_ott_list(self):
+        client = Client()
+        response = client.put('/api/ott/')
+        self.assertEqual(response.status_code, 405)
+        response = client.get('/api/ott/')
+        self.assertEqual(response.status_code, 401)
+        client.post('/api/login/',
+                    json.dumps({'username': 'user1',
+                                'password': 'user1_password'}),
+                    content_type='application/json')
+        response = client.get('/api/ott/')
+        self.assertEqual(response.status_code, 200)
+
+    # ott detail : GET
+    def test_ott_detail(self):
+        client = Client()
+        response = client.put('/api/ott/watcha_basic/')
+        self.assertEqual(response.status_code, 405)
+        response = client.get('/api/ott/watcha_basic/')
+        self.assertEqual(response.status_code, 401)
+        client.post('/api/login/',
+                    json.dumps({'username': 'user1',
+                                'password': 'user1_password'}),
+                    content_type='application/json')
+        response = client.get('/api/ott/watchu_basic/')
+        self.assertEqual(response.status_code, 404)
+        response = client.get('/api/ott/watcha_basic/')
+        self.assertEqual(response.status_code, 200)
 
     # content detail : GET
     def test_content_detail_get(self):
