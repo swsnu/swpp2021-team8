@@ -90,18 +90,6 @@ class SubrokerTestCase(TestCase):
             current_people=1)
         new_group2.save()
 
-    def test_user(self):
-        client = Client()
-        response=client.put('/api/user/')
-        self.assertEqual(response.status_code, 405)
-        response=client.get('/api/user/')
-        self.assertEqual(response.status_code, 200)
-        client.post('/api/login/',
-                    json.dumps({'username': 'user1',
-                                'password': 'user1_password'}),
-                    content_type='application/json')
-        response=client.get('/api/user/')
-        self.assertEqual(response.status_code, 200)
 
     def test_signup(self):
         client = Client()
