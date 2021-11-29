@@ -207,6 +207,42 @@ class SubrokerTestCase(TestCase):
         response = client.delete('/api/logout/')
         self.assertEqual(response.status_code, 405)
 
+    # /api/user
+    def test_user(self):
+        client = Client()
+
+        # user is not logged in
+        response = client.get('/api/user/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content.decode()), {"id": "", "username": "","isLoggedIn": False, "notDeletedGroupCount" : 0, "deletedGroupCount": 0})
+
+        # user is logged in
+        # login
+        client.post('/api/login/',
+                    json.dumps({'username': 'user1',
+                                'password': 'user1_password'}),
+                    content_type='application/json')
+
+        response = client.get('/api/user/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content.decode()), {"id": 1, "username": "user1","isLoggedIn": True, "notDeletedGroupCount" : 2, "deletedGroupCount": 0})
+
+    # /api/user 405 Error for POST, PUT, DELETE
+    def test_user_405(self):
+        client = Client()
+
+        # POST : NOT ALLOWED
+        response = client.post('/api/user/')
+        self.assertEqual(response.status_code, 405)
+
+        # PUT : NOT ALLOWED
+        response = client.put('/api/user/')
+        self.assertEqual(response.status_code, 405)
+
+        # DELETE : NOT ALLOWED
+        response = client.delete('/api/user/')
+        self.assertEqual(response.status_code, 405)
+
     # group list GET
     def test_group_list_get(self):
         client = Client()

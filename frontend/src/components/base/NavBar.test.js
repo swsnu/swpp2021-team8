@@ -27,7 +27,7 @@ describe('<NavBar />', () => {
     logoWrapper.simulate('click');
     expect(history.push).toHaveBeenCalledWith('/main');
 
-    const mypageWrapper = component.find('.navbar__auth--mypage');
+    const mypageWrapper = component.find('.navbar__auth__mypage');
     mypageWrapper.simulate('click');
     expect(history.push).toHaveBeenCalledWith('/mypage');
   });
