@@ -193,8 +193,8 @@ describe('<GroupCreatePage />', () => {
       .simulate('change', { target: { value: 'Netflix' } });
     expect(component.find('.logo.checked').length).toBe(1);
     component
-    .find('#membership-select')
-    .simulate('change', { target: { value: 'Premium' } });
+      .find('#membership-select')
+      .simulate('change', { target: { value: 'Premium' } });
     component
       .find('#group-title-input')
       .simulate('change', { target: { value: 'title1' } });
