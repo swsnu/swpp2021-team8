@@ -7,7 +7,7 @@ import {
   deleteGroup,
 } from '../../store/GroupStore';
 import { getLoginStatus } from '../../store/AuthStore';
-import RenderField from '../../components/base/RenderField';
+import FieldInfoItem from '../../components/base/FieldInfoItem';
 import './GroupDetailPage.scss';
 
 const GroupDetailPage = ({ history, match }) => {
@@ -93,13 +93,13 @@ const GroupDetailPage = ({ history, match }) => {
           <h1 className="groupdetail__name">{group.name}</h1>
         </div>
         <div className="groupdetail__body">
-          <RenderField container="groupdetail" category="Membership" content={group.membership} />
-          <RenderField container="groupdetail" category="Cost" content={cost.toString().concat(' Won')} />
-          <RenderField container="groupdetail" category="People" content={group.currentPeople} />
-          <RenderField container="groupdetail" category="Members" content={members} />
-          <RenderField container="groupdetail" category="Account" content={account} />
-          <RenderField container="groupdetail" category="Payday" content={payday} />
-          <RenderField container="groupdetail" category="Description" content={group.description} />
+          <FieldInfoItem container="groupdetail" category="Membership" content={group.membership} />
+          <FieldInfoItem container="groupdetail" category="Cost" content={cost.toString().concat(' Won')} />
+          <FieldInfoItem container="groupdetail" category="People" content={group.currentPeople} />
+          <FieldInfoItem container="groupdetail" category="Members" content={members} />
+          <FieldInfoItem container="groupdetail" category="Account" content={account} />
+          <FieldInfoItem container="groupdetail" category="Payday" content={payday} />
+          <FieldInfoItem container="groupdetail" category="Description" content={group.description} />
         </div>
         <div className="groupdetail__footer">
           {group.members &&

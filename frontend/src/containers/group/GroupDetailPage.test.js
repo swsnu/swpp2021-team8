@@ -8,10 +8,10 @@ import GroupDetailPage from './GroupDetailPage';
 import { getMockStore, history } from '../../test-utils/mock';
 import * as GroupReducer from '../../store/GroupStore';
 
-jest.mock('../../components/base/RenderField', () => {
-  return jest.fn(({container, category, content}) => {
+jest.mock('../../components/base/FieldInfoItem', () => {
+  return jest.fn(({ container, category, content }) => {
     return (
-      <div className={'test__renderfield '.concat(category.toLowerCase())}>
+      <div className={'test__fieldInfoItem '.concat(category.toLowerCase())}>
         <div className="test__container">
           {container}
         </div>
@@ -22,7 +22,7 @@ jest.mock('../../components/base/RenderField', () => {
           {content}
         </div>
       </div>
-    )
+    );
   });
 });
 
@@ -65,7 +65,7 @@ const mockStore = getMockStore(
         },
       },
     ],
-    selectedGroup:{
+    selectedGroup: {
       id: 1,
       name: 'test1',
       platform: 'Netflix',
@@ -136,7 +136,7 @@ const mockStoreJoin = getMockStore(
         },
       },
     ],
-    selectedGroup:{
+    selectedGroup: {
       id: 1,
       name: 'test1',
       platform: 'Netflix',
@@ -178,7 +178,7 @@ const mockStoreNull = getMockStore(
   {},
   {
     groups: [],
-    selectedGroup:{},
+    selectedGroup: {},
   },
   {},
   {},
@@ -219,10 +219,10 @@ describe('<GroupDetailPage />', () => {
         <ConnectedRouter history={history}>
           <Route path="/" component={GroupDetailPage} exact />
         </ConnectedRouter>
-      </Provider>
+      </Provider>,
     );
     expect(component.find(GroupDetailPage).length).toBe(1);
-  })
+  });
 
   it('should be redirected back when back button is clicked', () => {
     const component = mount(mockGroupDetailPage);
@@ -237,12 +237,12 @@ describe('<GroupDetailPage />', () => {
   });
 
   it('should set state well when join button is clicked', () => {
-    const component = mount(      
+    const component = mount(
       <Provider store={mockStoreJoin}>
         <ConnectedRouter history={history}>
           <Route path="/" component={GroupDetailPage} exact />
         </ConnectedRouter>
-      </Provider>
+      </Provider>,
     );
     component.find('#join-button').simulate('click');
     expect(GroupReducer.addUserToGroup).toHaveBeenCalledTimes(1);
@@ -260,5 +260,4 @@ describe('<GroupDetailPage />', () => {
     expect(GroupReducer.deleteGroup).toHaveBeenCalledTimes(1);
     expect(history.push).toHaveBeenCalledTimes(1);
   });
-
 });

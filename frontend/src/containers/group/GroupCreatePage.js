@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import { createGroup } from '../../store/GroupStore';
 import { getOtts, getOttPlan } from '../../store/OttStore';
-import RenderField from '../../components/base/RenderField';
+import FieldInfoItem from '../../components/base/FieldInfoItem';
 import './GroupCreatePage.scss';
 
 const GroupCreatePage = ({ history }) => {
@@ -309,14 +309,14 @@ const GroupCreatePage = ({ history }) => {
             <h1 className="groupcreate__membership__info">Membership Info</h1>
           </div>
           <div className="groupcreate__membership__body">
-            <RenderField container="groupcreate" category="OTT" content={platformSelectContent} section="membership" />
-            <RenderField container="groupcreate" category="Membership" content={membershipSelectContent} section="membership" />
-            <RenderField container="groupcreate" category="People" content={peopleContent} section="membership" />
-            <RenderField container="groupcreate" category="Cost" content={costContent} section="membership" />
-            <RenderField container="groupcreate" category="Public" content={isPublicContent} section="membership" />
+            <FieldInfoItem container="groupcreate" category="OTT" content={platformSelectContent} section="membership" />
+            <FieldInfoItem container="groupcreate" category="Membership" content={membershipSelectContent} section="membership" />
+            <FieldInfoItem container="groupcreate" category="People" content={peopleContent} section="membership" />
+            <FieldInfoItem container="groupcreate" category="Cost" content={costContent} section="membership" />
+            <FieldInfoItem container="groupcreate" category="Public" content={isPublicContent} section="membership" />
             {isPublic
               ? null
-              : <RenderField container="groupcreate" category="Password" content={passwordContent} section="membership" />}
+              : <FieldInfoItem container="groupcreate" category="Password" content={passwordContent} section="membership" />}
           </div>
         </div>
         <hr />
@@ -325,10 +325,10 @@ const GroupCreatePage = ({ history }) => {
             <h1 className="groupcreate__group__info">Group Info</h1>
           </div>
           <div className="groupcreate__group__body">
-            <RenderField container="groupcreate" category="Title" content={titleInputContent} section="group" />
-            <RenderField container="groupcreate" category="Description" content={descriptionInputContent} section="group" />
-            <RenderField container="groupcreate" category="Account" content={accountInputContent} section="group" />
-            <RenderField container="groupcreate" category="Payday" content={paydayInputContent} section="group" />
+            <FieldInfoItem container="groupcreate" category="Title" content={titleInputContent} section="group" />
+            <FieldInfoItem container="groupcreate" category="Description" content={descriptionInputContent} section="group" />
+            <FieldInfoItem container="groupcreate" category="Account" content={accountInputContent} section="group" />
+            <FieldInfoItem container="groupcreate" category="Payday" content={paydayInputContent} section="group" />
           </div>
         </div>
         <div className="groupcreate__buttons">

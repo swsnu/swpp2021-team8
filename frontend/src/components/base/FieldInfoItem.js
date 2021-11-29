@@ -1,8 +1,8 @@
 import React from 'react';
 import { withRouter } from 'react-router';
-import './RenderField.scss';
+import './FieldInfoItem.scss';
 
-const RenderField = ({ container = '', category = '', content = '', section = '' }) => {
+const FieldInfoItem = ({ container = '', category = '', content = '', section = '' }) => {
   const classname = container.concat(
     section ? '__'.concat(section) : '',
     '__field',
@@ -19,4 +19,4 @@ const RenderField = ({ container = '', category = '', content = '', section = ''
     </div>
   );
 };
-export default withRouter(RenderField);
+export default withRouter(FieldInfoItem);

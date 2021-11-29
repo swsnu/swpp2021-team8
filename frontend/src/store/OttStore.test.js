@@ -2,8 +2,8 @@ import axios from 'axios';
 import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import ott, {
-    getOtts,
-    getOttPlan,
+  getOtts,
+  getOttPlan,
 } from './OttStore';
 
 const store = createStore(ott, applyMiddleware(thunk));
@@ -28,8 +28,8 @@ describe('OttStore', () => {
       return { data: { id: 1, ott: 'mockOtt' } };
     });
     const platform = {
-        id: 1,
-        name: '',
+      id: 1,
+      name: '',
     };
     const membership = '';
     await store.dispatch(getOttPlan(platform, membership));
