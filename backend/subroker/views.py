@@ -33,16 +33,19 @@ def request_the_movie_api(url, _params):
     return None
 
 # user/: Get user's login status
-
-
 @ensure_csrf_cookie
 @csrf_exempt
 def user(request):
     if request.method == 'GET':
         if request.user.is_authenticated:
-            return JsonResponse({"isLoggedIn": True}, status=200)
+            user = User.objects.get(id=request.user.id)
+
+            not_deleted_group_count = user.group_leader.filter(will_be_deleted=False).count() + user.user_groups.filter(will_be_deleted=False).count()
+            deleted_group_count = user.group_leader.filter(will_be_deleted=True).count() + user.user_groups.filter(will_be_deleted=True).count()
+
+            return JsonResponse({"id": request.user.id, "username": request.user.username, "isLoggedIn": True ,"notDeletedGroupCount" : not_deleted_group_count, "deletedGroupCount": deleted_group_count}, status=200)
         else:
-            return JsonResponse({"isLoggedIn": False}, status=200)
+            return JsonResponse({"id": "", "username": "","isLoggedIn": False, "notDeletedGroupCount" : 0, "deletedGroupCount": 0}, status=200)
     else:
         return HttpResponseNotAllowed(['GET'])
 

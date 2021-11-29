@@ -3,7 +3,13 @@ import './NavBar.scss';
 import { withRouter } from 'react-router-dom';
 import { FaUserCircle } from 'react-icons/fa';
 
-const NavBar = ({ history, isLoggedIn = false, onLogOutClick }) => {
+const NavBar = ({
+  history,
+  isLoggedIn = false,
+  onLogOutClick,
+  notDeletedGroupCount,
+  deletedGroupCount,
+}) => {
   const onLogoClick = () => {
     history.push('/main');
   };
@@ -24,8 +30,19 @@ const NavBar = ({ history, isLoggedIn = false, onLogOutClick }) => {
       </div>
       {isLoggedIn && (
         <div className="navbar__auth">
+          <div className="navbar__auth__group">
+            <div className="navbar__auth__group__title">My Groups</div>
+            <div className="navbar__auth__group__count">
+              <span className="navbar__auth__group__count--not-deleted">
+                {notDeletedGroupCount}
+              </span>
+              <span className="navbar__auth__group__count--deleted">
+                {deletedGroupCount}
+              </span>
+            </div>
+          </div>
           <FaUserCircle
-            className="navbar__auth--mypage"
+            className="navbar__auth__mypage"
             onClick={onMyPageClick}
           />
           <button

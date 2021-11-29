@@ -7,11 +7,26 @@ const initialState = {
   user: {
     id: '',
     username: '',
+    notDeletedGroupCount: 0,
+    deletedGroupCount: 0,
   },
 };
 
-const _getLoginStatus = ({ isLoggedIn, id, username }) => {
-  return { type: 'auth/GET_LOGIN_STATUS', status: isLoggedIn, id, username };
+const _getLoginStatus = ({
+  isLoggedIn,
+  id,
+  username,
+  notDeletedGroupCount,
+  deletedGroupCount,
+}) => {
+  return {
+    type: 'auth/GET_LOGIN_STATUS',
+    status: isLoggedIn,
+    id,
+    username,
+    notDeletedGroupCount,
+    deletedGroupCount,
+  };
 };
 
 const _logIn = () => {
@@ -95,6 +110,8 @@ export default function AuthReducer(state = initialState, action) {
         user: {
           id: action.id,
           username: action.username,
+          notDeletedGroupCount: action.notDeletedGroupCount,
+          deletedGroupCount: action.deletedGroupCount,
         },
       };
 

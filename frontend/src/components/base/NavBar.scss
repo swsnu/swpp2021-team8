@@ -6,7 +6,7 @@
   justify-content: space-between;
   padding: 50px 0;
 
-  .navbar__logo {
+  &__logo {
     margin: auto 0px;
     cursor: pointer;
     font-family: $font-title-stack;
@@ -22,15 +22,42 @@
     -webkit-text-fill-color: transparent;
   }
 
-  .navbar__auth {
+  &__auth {
     display: flex;
     justify-content: space-between;
     color: white;
-    cursor: pointer;
 
-    .navbar__auth--mypage {
+    &__group {
+      cursor: auto;
+      display: flex;
+      flex-direction: column;
+      font-family: 2.55em;
+
+      &__count {
+        display: flex;
+        justify-content: space-around;
+        font-size: 1.1em;
+        margin-top: 10px;
+
+        span {
+          border-radius: 5px;
+          padding: 2px 8px;
+        }
+
+        &--not-deleted {
+          background-color: #0e9534;
+        }
+
+        &--deleted {
+          background-color: #ff3c3c;
+        }
+      }
+    }
+
+    &__mypage {
+      cursor: pointer;
       font-size: 2.55em;
-      margin-right: 30px;
+      margin: 0px 30px;
     }
   }
 }
