@@ -16,6 +16,9 @@ import { getLoginStatus, logOut } from './store/AuthStore';
 function App({ history }) {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const { notDeletedGroupCount, deletedGroupCount } = useSelector(
+    (state) => state.auth.user,
+  );
 
   useEffect(() => {
     dispatch(getLoginStatus());
@@ -26,7 +29,12 @@ function App({ history }) {
   };
   return (
     <ConnectedRouter history={history}>
-      <NavBar isLoggedIn={isLoggedIn} onLogOutClick={onLogOutClick} />
+      <NavBar
+        isLoggedIn={isLoggedIn}
+        notDeletedGroupCount={notDeletedGroupCount}
+        deletedGroupCount={deletedGroupCount}
+        onLogOutClick={onLogOutClick}
+      />
       {isLoggedIn ? (
         <Switch>
           <Route path="/main" component={MainPage} exact />
