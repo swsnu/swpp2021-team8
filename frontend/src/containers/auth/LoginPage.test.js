@@ -8,8 +8,8 @@ import LoginPage from './LoginPage';
 import { getMockStore, history } from '../../test-utils/mock';
 import * as AuthReducer from '../../store/AuthStore';
 
-const mockStore = getMockStore({}, {}, {}, {});
-const mockStoreError = getMockStore({ loginError: 'login Error' }, {}, {}, {});
+const mockStore = getMockStore({}, {}, {}, {}, {});
+const mockStoreError = getMockStore({ loginError: 'login Error' }, {}, {}, {}, {});
 
 describe('<LoginPage />', () => {
   let mockLoginPage;

@@ -3,10 +3,18 @@ import { mount, shallow } from 'enzyme';
 import Calendar from './Calendar';
 
 describe('<Calendar />', () => {
+  beforeAll(() => {
+    jest.useFakeTimers('modern');
+    jest.setSystemTime(new Date(2021, 10, 14));
+  });
+  afterAll(() => {
+    jest.useRealTimers();
+  });
   it('should render without error when user goes to my page ', () => {
     const component = shallow(<Calendar />);
     expect(component.find('.calendar').length).toBe(1);
   });
+
   it('should change date when user clicks prev and next button', () => {
     const component = mount(<Calendar />);
     component.find('#next-button').simulate('click');
@@ -23,5 +31,10 @@ describe('<Calendar />', () => {
     expect(component.find('.cell .today').length).toBe(1);
     component.find('#next-button').simulate('click');
     expect(component.find('.today').length).toBe(0);
+  });
+
+  it('should render sunday today well', () => {
+    const component = mount(<Calendar />);
+    expect(component.find('.sunday .today').length).toBe(1);
   });
 });

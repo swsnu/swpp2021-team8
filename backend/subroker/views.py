@@ -51,7 +51,6 @@ def user(request):
 
 # signup/ : User Sign Up
 
-
 @ensure_csrf_cookie
 @csrf_exempt
 def signup(request):
@@ -318,7 +317,7 @@ def group_add_user(request, group_id):
                 return HttpResponse(status=404)
             # ERR 400 : Group Is Full
             # print(f"curPeo: {group.current_people}, mem: {group.members.all().values()} before add")
-            if(group.current_people > group.membership.max_people):
+            if(group.current_people >= group.membership.max_people):
                 return HttpResponseBadRequest()
             group.members.add(request.user)
             group.current_people = group.current_people + 1

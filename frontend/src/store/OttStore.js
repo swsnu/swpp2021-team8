@@ -19,10 +19,11 @@ export const getOtts = () => async (dispatch) => {
 export const getOttPlan = (ottPlatform, ottMembership) => async (dispatch) => {
   try {
     const ottPlan = `${ottPlatform.name.toLowerCase()}_${ottMembership.toLowerCase()}`;
-    const res = await axios.get(`/api/ott/${ottPlan}/`)
-      .catch(() => { dispatch(_getOttPlan(null)); });
+    const res = await axios.get(`/api/ott/${ottPlan}/`);
     dispatch(_getOttPlan(res.data));
-  } catch (e) {}
+  } catch (e) {
+    dispatch(_getOttPlan(null));
+  }
 };
 
 // TODO: LocalStorage

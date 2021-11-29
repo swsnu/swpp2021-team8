@@ -6,19 +6,19 @@ import {
   deleteUserFromGroup,
   deleteGroup,
 } from '../../store/GroupStore';
+import { getLoginStatus } from '../../store/AuthStore';
+import FieldInfoItem from '../../components/base/FieldInfoItem';
 import './GroupDetailPage.scss';
 
 const GroupDetailPage = ({ history, match }) => {
   const dispatch = useDispatch();
   const group = useSelector((state) => state.group.selectedGroup);
-  const user = {
-    id: 1,
-    username: 'swpp1',
-  };
+  const user = useSelector((state) => state.auth.user);
   let { id } = match.params;
   id = parseInt(id, 10);
   useEffect(() => {
     dispatch(getGroupDetail(id));
+    dispatch(getLoginStatus());
   }, []);
   const onBackClick = () => {
     history.goBack();
@@ -40,9 +40,10 @@ const GroupDetailPage = ({ history, match }) => {
   let account = '';
   let payday = '';
   let members = group.members
-    ? group.members.map((member) => {
+    ? group.members.map((member, index) => {
       return (
-        <div className="groupdetail__member">
+        /* eslint react/no-array-index-key: ['off'] */
+        <div className="groupdetail__member" key={`member-${index}`}>
           <div className="groupdetail__member__index" />
           <div className="groupdetail__member__username">
             {member.username}
@@ -51,12 +52,12 @@ const GroupDetailPage = ({ history, match }) => {
       );
     })
     : null;
-  const empty = (
-    <div className="groupdetail__member--empty">
-      <div className="groupdetail__member__index--empty" />
-    </div>
-  );
   for (let i = group.currentPeople; i < group.maxPeople; i += 1) {
+    const empty = (
+      <div className="groupdetail__member--empty" key={`empty-${i}`}>
+        <div className="groupdetail__member__index--empty" />
+      </div>
+    );
     members = [...members, empty];
   }
   cost = Math.floor(
@@ -72,19 +73,7 @@ const GroupDetailPage = ({ history, match }) => {
   payday = group.payday
     ? 'Every'.concat(' ', group.payday.toString(), 'th')
     : 'None';
-  const renderField = (category, content) => {
-    const classname = 'groupdetail__field '.concat(category.toLowerCase());
-    return (
-      <div className={classname}>
-        <div className={category.toLowerCase().concat(' category')}>
-          {category}
-        </div>
-        <div className={category.toLowerCase().concat(' content')}>
-          {content}
-        </div>
-      </div>
-    );
-  };
+
   return (
     <div className="groupdetail">
       <button id="back-button" onClick={onBackClick} type="button">
@@ -95,11 +84,7 @@ const GroupDetailPage = ({ history, match }) => {
           {group.platform ? (
             <img
               className="groupdetail__ottlogo"
-              src={
-                group.platform
-                  ? `/images/${group.platform.toLowerCase()}.png/`
-                  : null
-              }
+              src={'/images/'.concat(group.platform.toLowerCase(), '.png')}
               alt="logo"
             />
           ) : (
@@ -108,13 +93,13 @@ const GroupDetailPage = ({ history, match }) => {
           <h1 className="groupdetail__name">{group.name}</h1>
         </div>
         <div className="groupdetail__body">
-          {renderField('Membership', group.membership)}
-          {renderField('Cost', cost.toString().concat(' Won'))}
-          {renderField('People', group.currentPeople)}
-          {renderField('Members', members)}
-          {renderField('Account\nInfo', account)}
-          {renderField('Payday', payday)}
-          {renderField('Description', group.description)}
+          <FieldInfoItem container="groupdetail" category="Membership" content={group.membership} />
+          <FieldInfoItem container="groupdetail" category="Cost" content={cost.toString().concat(' Won')} />
+          <FieldInfoItem container="groupdetail" category="People" content={group.currentPeople} />
+          <FieldInfoItem container="groupdetail" category="Members" content={members} />
+          <FieldInfoItem container="groupdetail" category="Account" content={account} />
+          <FieldInfoItem container="groupdetail" category="Payday" content={payday} />
+          <FieldInfoItem container="groupdetail" category="Description" content={group.description} />
         </div>
         <div className="groupdetail__footer">
           {group.members &&

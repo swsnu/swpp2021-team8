@@ -19,17 +19,20 @@ export const getMockStore = (
   authState,
   contentState,
   groupState,
+  ottState,
   reviewState,
 ) => {
   const authReducer = getMockReducer(authState);
   const contentReducer = getMockReducer(contentState);
   const groupReducer = getMockReducer(groupState);
+  const ottReducer = getMockReducer(ottState);
   const reviewReducer = getMockReducer(reviewState);
 
   const rootReducer = combineReducers({
     auth: authReducer,
     content: contentReducer,
     group: groupReducer,
+    ott: ottReducer,
     review: reviewReducer,
     router: connectRouter(history),
   });

@@ -9,7 +9,7 @@ class Ott(models.Model):
         ('Tving', 'Tving'),
         ('Youtube', 'Youtube'),
         ('Disney', 'Disney'),
-        ('CoupangPlay', 'CoupangPlay'),
+        ('Coupangplay', 'Coupangplay'),
         ('Wavve', 'Wavve')
     )
     ott = models.CharField(choices=ott_type, max_length=15)

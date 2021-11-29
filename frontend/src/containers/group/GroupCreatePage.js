@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import { createGroup } from '../../store/GroupStore';
 import { getOtts, getOttPlan } from '../../store/OttStore';
+import FieldInfoItem from '../../components/base/FieldInfoItem';
 import './GroupCreatePage.scss';
 
 const GroupCreatePage = ({ history }) => {
@@ -110,28 +111,10 @@ const GroupCreatePage = ({ history }) => {
     );
     history.push('/main/');
   };
-
-  const renderField = (category, content, section) => {
-    const classname = 'groupcreate__'.concat(
-      section,
-      '__field ',
-      category.toLowerCase(),
-    );
-    return (
-      <div className={classname}>
-        <div className={category.toLowerCase().concat(' category')}>
-          {category}
-        </div>
-        <div className={category.toLowerCase().concat(' content')}>
-          {content}
-        </div>
-      </div>
-    );
-  };
   const platformSelectContent = ottList.map((ott) => {
     const checked = platform ? platform.name === ott.name : false;
     return (
-      <div className="ott__content__component">
+      <div className="ott__content__component" key={ott.name}>
         <input
           id={ott.name.toLowerCase().concat('-logo-button')}
           className={'groupcreate__ott '.concat(ott.name.toLowerCase())}
@@ -144,7 +127,7 @@ const GroupCreatePage = ({ history }) => {
         <label htmlFor={ott.name.toLowerCase().concat('-logo-button')}>
           <img
             className={checked ? 'logo checked' : 'logo unchecked'}
-            src={`images/${ott.name.toLowerCase()}.png`}
+            src={'/images/'.concat(ott.name.toLowerCase(), '.png')}
             alt={ott.name.toLowerCase().concat('-logo')}
           />
         </label>
@@ -190,8 +173,8 @@ const GroupCreatePage = ({ history }) => {
         onChange={onPublicToggle}
       />
       <label htmlFor="public-input" className="round-slider-container">
-        <div />
-        <div />
+        <div>On</div>
+        <div>Off</div>
         <div className="round-slider" />
       </label>
     </>
@@ -238,6 +221,7 @@ const GroupCreatePage = ({ history }) => {
         id="group-title-input"
         name="group-title"
         type="text"
+        placeholder="your group title"
         value={title}
         onChange={onTitleChange}
       />
@@ -249,6 +233,7 @@ const GroupCreatePage = ({ history }) => {
         id="description-input"
         name="description"
         type="text"
+        placeholder="your group description"
         value={description}
         onChange={onDescriptionChange}
       />
@@ -279,6 +264,7 @@ const GroupCreatePage = ({ history }) => {
         id="account-number-input"
         name="account-number"
         type="text"
+        placeholder="your bank account number"
         value={accountNumber}
         onChange={onAccountNumberChange}
       />
@@ -286,6 +272,7 @@ const GroupCreatePage = ({ history }) => {
         id="account-name-input"
         name="account-name"
         type="text"
+        placeholder="your bank account name"
         value={accountName}
         onChange={onAccountNameChange}
       />
@@ -322,14 +309,14 @@ const GroupCreatePage = ({ history }) => {
             <h1 className="groupcreate__membership__info">Membership Info</h1>
           </div>
           <div className="groupcreate__membership__body">
-            {renderField('OTT', platformSelectContent, 'membership')}
-            {renderField('Membership', membershipSelectContent, 'membership')}
-            {renderField('People', peopleContent, 'membership')}
-            {renderField('Cost', costContent, 'membership')}
-            {renderField('Public', isPublicContent, 'membership')}
+            <FieldInfoItem container="groupcreate" category="OTT" content={platformSelectContent} section="membership" />
+            <FieldInfoItem container="groupcreate" category="Membership" content={membershipSelectContent} section="membership" />
+            <FieldInfoItem container="groupcreate" category="People" content={peopleContent} section="membership" />
+            <FieldInfoItem container="groupcreate" category="Cost" content={costContent} section="membership" />
+            <FieldInfoItem container="groupcreate" category="Public" content={isPublicContent} section="membership" />
             {isPublic
               ? null
-              : renderField('Password', passwordContent, 'membership')}
+              : <FieldInfoItem container="groupcreate" category="Password" content={passwordContent} section="membership" />}
           </div>
         </div>
         <hr />
@@ -338,10 +325,10 @@ const GroupCreatePage = ({ history }) => {
             <h1 className="groupcreate__group__info">Group Info</h1>
           </div>
           <div className="groupcreate__group__body">
-            {renderField('Title', titleInputContent, 'group')}
-            {renderField('Description', descriptionInputContent, 'group')}
-            {renderField('Account', accountInputContent, 'group')}
-            {renderField('Payday', paydayInputContent, 'group')}
+            <FieldInfoItem container="groupcreate" category="Title" content={titleInputContent} section="group" />
+            <FieldInfoItem container="groupcreate" category="Description" content={descriptionInputContent} section="group" />
+            <FieldInfoItem container="groupcreate" category="Account" content={accountInputContent} section="group" />
+            <FieldInfoItem container="groupcreate" category="Payday" content={paydayInputContent} section="group" />
           </div>
         </div>
         <div className="groupcreate__buttons">
