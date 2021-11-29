@@ -3,7 +3,7 @@ import time
 import random
 from json.decoder import JSONDecodeError
 import requests
-from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseBadRequest, JsonResponse, response
+from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseBadRequest, JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
@@ -57,7 +57,6 @@ def user(request):
         return HttpResponseNotAllowed(['GET'])
 
 # signup/ : User Sign Up
-
 
 @ensure_csrf_cookie
 @csrf_exempt

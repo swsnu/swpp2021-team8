@@ -1,7 +1,6 @@
 import json
 import tempfile
 from django.contrib.auth.models import User
-from django.http import response
 from django.test import TestCase, Client
 from .models import Review, Content, Group, Ott
 
