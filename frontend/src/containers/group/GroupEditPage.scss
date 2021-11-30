@@ -1,0 +1,14 @@
+@import '../../base.scss';
+
+#back-button {
+    display: flex;
+    background-color: black;
+    height: 40px;
+    width: 120px;
+    font-size: 15pt;
+    font-weight: bold;
+    justify-content: left;
+    align-items: center;
+    margin: 10px 0 0 0;
+    padding:0 0 0 0;
+}
