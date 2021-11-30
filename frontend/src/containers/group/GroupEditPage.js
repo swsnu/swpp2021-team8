@@ -147,10 +147,10 @@ const GroupEditPage = ({ history, match }) => {
       <input
         type="checkbox"
         name="public"
-        id="public-input"
+        id="groupedit-public-input"
         onChange={onPublicToggle}
       />
-      <label htmlFor="public-input" className="round-slider-container">
+      <label htmlFor="groupedit-public-input" className="round-slider-container">
         <div />
         <div />
         <div className="round-slider" />
@@ -160,13 +160,13 @@ const GroupEditPage = ({ history, match }) => {
   const passwordContent = (
     <>
       <input
-        id="password-input"
+        id="groupedit-password-input"
         name="password"
         type="password"
         onChange={onPasswordChange}
       />
       <input
-        id="password-confirm-input"
+        id="groupedit-password-confirm-input"
         name="password-confirm"
         type="password"
         onChange={onPasswordConfirmChange}
@@ -196,7 +196,7 @@ const GroupEditPage = ({ history, match }) => {
   const descriptionInputContent = (
     <>
       <textarea
-        id="description-input"
+        id="groupedit-description-input"
         name="description"
         type="text"
         value={description}
@@ -207,7 +207,7 @@ const GroupEditPage = ({ history, match }) => {
   const accountInputContent = (
     <>
       <select
-        id="account-bank-select"
+        id="groupedit-account-bank-select"
         name="account-bank"
         type="text"
         key={accountBank}
@@ -228,14 +228,14 @@ const GroupEditPage = ({ history, match }) => {
         <option value="KDB">KDB</option>
       </select>
       <input
-        id="account-number-input"
+        id="groupedit-account-number-input"
         name="account-number"
         type="text"
         value={accountNumber}
         onChange={onAccountNumberChange}
       />
       <input
-        id="account-name-input"
+        id="groupedit-account-name-input"
         name="account-name"
         type="text"
         value={accountName}
@@ -294,7 +294,7 @@ const GroupEditPage = ({ history, match }) => {
           </div>
         </div>
         <div className="groupedit__buttons">
-          <button id="cancel-button" onClick={onCancelClick} type="button">
+          <button id="groupedit-cancel-button" onClick={onCancelClick} type="button">
             Cancel
           </button>
           <button

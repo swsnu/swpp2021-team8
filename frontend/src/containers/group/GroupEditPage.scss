@@ -67,22 +67,6 @@
                         }
                     }
                 }
-                .membership {
-                    #membership-select {
-                        color: gray;
-                        width: 400px;
-                        height: 40px;
-                        font-size: 12pt;
-                    }
-                }
-                .people {
-                    #people-select {
-                        color: gray;
-                        width: 80px;
-                        height: 40px;
-                        font-size: 12pt;
-                    }
-                }
                 .cost {
                     .content{
                         font-size:14pt;
@@ -115,7 +99,7 @@
                                 position: absolute;
                             }
                         }
-                        #public-input:checked +.round-slider-container {
+                        #groupedit-public-input:checked +.round-slider-container {
                             background: #3d3d3d;
                             .round-slider{
                                 transform: translateX(-25px);
@@ -173,9 +157,6 @@
                     }
                     textarea {
                         height : 90px;
-                    }
-                    #payday-select {
-                        width: 80px;
                     }
                 }                
                 .account {

@@ -202,7 +202,6 @@ def group_list(request):
     else:
         return HttpResponseNotAllowed(['GET', 'POST'])
 
-@csrf_exempt
 def group_detail(request, group_id):
     if request.method == 'GET':
         if request.user.is_authenticated:

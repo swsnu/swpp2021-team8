@@ -40,7 +40,7 @@
                     }
                 }
                 .membership {
-                    #membership-select {
+                    #groupcreate-membership-select {
                         color: gray;
                         width: 400px;
                         height: 40px;
@@ -48,7 +48,7 @@
                     }
                 }
                 .people {
-                    #people-select {
+                    #groupcreate-people-select {
                         color: gray;
                         width: 80px;
                         height: 40px;
@@ -87,7 +87,7 @@
                                 position: absolute;
                             }
                         }
-                        #public-input:checked +.round-slider-container {
+                        #groupcreate-public-input:checked +.round-slider-container {
                             background: #3d3d3d;
                             .round-slider{
                                 transform: translateX(-25px);
@@ -146,7 +146,7 @@
                     textarea {
                         height : 90px;
                     }
-                    #payday-select {
+                    #groupcreate-payday-select {
                         width: 80px;
                     }
                 }                
@@ -175,7 +175,7 @@
     padding:0 0 0 0;
 }
 .groupcreate__buttons{
-    #cancel-button, #create-group-button {
+    #groupcreate-cancel-button, #create-group-button {
         width:290px;
         height: 50px;
         font-size: 15pt;

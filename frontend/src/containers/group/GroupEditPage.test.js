@@ -156,21 +156,21 @@ describe('<GroupEditPage />', () => {
 
   it('should be redirected to the main page when cancel button is clicked', () => {
     const component = mount(mockGroupEditPage);
-    component.find('#cancel-button').simulate('click');
+    component.find('#groupedit-cancel-button').simulate('click');
     expect(history.push).toHaveBeenCalledTimes(1);
   });
 
   it('should check password matchs', () => {
     const component = mount(mockGroupEditPage);
     component
-      .find('#public-input')
+      .find('#groupedit-public-input')
       .simulate('change', { target: { checked: true } });
-    expect(component.find('#password-input').length).toBe(1);
+    expect(component.find('#groupedit-password-input').length).toBe(1);
     component
-      .find('#password-input')
+      .find('#groupedit-password-input')
       .simulate('change', { target: { value: '1234' } });
     component
-      .find('#password-confirm-input')
+      .find('#groupedit-password-confirm-input')
       .simulate('change', { target: { value: '1234' } });
     expect(component.find(GroupEditPage, '.isequal').length).toBe(1);
   });
@@ -178,14 +178,14 @@ describe('<GroupEditPage />', () => {
   it('should check password does not match', () => {
     const component = mount(mockGroupEditPage);
     component
-      .find('#public-input')
+      .find('#groupedit-public-input')
       .simulate('change', { target: { checked: true } });
-    expect(component.find('#password-input').length).toBe(1);
+    expect(component.find('#groupedit-password-input').length).toBe(1);
     component
-      .find('#password-input')
+      .find('#groupedit-password-input')
       .simulate('change', { target: { value: '1234' } });
     component
-      .find('#password-confirm-input')
+      .find('#groupedit-password-confirm-input')
       .simulate('change', { target: { value: '1235' } });
     expect(component.find(GroupEditPage, '.isnotequal').length).toBe(1);
   });
@@ -222,16 +222,16 @@ describe('<GroupEditPage />', () => {
       .find('#groupedit-title-input')
       .simulate('change', { target: { value: 'edited' } });
     component
-      .find('#description-input')
+      .find('#groupedit-description-input')
       .simulate('change', { target: { value: 'description1' } });
     component
-      .find('#account-bank-select')
+      .find('#groupedit-account-bank-select')
       .simulate('change', { target: { value: 'bank1' } });
     component
-      .find('#account-number-input')
+      .find('#groupedit-account-number-input')
       .simulate('change', { target: { value: 'number1' } });
     component
-      .find('#account-name-input')
+      .find('#groupedit-account-name-input')
       .simulate('change', { target: { value: 'name1' } });
     component
       .find('#edit-group-button')

@@ -126,21 +126,21 @@ describe('<GroupCreatePage />', () => {
 
   it('should be redirected to the main page when cancel button is clicked', () => {
     const component = mount(mockGroupCreatePage);
-    component.find('#cancel-button').simulate('click');
+    component.find('#groupcreate-cancel-button').simulate('click');
     expect(history.push).toHaveBeenCalledTimes(1);
   });
 
   it('should check password matchs', () => {
     const component = mount(mockGroupCreatePage);
     component
-      .find('#public-input')
+      .find('#groupcreate-public-input')
       .simulate('change', { target: { checked: true } });
-    expect(component.find('#password-input').length).toBe(1);
+    expect(component.find('#groupcreate-password-input').length).toBe(1);
     component
-      .find('#password-input')
+      .find('#groupcreate-password-input')
       .simulate('change', { target: { value: '1234' } });
     component
-      .find('#password-confirm-input')
+      .find('#groupcreate-password-confirm-input')
       .simulate('change', { target: { value: '1234' } });
     expect(component.find(GroupCreatePage, '.isequal').length).toBe(1);
   });
@@ -148,14 +148,14 @@ describe('<GroupCreatePage />', () => {
   it('should check password does not match', () => {
     const component = mount(mockGroupCreatePage);
     component
-      .find('#public-input')
+      .find('#groupcreate-public-input')
       .simulate('change', { target: { checked: true } });
-    expect(component.find('#password-input').length).toBe(1);
+    expect(component.find('#groupcreate-password-input').length).toBe(1);
     component
-      .find('#password-input')
+      .find('#groupcreate-password-input')
       .simulate('change', { target: { value: '1234' } });
     component
-      .find('#password-confirm-input')
+      .find('#groupcreate-password-confirm-input')
       .simulate('change', { target: { value: '1235' } });
     expect(component.find(GroupCreatePage, '.isnotequal').length).toBe(1);
   });
@@ -169,7 +169,7 @@ describe('<GroupCreatePage />', () => {
     expect(component.find('.logo.checked').length).toBe(1);
     expect(OttReducer.getOttPlan).toHaveBeenCalledTimes(2);
     component
-      .find('#membership-select')
+      .find('#groupcreate-membership-select')
       .simulate('change', { target: { value: 'Premium' } });
     expect(OttReducer.getOttPlan).toHaveBeenCalledTimes(3);
   });
@@ -193,25 +193,25 @@ describe('<GroupCreatePage />', () => {
       .simulate('change', { target: { value: 'Netflix' } });
     expect(component.find('.logo.checked').length).toBe(1);
     component
-      .find('#membership-select')
+      .find('#groupcreate-membership-select')
       .simulate('change', { target: { value: 'Premium' } });
     component
-      .find('#group-title-input')
+      .find('#groupcreate-group-title-input')
       .simulate('change', { target: { value: 'title1' } });
     component
-      .find('#description-input')
+      .find('#groupcreate-description-input')
       .simulate('change', { target: { value: 'description1' } });
     component
-      .find('#account-bank-select')
+      .find('#groupcreate-account-bank-select')
       .simulate('change', { target: { value: 'bank1' } });
     component
-      .find('#account-number-input')
+      .find('#groupcreate-account-number-input')
       .simulate('change', { target: { value: 'number1' } });
     component
-      .find('#account-name-input')
+      .find('#groupcreate-account-name-input')
       .simulate('change', { target: { value: 'name1' } });
     component
-      .find('#payday-select')
+      .find('#groupcreate-payday-select')
       .simulate('change', { target: { value: 3 } });
     component
       .find('#create-group-button')
