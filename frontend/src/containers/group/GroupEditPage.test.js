@@ -41,18 +41,18 @@ const mockGroup = {
   isPublic: true,
   password: 0,
   members: [
-      {
-          id: 1,
-          username: 'member1',
-      },
-      {
-          id: 2,
-          username: 'member2',
-      },
-      {
-          id: 3,
-          username: 'member3',
-      },
+    {
+      id: 1,
+      username: 'member1',
+    },
+    {
+      id: 2,
+      username: 'member2',
+    },
+    {
+      id: 3,
+      username: 'member3',
+    },
   ],
   accountBank: 'bank',
   accountNumber: 'number',
@@ -60,9 +60,9 @@ const mockGroup = {
   description: 'description',
   payday: 5,
   leader: {
-      id: 1,
-      username: 'member1',
-  }
+    id: 1,
+    username: 'member1',
+  },
 };
 const mockStore = getMockStore(
   {
@@ -74,7 +74,7 @@ const mockStore = getMockStore(
   {},
   {
     groups: [
-        mockGroup,
+      mockGroup,
     ],
     selectedGroup: mockGroup,
   },
@@ -103,7 +103,7 @@ const mockStoreNotLeader = getMockStore(
   {},
   {
     groups: [
-        mockGroup,
+      mockGroup,
     ],
     selectedGroup: mockGroup,
   },
@@ -139,12 +139,12 @@ describe('<GroupEditPage />', () => {
   });
 
   it('should goback when user is not the leader of the group', () => {
-    const component = mount(
+    mount(
       <Provider store={mockStoreNotLeader}>
         <ConnectedRouter history={history}>
           <Route path="/" component={GroupEditPage} exact />
         </ConnectedRouter>
-      </Provider>
+      </Provider>,
     );
     expect(history.goBack).toHaveBeenCalledTimes(1);
   });
