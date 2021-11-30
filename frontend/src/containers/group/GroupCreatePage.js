@@ -173,8 +173,8 @@ const GroupCreatePage = ({ history }) => {
         onChange={onPublicToggle}
       />
       <label htmlFor="public-input" className="round-slider-container">
-        <div>On</div>
-        <div>Off</div>
+        <div />
+        <div />
         <div className="round-slider" />
       </label>
     </>

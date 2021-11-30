@@ -1,14 +1,192 @@
 @import '../../base.scss';
-
-#back-button {
+.groupedit{
     display: flex;
-    background-color: black;
-    height: 40px;
-    width: 120px;
-    font-size: 15pt;
-    font-weight: bold;
-    justify-content: left;
-    align-items: center;
-    margin: 10px 0 0 0;
-    padding:0 0 0 0;
+    margin:0 0 0 0;
+    #back-button {
+        display: flex;
+        background-color: black;
+        height: 40px;
+        width: 120px;
+        font-size: 15pt;
+        font-weight: bold;
+        justify-content: left;
+        align-items: center;
+        margin: 10px 0 0 0;
+        padding:0 0 0 0;
+    }    
+    .groupedit__main {
+        color:white;
+        margin-left: 50px;
+        font-family: $font-base-stack;
+        .groupedit__header {
+            display: flex;
+            margin: 20px 0 50px 0px;
+            text-align: center;
+            align-items: center;
+            .groupedit__ottlogo {
+                display: flex;
+                height: 70px;
+                width: 70px;
+            }
+            #groupedit-title-input {
+                margin-left: 20px;
+                font-size: 32pt;
+                font-family: $font-title-stack;
+                font-weight: bolder;
+            }
+        }
+        .groupedit__membership {
+            .groupedit__membership__header {
+                display: flex;
+                margin: 20px 0 50px 0px;
+                text-align: center;
+                align-items: center;
+                .groupedit__membership__info {
+                    font-size: 24pt;
+                    font-family: $font-base-stack;
+                    font-weight:bolder;
+                }
+            }
+            .groupedit__membership__body {
+                .ott{
+                    .content{
+                        display: flex;
+                        .ott__content__component {
+                            margin-right: 15px;
+                        }
+                        .groupedit__ott {
+                            display: none;
+                        }
+                        .logo {
+                            height: 40px;
+                            width: 40px;
+                            border-radius: 10px;
+                        }
+                        .logo.unchecked {
+                            filter: brightness(40%);
+                        }
+                    }
+                }
+                .membership {
+                    #membership-select {
+                        color: gray;
+                        width: 400px;
+                        height: 40px;
+                        font-size: 12pt;
+                    }
+                }
+                .people {
+                    #people-select {
+                        color: gray;
+                        width: 80px;
+                        height: 40px;
+                        font-size: 12pt;
+                    }
+                }
+                .cost {
+                    .content{
+                        font-size:14pt;
+                        font-weight: bold;
+                        color: rgb(209, 204, 204);
+                    }
+                }
+                .public {
+                    .content{
+                        [type=checkbox]{
+                            display: none;
+                        }
+                        .round-slider-container{
+                            width: 55px;
+                            height: 30px;
+                            background: #50c878;
+                            border-radius: 50px;
+                            cursor: pointer;
+                            display: flex;
+                            justify-content: space-around;
+                            align-items: center;
+                            position: relative;
+                            .round-slider {
+                                width: 25px;
+                                height: 26px;
+                                border-radius: 50%;
+                                background: rgb(186, 186, 186);
+                                top: 2px;
+                                left: 27px;
+                                position: absolute;
+                            }
+                        }
+                        #public-input:checked +.round-slider-container {
+                            background: #3d3d3d;
+                            .round-slider{
+                                transform: translateX(-25px);
+                            }
+                        }
+                    }
+                }
+                .password {
+                    .content {
+                        input {
+                            display: block;
+                            height: 30px;
+                            width: 200px;
+                            margin-top: 2%;
+                        }
+                        .password-validcheck {
+                            margin-top: 15px;
+                        }
+                        div {
+                            font-size: 13pt;
+                        }
+                        span {
+                            margin-right: 10px;
+                        }
+                    }
+                }    
+            }
+        }
+        hr {
+            margin-top: 50px;
+            margin-bottom: 50px;
+            width : 800px;
+            color:white;
+            size: 5;
+        }
+        .groupedit__group {
+            .groupedit__group__header {
+                display: flex;
+                margin: 20px 0 50px 0px;
+                text-align: center;
+                align-items: center;
+                .groupedit__group__info {
+                    font-size: 24pt;
+                    font-family: $font-base-stack;
+                    font-weight:bolder;
+                }
+            }
+            .groupedit__group__body {
+                .content {
+                    input, textarea, select{
+                        height : 35px;
+                        width : 400px;
+                        color: gray;
+                        font-size: 12pt;
+                    }
+                    textarea {
+                        height : 90px;
+                    }
+                    #payday-select {
+                        width: 80px;
+                    }
+                }                
+                .account {
+                    .content {
+                        display: grid;
+                        input{
+                            margin-top: 1%;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
