@@ -7,10 +7,18 @@ from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.views.decorators.http import require_http_methods
 from django.db.models import Q
 from django.conf import settings
 from .models import Ott, Group, Content, Review
+
+def require_http_methods(methods):
+    def check_request(func):
+        def wrapper(*args, **kwargs):
+            if args and args[0].method in methods:
+                return func(*args, **kwargs)
+            return HttpResponse(status=405)
+        return wrapper
+    return check_request
 
 def login_required(func):
     """
