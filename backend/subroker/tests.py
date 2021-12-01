@@ -30,7 +30,7 @@ class SubrokerTestCase(TestCase):
             ----------------------------------
             1       0               []
             2       1               [1]
-            68718   1               [1]   
+            68718   1               [1]
 
         Review
         ------
@@ -370,7 +370,7 @@ class SubrokerTestCase(TestCase):
         """
         /api/group/
 
-        make a new group 
+        make a new group
         """
         client = Client()
 

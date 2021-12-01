@@ -25,7 +25,7 @@ def login_required(func):
 
 def request_the_movie_api(url, _params, max_retries = 2, sleep_time = 5):
     """
-    Request The MOVIE API 
+    Request The MOVIE API
 
     Parameters
     ----------
@@ -37,7 +37,7 @@ def request_the_movie_api(url, _params, max_retries = 2, sleep_time = 5):
         number of retries when error occurs
     sleep_time : number
         wait time(second) between retries
-    
+
     Return
     ------
     response : json
@@ -66,7 +66,7 @@ def token(request):
     /api/token/
 
     GET
-        Publish CSRF token 
+        Publish CSRF token
     """
     if request.method == 'GET':
         return HttpResponse(status=204)
@@ -96,7 +96,7 @@ def signup(request):
     """
     /api/signup/
 
-    POST 
+    POST
         Make a new user
     """
     if request.method == 'POST':
@@ -164,7 +164,7 @@ def group_list(request):
     if request.method == 'GET':
         # query example
         # /api/group/?name=title-of-movie&ott=netflix__premium&ott=watcha__standard
-        query_name = request.GET.get("name", None) 
+        query_name = request.GET.get("name", None)
         query_ott = request.GET.getlist("ott", None)
 
         groups = Group.objects.all()
@@ -250,7 +250,7 @@ def group_detail(request, group_id):
 
     PUT
         Edit group detail information
-    
+
     DELETE
         delete group
     """
@@ -499,7 +499,7 @@ def content_detail(request, content_id):
 
         if not data:
             return HttpResponse(status=405)
- 
+
         # If Content does not exist in DB, make a new Content
         try:
             content = Content.objects.get(id=data["id"])
@@ -575,7 +575,7 @@ def content_recommendation(request, user_id):
                     recommendation_contents.extend(
                         [{
                             "id": content["id"],
-                            "poster": 'https://image.tmdb.org/t/p/original/' + content["poster_path"] 
+                            "poster": 'https://image.tmdb.org/t/p/original/' + content["poster_path"]
                         } for content in data["results"]])
 
             if not recommendation_contents:
@@ -655,7 +655,7 @@ def content_favorite(request, user_id, content_id):
         # ERR 404 : User Doesn't Exist
         except(User.DoesNotExist) as _:
             return HttpResponse(status=404)
-            
+
         try:
             content = Content.objects.get(id=content_id)
         # ERR 400 : Content Doesn't Exist
@@ -704,7 +704,7 @@ def review_content(request, content_id):
 
     GET
         Get reviews for specific content
-    
+
     POST
         Create a new review for specific content
     """
@@ -718,7 +718,7 @@ def review_content(request, content_id):
         reviews = list(content.content_reviews.all().values())
 
         return JsonResponse(reviews, safe=False, status=200)
-        
+
     elif request.method == 'POST':
         try:
             req_data = json.loads(request.body.decode())
@@ -794,7 +794,7 @@ def review_detail(request, review_id):
         # ERR 403 : Not Author
         if(review.user != request.user):
             return HttpResponse(status=403)
-        
+
         review.detail = review_detail
         review.save()
 
