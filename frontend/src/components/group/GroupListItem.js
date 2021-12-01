@@ -4,7 +4,7 @@ import './GroupListItem.scss';
 
 const GroupListItem = ({ group, history }) => {
   let vacantPercent =
-    ((group.maxMember - group.curMember) * 100) / group.maxMember;
+    ((group.maxPeople - group.currentPeople) * 100) / group.maxPeople;
 
   let takenPercent = 0;
   switch (vacantPercent) {
@@ -44,7 +44,7 @@ const GroupListItem = ({ group, history }) => {
           />
         </div>
         <div className="group-item__title">
-          <span className="group-item__title--title">{group.title}</span>
+          <span className="group-item__title--title">{group.name}</span>
           <span className="group-item__title--creator">{group.leader}</span>
         </div>
         <div className="group-item__membership">
@@ -52,13 +52,11 @@ const GroupListItem = ({ group, history }) => {
             {group.membership}
           </span>
           <span className="group-item__membership--price">
-            {`₩${group.price}`}
+            {`₩${group.cost}`}
           </span>
         </div>
-        <div className="group-item__member">{`${group.curMember}/${group.maxMember}`}</div>
-        <div className="group-item__duration">
-          {group.duration > 12 ? '1 yr ~' : `${group.duration} mon.`}
-        </div>
+        <div className="group-item__member">{`${group.currentPeople}/${group.maxPeople}`}</div>
+        <div className="group-item__duration">{group.payday}</div>
       </div>
     </>
   );
