@@ -15,9 +15,8 @@ urlpatterns = [
     path('group/<int:group_id>/user/', views.group_add_user),
 
     # Content
-    path('content/', views.content_list),
-    path('content/search/<str:search_str>/', views.content_search),
     path('content/<int:content_id>/', views.content_detail),
+    path('content/search/<str:search_str>/', views.content_search),
     path('content/<int:user_id>/recommendation/', views.content_recommendation),
     path('content/trending/', views.content_trending),
     path('content/<int:user_id>/favorite/', views.user_favorite_list),

@@ -6,48 +6,63 @@ from .models import Review, Content, Group, Ott
 
 # Create your tests here.
 class SubrokerTestCase(TestCase):
-    # FIX
-    def test_csrf(self):
-        # By default, csrf checks are disabled in test client
-        # To test csrf protection we enforce csrf checks here
-        client = Client(enforce_csrf_checks=True)
-        response = client.post('/api/signup/',
-                               json.dumps({'username': 'chris',
-                                           'password': 'chris'}),
-                               content_type='application/json')
-
-        response = client.get('/api/token/')
-        # Get csrf token from cookie
-        csrftoken = response.cookies['csrftoken'].value
-
-        response = client.post('/api/signup/',
-                               json.dumps({'username': 'chris',
-                                           'password': 'chris'}),
-                               content_type='application/json',
-                               HTTP_X_CSRFTOKEN=csrftoken)
-
-        self.assertEqual(response.status_code, 409)  # Pass csrf protection
-
     def setUp(self):
-        new_user1 = User.objects.create_user(
-            username='user1', password='user1_password')  # Django default user model
-        User.objects.create_user(
-            username='user2', password='user2_password')
+        """
+        SetUp DB for test
+
+        User
+        ----
+            id  username    password
+            ------------------------
+            1   user1       user1_password
+            2   user2       user2_password
+
+        OTT
+        ---
+            ott     membership  max_people  cost    image
+            ---------------------------------------------
+            Watcha  Basic       1           7900    tempfile
+            Watcha  Standard    4           7900    tempfile
+
+        Content
+        -------
+            id      favorite_cnt    favorite_users
+            ----------------------------------
+            1       0               []
+            2       1               [1]
+            68718   1               [1]
+
+        Review
+        ------
+            id  content     detail          user
+            ------------------------------------
+            1   content_1   review_detail   1
+
+        Group
+        -----
+            id  name        description         is_public   password    will_be_deleted membership  payday  account_back    account_name    account_number  leader  current_people
+            ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            1   group_name  group_description   True        -1          False           new_ott1    1       Woori           group1_account  1234            user1   1
+            2   group_name  group_description   True        -1          False           new_ott2    1       Woori           group2_account  1234            user1   1
+
+        """
+        new_user1 = User.objects.create_user(username='user1', password='user1_password')  # Django default user model
+        User.objects.create_user(username='user2', password='user2_password')
+
         new_ott = Ott(
             ott='Watcha',
             membership='Basic',
             max_people=1,
             cost=7900,
-            image=tempfile.NamedTemporaryFile(
-                suffix=".jpg").name)
+            image=tempfile.NamedTemporaryFile(suffix=".jpg").name)
         new_ott.save()
+
         new_ott2 = Ott(
             ott='Watcha',
             membership='Standard',
             max_people=4,
             cost=7900,
-            image=tempfile.NamedTemporaryFile(
-                suffix=".jpg").name)
+            image=tempfile.NamedTemporaryFile(suffix=".jpg").name)
         new_ott2.save()
 
         new_content = Content(favorite_cnt=0)
@@ -57,11 +72,16 @@ class SubrokerTestCase(TestCase):
         new_content2.favorite_users.add(new_user1)
         new_content2.save()
 
+        new_content3 = Content(id=68718,favorite_cnt=1)
+        new_content3.save()
+        new_content3.favorite_users.add(new_user1)
+        new_content3.save()
+
         new_review = Review(content=new_content,
                             detail='review_detail', user=new_user1)
         new_review.save()
 
-        new_group = Group(
+        self.new_group = Group(
             name='group_name',
             description='group_description',
             is_public=True,
@@ -74,8 +94,9 @@ class SubrokerTestCase(TestCase):
             account_number='1234',
             leader=new_user1,
             current_people=1)
-        new_group.save()
-        new_group2 = Group(
+        self.new_group.save()
+
+        self.new_group2 = Group(
             name='group_name',
             description='group_description',
             is_public=True,
@@ -88,10 +109,104 @@ class SubrokerTestCase(TestCase):
             account_number='1234',
             leader=new_user1,
             current_people=1)
-        new_group2.save()
+        self.new_group2.save()
 
+        self.logged_in_client = Client()
+        response = self.logged_in_client.get('/api/token/')
+        self.csrf_token = response.cookies['csrftoken'].value
+
+        self.logged_in_client.post('/api/login/',
+                               json.dumps({'username': 'user1',
+                                           'password': 'user1_password'}),
+                               content_type='application/json',
+                               HTTP_X_CSRFTOKEN=self.csrf_token)
+
+    def test_csrf(self):
+        """
+        /api/token/
+
+        By default, csrf checks are disabled in test client
+        To test csrf protection we enforce csrf checks here
+        """
+        client = Client(enforce_csrf_checks=True)
+        response = client.post('/api/signup/',
+                               json.dumps({'username': 'chris',
+                                           'password': 'chris'}),
+                               content_type='application/json')
+
+        self.assertEqual(response.status_code, 403) # CSRF Token Error
+
+        response = client.get('/api/token/')
+        # Get csrf token from cookie
+        csrftoken = response.cookies['csrftoken'].value
+
+        response = client.post('/api/signup/',
+                               json.dumps({'username': 'chris',
+                                           'password': 'chris'}),
+                               content_type='application/json',
+                               HTTP_X_CSRFTOKEN=csrftoken)
+
+        self.assertEqual(response.status_code, 201)  # Pass csrf protection
+
+    def test_token_405(self):
+        """
+        /api/token/
+
+        POST, PUT, DELETE are not allowed
+        """
+        client = Client()
+        # POST : NOT ALLOWED
+        response = client.post('/api/token/')
+        self.assertEqual(response.status_code, 405)
+
+        # PUT : NOT ALLOWED
+        response = client.put('/api/token/')
+        self.assertEqual(response.status_code, 405)
+
+        # DELETE : NOT ALLOWED
+        response = client.delete('/api/token/')
+        self.assertEqual(response.status_code, 405)
+
+    def test_user(self):
+        """
+        /api/user/
+        """
+        client = Client()
+
+        # user is not logged in
+        response = client.get('/api/user/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content.decode()), {"id": "", "username": "","isLoggedIn": False, "notDeletedGroupCount" : 0, "deletedGroupCount": 0})
+
+        # user is logged in
+        response = self.logged_in_client.get('/api/user/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content.decode()), {"id": 1, "username": "user1", "isLoggedIn": True, "notDeletedGroupCount" : 2, "deletedGroupCount": 0})
+
+    def test_user_405(self):
+        """
+        /api/user/
+
+        POST, PUT, DELETE are not allowed
+        """
+        client = Client()
+
+        # POST : NOT ALLOWED
+        response = client.post('/api/user/')
+        self.assertEqual(response.status_code, 405)
+
+        # PUT : NOT ALLOWED
+        response = client.put('/api/user/')
+        self.assertEqual(response.status_code, 405)
+
+        # DELETE : NOT ALLOWED
+        response = client.delete('/api/user/')
+        self.assertEqual(response.status_code, 405)
 
     def test_signup(self):
+        """
+        /api/signup/
+        """
         client = Client()
 
         # POST successful request : 201
@@ -108,8 +223,14 @@ class SubrokerTestCase(TestCase):
                                content_type='application/json')
         self.assertEqual(response.status_code, 409)
 
-    # signup : 405 ERROR (METHOD NOT ALLOWED)
+
     def test_signup_405(self):
+        """
+        /api/signup/
+
+        GET, PUT, DELETE are not allowed
+        """
+
         client = Client()
         # GET : NOT ALLOWED
         response = client.get('/api/signup/')
@@ -123,23 +244,11 @@ class SubrokerTestCase(TestCase):
         response = client.delete('/api/signup/')
         self.assertEqual(response.status_code, 405)
 
-    # token : 405 ERROR (METHOD NOT ALLOWED)
-    def test_token_405(self):
-        client = Client()
-        # POST : NOT ALLOWED
-        response = client.post('/api/token/')
-        self.assertEqual(response.status_code, 405)
-
-        # PUT : NOT ALLOWED
-        response = client.put('/api/token/')
-        self.assertEqual(response.status_code, 405)
-
-        # DELETE : NOT ALLOWED
-        response = client.delete('/api/token/')
-        self.assertEqual(response.status_code, 405)
-
-    # login :
     def test_login(self):
+        """
+        /api/login/
+        """
+
         client = Client()
         # POST SUCCESS : 204
         response = client.post('/api/login/',
@@ -162,8 +271,12 @@ class SubrokerTestCase(TestCase):
                                content_type='application/json')
         self.assertEqual(response.status_code, 401)
 
-    # login : 405 ERROR (METHOD NOT ALLOWED)
     def test_login_405(self):
+        """
+        /api/login/
+
+        GET, PUT, DELETE are not allowed
+        """
         client = Client()
         # GET : NOT ALLOWED
         response = client.get('/api/login/')
@@ -177,24 +290,23 @@ class SubrokerTestCase(TestCase):
         response = client.delete('/api/login/')
         self.assertEqual(response.status_code, 405)
 
-    # logout
     def test_logout(self):
-        client = Client()
-
-        client.post('/api/login/',
-                    json.dumps({'username': 'user1',
-                                'password': 'user1_password'}),
-                    content_type='application/json')
-
-        response = client.get('/api/logout/')
+        """
+        /api/logout/
+        """
+        response = self.logged_in_client.get('/api/logout/')
         self.assertEqual(response.status_code, 204)
 
         # GET ERR unauthorized user request : 401
-        response = client.get('/api/logout/')
+        response = self.logged_in_client.get('/api/logout/')
         self.assertEqual(response.status_code, 401)
 
-    # logout : 405 ERROR (METHOD NOT ALLOWED)
     def test_logout_405(self):
+        """
+        /api/logout/
+
+        POST, PUT, DELETE are not allowed
+        """
         client = Client()
         # POST : NOT ALLOWED
         response = client.post('/api/logout/')
@@ -208,75 +320,58 @@ class SubrokerTestCase(TestCase):
         response = client.delete('/api/logout/')
         self.assertEqual(response.status_code, 405)
 
-    # /api/user
-    def test_user(self):
-        client = Client()
-
-        # user is not logged in
-        response = client.get('/api/user/')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.content.decode()), {"id": "", "username": "","isLoggedIn": False, "notDeletedGroupCount" : 0, "deletedGroupCount": 0})
-
-        # user is logged in
-        # login
-        client.post('/api/login/',
-                    json.dumps({'username': 'user1',
-                                'password': 'user1_password'}),
-                    content_type='application/json')
-
-        response = client.get('/api/user/')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.content.decode()), {"id": 1, "username": "user1","isLoggedIn": True, "notDeletedGroupCount" : 2, "deletedGroupCount": 0})
-
-    # /api/user 405 Error for POST, PUT, DELETE
-    def test_user_405(self):
-        client = Client()
-
-        # POST : NOT ALLOWED
-        response = client.post('/api/user/')
-        self.assertEqual(response.status_code, 405)
-
-        # PUT : NOT ALLOWED
-        response = client.put('/api/user/')
-        self.assertEqual(response.status_code, 405)
-
-        # DELETE : NOT ALLOWED
-        response = client.delete('/api/user/')
-        self.assertEqual(response.status_code, 405)
-
-    # group list GET
     def test_group_list_get(self):
+        """
+        /api/group/
+
+        Get group list
+        """
         client = Client()
 
         # GET ERR unauthorized user request : 401
         response = client.get('/api/group/')
         self.assertEqual(response.status_code, 401)
 
-        # login
-        client.post('/api/login/',
-                    json.dumps({'username': 'user1',
-                                'password': 'user1_password'}),
-                    content_type='application/json')
-
         # GET SUCCESS : 200
-        response = client.get('/api/group/')
+        response = self.logged_in_client.get('/api/group/')
         self.assertEqual(response.status_code, 200)
         group = json.loads(response.content.decode())[0]
 
-        self.assertEqual(1, group['id'])
-        # self.assertEqual('group_name', group['title'])
-        # self.assertEqual(-1, group['password'])
-        # self.assertEqual(False, group['will_be_deleted'])
-        # self.assertEqual(1, group['payday'])
-        # self.assertEqual('Woori', group['account_bank'])
-        # self.assertEqual('1234', group['account_number'])
-        # self.assertEqual('group1_account', group['account_name'])
-        # self.assertEqual(1, group['leader_id'])
-        # self.assertEqual(1, group['current_people'])
+        self.assertEqual(group, {
+            'id': self.new_group.id,
+            'platform': self.new_group.membership.ott,
+            'membership': self.new_group.membership.membership,
+            'name': self.new_group.name,
+            'leader': self.new_group.leader.username,
+            'cost': self.new_group.membership.cost,
+            'currentPeople': self.new_group.current_people,
+            'maxPeople': self.new_group.membership.max_people,
+            'payday': self.new_group.payday
+        })
 
+        # GET Request with query
+        response = self.logged_in_client.get('/api/group/?name=group&ott=watcha__standard')
+        self.assertEqual(response.status_code, 200)
+        group = json.loads(response.content.decode())[0]
 
-    # group list POST
+        self.assertEqual(group, {
+            'id': self.new_group2.id,
+            'platform': self.new_group2.membership.ott,
+            'membership': self.new_group2.membership.membership,
+            'name': self.new_group2.name,
+            'leader': self.new_group2.leader.username,
+            'cost': self.new_group2.membership.cost,
+            'currentPeople': self.new_group2.current_people,
+            'maxPeople': self.new_group2.membership.max_people,
+            'payday': self.new_group2.payday
+        })
+
     def test_group_list_post(self):
+        """
+        /api/group/
+
+        make a new group
+        """
         client = Client()
 
         # POST ERR unauthorized user request : 401
@@ -294,14 +389,8 @@ class SubrokerTestCase(TestCase):
         }), content_type='application/json')
         self.assertEqual(response.status_code, 401)
 
-        # login
-        client.post('/api/login/',
-                    json.dumps({'username': 'user1',
-                                'password': 'user1_password'}),
-                    content_type='application/json')
-
         # POST SUCCESS : 201
-        response = client.post('/api/group/', json.dumps({
+        response = self.logged_in_client.post('/api/group/', json.dumps({
             "name": "Watchaas",
             "description": "This group is for watchaaaas",
             "isPublic": "True",
@@ -316,7 +405,7 @@ class SubrokerTestCase(TestCase):
         self.assertEqual(response.status_code, 201)
 
         # POST ERR Ott doesn't exist : 404
-        response = client.post('/api/group/', json.dumps({
+        response = self.logged_in_client.post('/api/group/', json.dumps({
             "name": "Watchaas",
             "description": "This group is for watchaaaas",
             "isPublic": "True",
@@ -326,13 +415,16 @@ class SubrokerTestCase(TestCase):
             "accountBank": "Woori",
             "accountNumber": "1002-550-123445",
             "accountName": "Hyeju Na",
-            "ottPlanId": 1
+            "ottPlanId": 3
         }), content_type='application/json')
-        self.assertEqual(response.status_code, 201)
-
-    # group list : 405 ERROR (METHOD NOT ALLOWED)
+        self.assertEqual(response.status_code, 404)
 
     def test_group_list_405(self):
+        """
+        /api/group/
+
+        PUT, DELETE are not allowed
+        """
         client = Client()
         # PUT : NOT ALLOWED
         response = client.put('/api/group/')
@@ -342,59 +434,61 @@ class SubrokerTestCase(TestCase):
         response = client.delete('/api/group/')
         self.assertEqual(response.status_code, 405)
 
-    # group detail : GET
-
     def test_group_detail_get(self):
+        """
+        /api/group/<int:group_id>/
+
+        GET
+        """
         client = Client()
 
         # GET ERR unauthorized user request : 401
         response = client.get('/api/group/1/')
         self.assertEqual(response.status_code, 401)
 
-        # login
-        client.post('/api/login/',
-                    json.dumps({'username': 'user1',
-                                'password': 'user1_password'}),
-                    content_type='application/json')
-
         # GET SUCCESS : 200
-        response = client.get('/api/group/1/')
+        response = self.logged_in_client.get('/api/group/1/')
         self.assertEqual(response.status_code, 200)
         group = json.loads(response.content.decode())
-        self.assertEqual(1, group['id'])
-        # self.assertEqual('group_name', group['name'])
-        # self.assertEqual('group_description', group['description'])
-        # self.assertEqual(True, group['is_public'])
-        # self.assertEqual(-1, group['password'])
-        # self.assertEqual(False, group['will_be_deleted'])
-        # self.assertEqual(1, group['payday'])
-        # self.assertEqual('Woori', group['account_bank'])
-        # self.assertEqual('1234', group['account_number'])
-        # self.assertEqual('group1_account', group['account_name'])
-        # self.assertEqual(1, group['current_people'])
+
+        self.assertEqual(group, {
+            "id": self.new_group.id,
+            "name": self.new_group.name,
+            "platform": self.new_group.membership.ott,
+            "membership": self.new_group.membership.membership,
+            "cost": self.new_group.membership.cost,
+            "maxPeople": self.new_group.membership.max_people,
+            "currentPeople": self.new_group.current_people,
+            "members": [],
+            "accountBank": self.new_group.account_bank,
+            "accountNumber": self.new_group.account_number,
+            "accountName": self.new_group.account_name,
+            "description": self.new_group.description,
+            "payday": self.new_group.payday,
+            "leader": { "id": 1, "username": "user1"},
+        })
+
 
         # GET ERR group doesn't exist : 404
-        response = client.get('/api/group/10/')
+        response = self.logged_in_client.get('/api/group/10/')
         self.assertEqual(response.status_code, 404)
 
-    # group detail : PUT
     def test_group_detail_put(self):
+        """
+        /api/group/<int:group_id>/
+
+        PUT
+        """
         client = Client()
 
         # PUT ERR unauthorized user request : 401
-        response = client.put('/api/group/1/', )
         response = client.put(
             '/api/review/1/', content_type='application/json')
         self.assertEqual(response.status_code, 401)
 
-        # login
-        client.post('/api/login/',
-                    json.dumps({'username': 'user1',
-                                'password': 'user1_password'}),
-                    content_type='application/json')
 
         # PUT SUCCESS : 200
-        response = client.put('/api/group/1/', json.dumps({
+        response = self.logged_in_client.put('/api/group/1/', json.dumps({
             "name": "name_change",
             "description": "description_change",
             "isPublic": "False",
@@ -403,19 +497,25 @@ class SubrokerTestCase(TestCase):
             "accountNumber": "1234",
             "accountName": "account_name_change"
         }), content_type='application/json')
+
         self.assertEqual(response.status_code, 200)
         group = json.loads(response.content.decode())
-        self.assertEqual(1, group['id'])
-        # self.assertEqual('name_change', group['name'])
-        # self.assertEqual('description_change', group['description'])
-        # self.assertEqual('False', group['is_public'])
-        # self.assertEqual('1234', group['password'])
-        # self.assertEqual('IBK', group['account_bank'])
-        # self.assertEqual('1234', group['account_number'])
-        # self.assertEqual('account_name_change', group['account_name'])
+
+        self.assertEqual(group, {
+            "id": self.new_group.id,
+            "name": "name_change",
+            "description": "description_change",
+            "isPublic": "False",
+            "password": "1234",
+            "accountBank": "IBK",
+            "accountNumber": "1234",
+            "accountName": "account_name_change",
+            "leader": self.new_group.leader.id,
+            "currentPeople": self.new_group.current_people,
+        })
 
         # PUT ERR group doesn't exist : 404
-        response = client.put('/api/group/10/', json.dumps({
+        response = self.logged_in_client.put('/api/group/10/', json.dumps({
             "name": "name_change",
             "description": "description_change",
             "isPublic": "False",
@@ -443,8 +543,12 @@ class SubrokerTestCase(TestCase):
         }), content_type='application/json')
         self.assertEqual(response.status_code, 403)
 
-    # group detail : DELETE
     def test_group_detail_delete(self):
+        """
+        /api/group/<int:group_id>/
+
+        DELETE
+        """
         client = Client()
         # DELETE ERR unauthorized user request : 401
         response = client.delete('/api/group/1/')
@@ -463,44 +567,52 @@ class SubrokerTestCase(TestCase):
         response = client.delete('/api/group/10/')
         self.assertEqual(response.status_code, 404)
 
-    # group detail : 405 ERROR (METHOD NOT ALLOWED)
     def test_group_detail_405(self):
+        """
+        /api/group/<int:group_id>/
+
+        POST is not allowed
+        """
         client = Client()
         # POST : NOT ALLOWED
         response = client.post('/api/group/10/')
         self.assertEqual(response.status_code, 405)
 
-    # group add user : PUT
     def test_group_add_user_put(self):
+        """
+        /api/group/<int:group_id>/user/
+
+        PUT
+        """
         client = Client()
         # PUT ERR unauthorized user request : 401
         response = client.put('/api/group/1/user/')
         self.assertEqual(response.status_code, 401)
 
-        # PUT SUCESS : 200
-        client.post('/api/login/',
-                    json.dumps({'username': 'user2',
-                                'password': 'user2_password'}),
-                    content_type='application/json')
-        response = client.put('/api/group/2/user/')
+        # PUT SUCCESS : 200
+        response = self.logged_in_client.put('/api/group/2/user/')
         self.assertEqual(response.status_code, 200)
 
         # PUT ERR no group exists : 404
-        response = client.put('/api/group/10/user/')
+        response = self.logged_in_client.put('/api/group/10/user/')
         self.assertEqual(response.status_code, 404)
 
         # PUT ERR group is full : 400
-        response = client.put('/api/group/1/user/')
+        response = self.logged_in_client.put('/api/group/1/user/')
         self.assertEqual(response.status_code, 400)
 
-    # group add user : DELETE
     def test_group_add_user_delete(self):
+        """
+        /api/group/<int:group_id>/user/
+
+        DELETE
+        """
         client = Client()
         # DELETE ERR unauthorized user request : 401
         response = client.delete('/api/group/1/user/')
         self.assertEqual(response.status_code, 401)
 
-        # DELETE SUCESS : 200
+        # DELETE SUCCESS : 200
         client.post('/api/login/',
                     json.dumps({'username': 'user1',
                                 'password': 'user1_password'}),
@@ -512,15 +624,25 @@ class SubrokerTestCase(TestCase):
         response = client.delete('/api/group/5/user/')
         self.assertEqual(response.status_code, 404)
 
-    # group add user : 405 ERROR (METHOD NOT ALLOWED)
     def test_group_add_user_405(self):
+        """
+        /api/group/<int:group_id>/user/
+
+        GET, POST
+        """
         client = Client()
+        # GET : NOT ALLOWED
+        response = client.get('/api/group/1/user/')
         # POST : NOT ALLOWED
         response = client.post('/api/group/1/user/')
         self.assertEqual(response.status_code, 405)
 
-    # ott list : GET
     def test_ott_list(self):
+        """
+        /api/ott/
+
+        GET
+        """
         client = Client()
         response = client.put('/api/ott/')
         self.assertEqual(response.status_code, 405)
@@ -533,8 +655,12 @@ class SubrokerTestCase(TestCase):
         response = client.get('/api/ott/')
         self.assertEqual(response.status_code, 200)
 
-    # ott detail : GET
     def test_ott_detail(self):
+        """
+        /api/ott/<slug:ott_plan>/
+
+        GET
+        """
         client = Client()
         response = client.put('/api/ott/watcha_basic/')
         self.assertEqual(response.status_code, 405)
@@ -549,8 +675,24 @@ class SubrokerTestCase(TestCase):
         response = client.get('/api/ott/watcha_basic/')
         self.assertEqual(response.status_code, 200)
 
-    # content detail : GET
-    def test_content_detail_get(self):
+    def test_content_search(self):
+        """
+        /api/content/search/<str:search_str>/
+
+        GET
+            Receive search list from The movie API
+        """
+
+        response = self.logged_in_client.get('/api/content/search/avatar/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_content_detail(self):
+        """
+        /api/content/<int:content_id>/
+
+        GET
+            Get Content detail information from THE MOVIE API
+        """
         client = Client()
 
         # GET ERR unauthorized user request : 401
@@ -564,19 +706,20 @@ class SubrokerTestCase(TestCase):
                     content_type='application/json')
 
         # GET SUCCESS : 200
-        response = client.get('/api/content/1/')
-        self.assertEqual(response.status_code, 405)
+        response = client.get('/api/content/566525/')
+        self.assertEqual(response.status_code, 200)
 
-        # GET ERR content doesn't exist : 404
-        response = client.get('/api/content/10/')
-        self.assertEqual(response.status_code, 405)
 
-    # content detail : 405 ERROR (METHOD NOT ALLOWED)
     def test_content_detail_405(self):
+        """
+        /api/content/<int:content_id>/
+
+        POST, PUT, DELETE are now allowed
+        """
         client = Client()
         # POST : NOT ALLOWED
         response = client.post('/api/content/1/')
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 405)
 
         # PUT : NOT ALLOWED
         response = client.put('/api/content/1/')
@@ -586,8 +729,29 @@ class SubrokerTestCase(TestCase):
         response = client.delete('/api/content/1/')
         self.assertEqual(response.status_code, 405)
 
-    # user favorite list : GET
+    def test_content_recommendation(self):
+        """
+        /api/content/<int:user_id>/recommendation/
+
+        GET
+            Get recommended contents for current user from THE MOIVE API
+        """
+        response = self.logged_in_client.get('/api/content/1/recommendation/')
+        self.assertEqual(response.status_code, 200)
+
+        response = self.logged_in_client.get('/api/content/2/recommendation/')
+        self.assertEqual(response.status_code, 200)
+
+        response = self.logged_in_client.get('/api/content/3/recommendation/')
+        self.assertEqual(response.status_code, 404)
+
     def test_user_favorite_list_get(self):
+        """
+        /api/content/<int:user_id>/favorite/
+
+        GET
+            Get favorite contents for user_id
+        """
         client = Client()
 
         # GET ERR unauthorized user request : 401
@@ -603,6 +767,7 @@ class SubrokerTestCase(TestCase):
         # GET SUCCESS : 200
         response = client.get('/api/content/1/favorite/')
         self.assertEqual(response.status_code, 200)
+
         content = json.loads(response.content.decode())[0]
         self.assertEqual(2, content['id'])
         self.assertEqual(1, content['favorite_cnt'])
@@ -611,12 +776,12 @@ class SubrokerTestCase(TestCase):
         response = client.get('/api/content/10/favorite/')
         self.assertEqual(response.status_code, 404)
 
-        # GET ERR fav content doesn't exist : 400
-        response = client.get('/api/content/2/favorite/')
-        self.assertEqual(response.status_code, 400)
-
-    # user_favorite_list : 405 ERROR (METHOD NOT ALLOWED)
     def test_user_favorite_list_405(self):
+        """
+        /api/content/<int:user_id>/favorite/
+
+        POST, PUT, DELETE are not allowed
+        """
         client = Client()
         # POST : NOT ALLOWED
         response = client.post('/api/content/1/favorite/')
@@ -655,9 +820,9 @@ class SubrokerTestCase(TestCase):
         response = client.put('/api/content/10/favorite/2/')
         self.assertEqual(response.status_code, 404)
 
-        # PUT ERR fav content doesn't exist : 400
+        # PUT ERR fav content doesn't exist : 404
         response = client.put('/api/content/2/favorite/10/')
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 404)
 
     # content favorite : DELETE
     def test_content_favorite_delete(self):
@@ -683,7 +848,7 @@ class SubrokerTestCase(TestCase):
 
         # DELETE ERR fav content doesn't exist : 400
         response = client.delete('/api/content/1/favorite/10/')
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 404)
 
     # content_favorite_list : 405 ERROR (METHOD NOT ALLOWED)
     def test_content_favorite_405(self):
@@ -695,6 +860,15 @@ class SubrokerTestCase(TestCase):
         # GET : NOT ALLOWED
         response = client.get('/api/content/1/favorite/1/')
         self.assertEqual(response.status_code, 405)
+
+    def test_content_trending(self):
+        """
+        /api/content/trending/
+
+        GET
+        """
+        response = self.logged_in_client.get('/api/content/trending/')
+        self.assertEqual(response.status_code, 200)
 
     # review content : GET
     def test_review_content_get(self):
@@ -713,6 +887,7 @@ class SubrokerTestCase(TestCase):
         # GET SUCCESS : 200
         response = client.get('/api/content/1/review/')
         self.assertEqual(response.status_code, 200)
+
         review = json.loads(response.content.decode())[0]
         self.assertEqual(1, review['id'])
         self.assertEqual(1, review['content_id'])
@@ -723,12 +898,7 @@ class SubrokerTestCase(TestCase):
         response = client.get('/api/content/10/review/')
         self.assertEqual(response.status_code, 404)
 
-        # GET ERR review doesn't exist : 400
-        response = client.get('/api/content/2/review/')
-        self.assertEqual(response.status_code, 400)
-
     # review content : POST
-
     def test_review_content_post(self):
         client = Client()
 
@@ -763,7 +933,6 @@ class SubrokerTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
 
     # user_favorite_list : 405 ERROR (METHOD NOT ALLOWED)
-
     def test_review_content_405(self):
         client = Client()
         # PUT : NOT ALLOWED
@@ -774,7 +943,7 @@ class SubrokerTestCase(TestCase):
         response = client.delete('/api/content/1/review/')
         self.assertEqual(response.status_code, 405)
 
-    # review content : GET
+    # review content : POST
     def test_review_detail_post(self):
         client = Client()
 
@@ -802,7 +971,6 @@ class SubrokerTestCase(TestCase):
         self.assertEqual(response.status_code, 404)
 
     # review content : PUT
-
     def test_review_detail_put(self):
         client = Client()
 
@@ -847,7 +1015,6 @@ class SubrokerTestCase(TestCase):
         self.assertEqual(response.status_code, 403)
 
     # review content : DELETE
-
     def test_review_detail_delete(self):
         client = Client()
 
