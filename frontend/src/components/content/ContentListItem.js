@@ -1,9 +1,12 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
+import './ContentListItem.scss';
 
 const ContentListItem = ({ content, history }) => {
   const onImageClick = () => {
-    history.push(`/content/${content.id}`);
+    if (content.id !== 0) {
+      history.push(`/content/${content.id}`);
+    }
   };
   return (
     <>
@@ -11,14 +14,9 @@ const ContentListItem = ({ content, history }) => {
         onClick={onImageClick}
         role="button"
         tabIndex={0}
-        style={{ margin: '0px 10px' }}
+        className={content.id === 0 ? 'noClick' : ''}
       >
-        <img
-          src={content.poster}
-          alt={content.poster}
-          width="100%"
-          height="100%"
-        />
+        <img src={content.poster} alt={content.poster} />
       </div>
     </>
   );
