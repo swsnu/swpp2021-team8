@@ -27,4 +27,19 @@ describe('<ContentListItem />', () => {
 
     expect(history.push).toHaveBeenCalledWith('/content/1');
   });
+
+  it('should not move to ContentDetailPage when clicks content if content id is 0', () => {
+    const mockContent = { id: 0 };
+    history.push = jest.fn(() => {});
+    const component = shallow(
+      <ContentListItem.WrappedComponent
+        content={mockContent}
+        history={history}
+      />,
+    );
+
+    component.find('div').simulate('click');
+
+    expect(history.push).toHaveBeenCalledTimes(0);
+  });
 });
