@@ -201,11 +201,14 @@ def content_detail(request, content_id):
             if not info_data or not credit_data:
                 return HttpResponse(status=405)
 
+            # Find 'Director'
             director=''
             for member in credit_data['crew']:
                 if member['job'] == "Director":
                     director = member['name']
-                    break
+                    break        
+            
+            # Create Content
             content = Content(
                 id = info_data["id"],
                 title = info_data["title"],
@@ -213,16 +216,43 @@ def content_detail(request, content_id):
                 overview = info_data["overview"],
                 release_date = info_data["release_date"],
                 rate = info_data["vote_average"],
-                director = director
+                director = director,
                 )
+
+            # Find 'Ott'
+            content_title = content.title.replace(" ", "+")
+            search_url = 'https://api.kinolights.com/v1/search?keyword='+ content_title
+            response = requests.get(search_url).json()
+            ott_string = ""
+            content_found = True
+            # See if content is available in kinolights
+            try: 
+                movie_id = response["movies"][0]["Idx"]
+            except IndexError as _:
+                ott_string = "Currently not available in any Ott :("
+                content_found = False
+            if content_found:
+                detail_url = 'https://api.kinolights.com/v1/movie/' + str(movie_id) + '/prices'
+                response = requests.get(detail_url).json()
+                ott_list = list(set([movie["TechnicalName"] for movie in response["data"]]))
+                # Ott list not empty
+                if ott_list:
+                    for ott_name in ott_list:
+                        ott_name = ott_name.replace("-", " ").title().replace(" ", "")
+                        ott_string = ott_string + ott_name + '  ' 
+                    ott_string = ", ".join([ott_name.replace("-", " ").title().replace(" ", "") for ott_name in ott_list])
+
+            content.ott = ott_string
             content.save()
 
+            # Find 'Genres'
             genres = []
             for genre in info_data["genres"]:
                 genre_name = Genre.objects.get(name = genre["name"])
                 genres.append(genre_name)
             content.genres.set(genres)
 
+            # Find 'Cast'
             cast = []
             for actor in credit_data["cast"][:4]:
                 try:
@@ -249,6 +279,7 @@ def content_detail(request, content_id):
             "rate": content.rate,
             "cast" : return_cast,
             "director" : content.director,
+            "ott" : content.ott,
             "favorite_users": list(content.favorite_users.all().values()),
             "favorite_cnt": content.favorite_cnt,
         }
