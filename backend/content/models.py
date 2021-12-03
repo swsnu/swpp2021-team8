@@ -5,6 +5,15 @@ from django.contrib.auth.models import User
 
 
 class Content(models.Model):
+    title = models.CharField(max_length=100)
+    genres = models.JSONField
+    countries = models.JSONField
+    poster = models.URLField
+    overview = models.TextField(default="")
+    release_date = models.DateField
+    rate = models.FloatField
+    cast = models.JSONField
+    director = models.JSONField
     favorite_cnt = models.IntegerField(default=0)
     favorite_users = models.ManyToManyField(
         User,
