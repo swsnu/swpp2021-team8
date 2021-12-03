@@ -203,22 +203,3 @@ class UserTestCase(TestCase):
         # GET ERR unauthorized user request : 401
         response = self.logged_in_client.get('/api/user/logout/')
         self.assertEqual(response.status_code, 401)
-
-    def test_logout_405(self):
-        """
-        /api/user/logout/
-
-        POST, PUT, DELETE are not allowed
-        """
-        client = Client()
-        # POST : NOT ALLOWED
-        response = client.post('/api/user/logout/')
-        self.assertEqual(response.status_code, 405)
-
-        # PUT : NOT ALLOWED
-        response = client.put('/api/user/logout/')
-        self.assertEqual(response.status_code, 405)
-
-        # DELETE : NOT ALLOWED
-        response = client.delete('/api/user/logout/')
-        self.assertEqual(response.status_code, 405)

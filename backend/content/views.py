@@ -4,9 +4,10 @@ import random
 from json.decoder import JSONDecodeError
 import requests
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
+from django.views.decorators.http import require_http_methods
 from django.contrib.auth.models import User
 from django.conf import settings
-from deco import require_http_methods, login_required
+from deco import login_required
 from review.models import Review
 from .models import Content
 
@@ -48,8 +49,8 @@ def request_the_movie_api(url, _params, max_retries=2, sleep_time=5):
     return None
 
 
-@require_http_methods(["GET"])
 @login_required
+@require_http_methods(["GET"])
 def content_trending(request):
     """
     /api/content/trending/
@@ -77,8 +78,8 @@ def content_trending(request):
         return JsonResponse(trending_contents, safe=False, status=200)
 
 
-@require_http_methods(["GET"])
 @login_required
+@require_http_methods(["GET"])
 def content_search(request, search_str):
     """
     /api/content/search/<str:search_str>/
@@ -103,8 +104,8 @@ def content_search(request, search_str):
         return JsonResponse(search_contents, status=200, safe=False)
 
 
-@require_http_methods(["GET"])
 @login_required
+@require_http_methods(["GET"])
 def content_detail(request, content_id):
     """
     /api/content/<int:content_id>/
@@ -144,8 +145,8 @@ def content_detail(request, content_id):
         return JsonResponse(content_detail, safe=False, status=200)
 
 
-@require_http_methods(["GET"])
 @login_required
+@require_http_methods(["GET"])
 def content_recommendation(request, user_id):
     """
     /api/content/<int:user_id>/recommendation/
@@ -211,8 +212,8 @@ def content_recommendation(request, user_id):
         return JsonResponse(recommendation_contents, safe=False, status=200)
 
 
-@require_http_methods(["GET"])
 @login_required
+@require_http_methods(["GET"])
 def user_favorite_list(request, user_id):
     """
     /api/content/<int:user_id>/favorite/
@@ -232,8 +233,8 @@ def user_favorite_list(request, user_id):
         return JsonResponse(fav_contents, safe=False, status=200)
 
 
-@require_http_methods(["PUT", "DELETE"])
 @login_required
+@require_http_methods(["PUT", "DELETE"])
 def content_favorite(request, user_id, content_id):
     """
     /api/content/<int:user_id>/favorite/<int:content_id>/
@@ -290,8 +291,8 @@ def content_favorite(request, user_id, content_id):
         return HttpResponse(status=200)
 
 
-@require_http_methods(["GET", "POST"])
 @login_required
+@require_http_methods(["GET", "POST"])
 def review_content(request, content_id):
     """
     /api/content/<int:content_id>/review/

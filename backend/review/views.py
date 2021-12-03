@@ -1,11 +1,12 @@
 import json
 from django.http import HttpResponse, JsonResponse
-from deco import require_http_methods, login_required
+from django.views.decorators.http import require_http_methods
+from deco import login_required
 from .models import Review
 
 
-@require_http_methods(["GET", "PUT", "DELETE"])
 @login_required
+@require_http_methods(["GET", "PUT", "DELETE"])
 def review_detail(request, review_id):
     """
     /api/review/<int:review_id>/

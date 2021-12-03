@@ -1,10 +1,11 @@
 from django.http import HttpResponse, JsonResponse
-from deco import require_http_methods, login_required
+from django.views.decorators.http import require_http_methods
+from deco import login_required
 from .models import Ott
 
 
-@require_http_methods(["GET"])
 @login_required
+@require_http_methods(["GET"])
 def ott_list(request):
     """
     /api/ott/
@@ -22,8 +23,8 @@ def ott_list(request):
         return JsonResponse(ott_all_list, safe=False, status=200)
 
 
-@require_http_methods(["GET"])
 @login_required
+@require_http_methods(["GET"])
 def ott_detail(request, ott_plan):
     """
     /api/ott/<slug:ott_plan>/

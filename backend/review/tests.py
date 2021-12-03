@@ -162,14 +162,3 @@ class ReviewTestCase(TestCase):
         # DELETE ERR review doesn't exist : 404
         response = client.delete('/api/review/10/')
         self.assertEqual(response.status_code, 404)
-
-    def test_review_detail_405(self):
-        """
-        /api/review/<int:review_id>/
-
-        POST is not allowed
-        """
-        client = Client()
-        # POST : NOT ALLOWED
-        response = client.post('/api/review/1/')
-        self.assertEqual(response.status_code, 405)

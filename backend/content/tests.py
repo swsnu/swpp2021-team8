@@ -95,25 +95,6 @@ class ContentTestCase(TestCase):
         response = client.get('/api/content/566525/')
         self.assertEqual(response.status_code, 200)
 
-    def test_content_detail_405(self):
-        """
-        /api/content/<int:content_id>/
-
-        POST, PUT, DELETE are now allowed
-        """
-        client = Client()
-        # POST : NOT ALLOWED
-        response = client.post('/api/content/1/')
-        self.assertEqual(response.status_code, 405)
-
-        # PUT : NOT ALLOWED
-        response = client.put('/api/content/1/')
-        self.assertEqual(response.status_code, 405)
-
-        # DELETE : NOT ALLOWED
-        response = client.delete('/api/content/1/')
-        self.assertEqual(response.status_code, 405)
-
     def test_content_recommendation(self):
         """
         /api/content/<int:user_id>/recommendation/
@@ -161,24 +142,6 @@ class ContentTestCase(TestCase):
         response = client.get('/api/content/10/favorite/')
         self.assertEqual(response.status_code, 404)
 
-    def test_user_favorite_list_405(self):
-        """
-        /api/content/<int:user_id>/favorite/
-
-        POST, PUT, DELETE are not allowed
-        """
-        client = Client()
-        # POST : NOT ALLOWED
-        response = client.post('/api/content/1/favorite/')
-        self.assertEqual(response.status_code, 405)
-
-        # PUT : NOT ALLOWED
-        response = client.put('/api/content/1/favorite/')
-        self.assertEqual(response.status_code, 405)
-
-        # DELETE : NOT ALLOWED
-        response = client.delete('/api/content/1/favorite/')
-        self.assertEqual(response.status_code, 405)
 
     def test_content_favorite_put(self):
         """
@@ -242,21 +205,6 @@ class ContentTestCase(TestCase):
         # DELETE ERR fav content doesn't exist : 400
         response = client.delete('/api/content/1/favorite/10/')
         self.assertEqual(response.status_code, 404)
-
-    def test_content_favorite_405(self):
-        """
-        /api/content/<int:user_id>/favorite/<int:content_id>/
-
-        GET, POST are not allowed
-        """
-        client = Client()
-        # POST : NOT ALLOWED
-        response = client.post('/api/content/1/favorite/1/')
-        self.assertEqual(response.status_code, 405)
-
-        # GET : NOT ALLOWED
-        response = client.get('/api/content/1/favorite/1/')
-        self.assertEqual(response.status_code, 405)
 
     def test_content_trending(self):
         """
@@ -336,18 +284,3 @@ class ContentTestCase(TestCase):
         response = client.post('/api/content/1/review/',
                                json.dumps({}), content_type='application/json')
         self.assertEqual(response.status_code, 400)
-
-    def test_review_content_405(self):
-        """
-        /api/content/<int:content_id>/review/
-
-        PUT, DELETE are not allowed
-        """
-        client = Client()
-        # PUT : NOT ALLOWED
-        response = client.put('/api/content/1/review/')
-        self.assertEqual(response.status_code, 405)
-
-        # DELETE : NOT ALLOWED
-        response = client.delete('/api/content/1/review/')
-        self.assertEqual(response.status_code, 405)

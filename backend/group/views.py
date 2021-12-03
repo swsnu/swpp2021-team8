@@ -1,15 +1,15 @@
 import json
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.contrib.auth.models import User
+from django.views.decorators.http import require_http_methods
 from django.db.models import Q
-from deco import require_http_methods, login_required
+from deco import login_required
 from .models import Ott, Group
 
 # Create your views here.
 
-
-@require_http_methods(['GET', 'POST'])
 @login_required
+@require_http_methods(['GET', 'POST'])
 def group_list(request):
     """
     /api/group/
@@ -99,8 +99,8 @@ def group_list(request):
         return JsonResponse(response_dict, status=201)
 
 
-@require_http_methods(["GET", "PUT", "DELETE"])
 @login_required
+@require_http_methods(["GET", "PUT", "DELETE"])
 def group_detail(request, group_id):
     """
     /api/group/<int:group_id>/
@@ -216,8 +216,8 @@ def group_detail(request, group_id):
         return JsonResponse(response_dict, status=200)
 
 
-@require_http_methods(["PUT", "DELETE"])
 @login_required
+@require_http_methods(["PUT", "DELETE"])
 def group_add_user(request, group_id):
     """
     /api/group/<int:group_id>/user/

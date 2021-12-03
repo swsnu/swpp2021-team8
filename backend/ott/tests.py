@@ -62,8 +62,6 @@ class OttTestCase(TestCase):
         GET
         """
         client = Client()
-        response = client.put('/api/ott/')
-        self.assertEqual(response.status_code, 405)
         response = client.get('/api/ott/')
         self.assertEqual(response.status_code, 401)
         client.post('/api/user/login/',
@@ -80,8 +78,7 @@ class OttTestCase(TestCase):
         GET
         """
         client = Client()
-        response = client.put('/api/ott/watcha_basic/')
-        self.assertEqual(response.status_code, 405)
+
         response = client.get('/api/ott/watcha_basic/')
         self.assertEqual(response.status_code, 401)
         client.post('/api/user/login/',

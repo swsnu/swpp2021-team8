@@ -193,21 +193,6 @@ class GroupTestCase(TestCase):
         }), content_type='application/json')
         self.assertEqual(response.status_code, 404)
 
-    def test_group_list_405(self):
-        """
-        /api/group/
-
-        PUT, DELETE are not allowed
-        """
-        client = Client()
-        # PUT : NOT ALLOWED
-        response = client.put('/api/group/')
-        self.assertEqual(response.status_code, 405)
-
-        # DELETE : NOT ALLOWED
-        response = client.delete('/api/group/')
-        self.assertEqual(response.status_code, 405)
-
     def test_group_detail_get(self):
         """
         /api/group/<int:group_id>/
@@ -341,17 +326,6 @@ class GroupTestCase(TestCase):
         response = client.delete('/api/group/10/')
         self.assertEqual(response.status_code, 404)
 
-    def test_group_detail_405(self):
-        """
-        /api/group/<int:group_id>/
-
-        POST is not allowed
-        """
-        client = Client()
-        # POST : NOT ALLOWED
-        response = client.post('/api/group/10/')
-        self.assertEqual(response.status_code, 405)
-
     def test_group_add_user_put(self):
         """
         /api/group/<int:group_id>/user/
@@ -397,16 +371,3 @@ class GroupTestCase(TestCase):
         # DELETE ERR no group exists : 404
         response = client.delete('/api/group/5/user/')
         self.assertEqual(response.status_code, 404)
-
-    def test_group_add_user_405(self):
-        """
-        /api/group/<int:group_id>/user/
-
-        GET, POST
-        """
-        client = Client()
-        # GET : NOT ALLOWED
-        response = client.get('/api/group/1/user/')
-        # POST : NOT ALLOWED
-        response = client.post('/api/group/1/user/')
-        self.assertEqual(response.status_code, 405)

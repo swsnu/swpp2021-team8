@@ -1,9 +1,10 @@
 import json
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import login as auth_login, logout as auth_logout
-from deco import require_http_methods, login_required
+from deco import login_required
 
 
 @ensure_csrf_cookie
@@ -90,8 +91,8 @@ def login(request):
         return HttpResponse(status=204)
 
 
-@require_http_methods(['GET'])
 @login_required
+@require_http_methods(['GET'])
 def logout(request):
     """
     /api/user/logout/
