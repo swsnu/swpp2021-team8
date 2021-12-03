@@ -33,7 +33,11 @@ THE_MOVIE_API_KEY  = "e50a928b29c2b7ed1f82ba2e6ce4982c"
 # Application definition
 
 INSTALLED_APPS = [
-    'subroker.apps.SubrokerConfig',
+    'user.apps.UserConfig',
+    'content.apps.ContentConfig',
+    'group.apps.GroupConfig',
+    'ott.apps.OttConfig',
+    'review.apps.ReviewConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

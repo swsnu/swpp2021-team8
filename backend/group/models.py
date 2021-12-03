@@ -1,33 +1,8 @@
-from django.contrib.auth.models import User
 from django.db import models
+from django.contrib.auth.models import User
+from ott.models import Ott
 
-
-class Ott(models.Model):
-    ott_type = (
-        ('Watcha', 'Watcha'),
-        ('Netflix', 'Netflix'),
-        ('Tving', 'Tving'),
-        ('Youtube', 'Youtube'),
-        ('Disney', 'Disney'),
-        ('Coupangplay', 'Coupangplay'),
-        ('Wavve', 'Wavve')
-    )
-    ott = models.CharField(choices=ott_type, max_length=15)
-    membership_type = (
-        ('Basic', 'Basic'),
-        ('Standard', 'Standard'),
-        ('Premium', 'Premium')
-    )
-    membership = models.CharField(choices=membership_type, max_length=10)
-    max_people = models.IntegerField(default=1)
-    cost = models.IntegerField(default=0)
-    image = models.ImageField(upload_to="ott_image")
-
-    def __str__(self):
-        name = self.ott + ' / ' + self.membership
-        return name
-
-
+# Create your models here.
 class Group(models.Model):
     # Basic Group Settings
     name = models.CharField(max_length=64, default="New Group")
@@ -82,34 +57,3 @@ class Group(models.Model):
     def __str__(self):
         name = str(self.id) + ' / ' + self.membership.ott
         return name
-
-
-class Content(models.Model):
-    favorite_cnt = models.IntegerField(default=0)
-    favorite_users = models.ManyToManyField(
-        User,
-        blank=True,
-        related_name='favorite_contents'
-    )
-
-    def __str__(self):
-        content_id = str(self.id)
-        return content_id
-
-
-class Review(models.Model):
-    content = models.ForeignKey(
-        Content,
-        on_delete=models.CASCADE,
-        related_name='content_reviews'
-    )
-    detail = models.TextField(default="")
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='user_reviews'
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.detail
