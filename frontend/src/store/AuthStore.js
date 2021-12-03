@@ -61,7 +61,7 @@ export const getLoginStatus = () => async (dispatch) => {
 
 export const logIn = (userInfo) => async (dispatch) => {
   try {
-    await axios.post('/api/login/', userInfo);
+    await axios.post('/api/user/login/', userInfo);
     dispatch(_logIn());
   } catch (e) {
     switch (e.response.status) {
@@ -77,14 +77,14 @@ export const logIn = (userInfo) => async (dispatch) => {
 
 export const logOut = () => async (dispatch) => {
   try {
-    await axios.get('/api/logout/');
+    await axios.get('/api/user/logout/');
     dispatch(_logOut());
   } catch (e) {}
 };
 
 export const signUp = (userInfo) => async (dispatch) => {
   try {
-    await axios.post('/api/signup/', userInfo);
+    await axios.post('/api/user/signup/', userInfo);
     dispatch(_signUp());
 
     return true;
