@@ -2,6 +2,7 @@ import json
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 
+
 class UserTestCase(TestCase):
     def setUp(self):
         """
@@ -17,14 +18,12 @@ class UserTestCase(TestCase):
         User.objects.create_user(username='user2', password='user2_password')
 
         self.logged_in_client = Client()
-        response = self.logged_in_client.get('/api/user/token/')
-        self.csrf_token = response.cookies['csrftoken'].value
-
         self.logged_in_client.post('/api/user/login/',
-                               json.dumps({'username': 'user1',
-                                           'password': 'user1_password'}),
-                               content_type='application/json',
-                               HTTP_X_CSRFTOKEN=self.csrf_token)
+                                   json.dumps({'username': 'user1',
+                                               'password': 'user1_password'}),
+                                   content_type='application/json')
+
+        self.not_logged_in_client = Client()
 
     def test_csrf(self):
         """
@@ -39,7 +38,7 @@ class UserTestCase(TestCase):
                                            'password': 'chris'}),
                                content_type='application/json')
 
-        self.assertEqual(response.status_code, 403) # CSRF Token Error
+        self.assertEqual(response.status_code, 403)  # CSRF Token Error
 
         response = client.get('/api/user/token/')
         # Get csrf token from cookie
@@ -76,17 +75,17 @@ class UserTestCase(TestCase):
         """
         /api/user/
         """
-        client = Client()
-
         # user is not logged in
-        response = client.get('/api/user/')
+        response = self.not_logged_in_client.get('/api/user/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.content.decode()), {"id": "", "username": "","isLoggedIn": False, "notDeletedGroupCount" : 0, "deletedGroupCount": 0})
+        self.assertEqual(json.loads(response.content.decode()), {
+                         "id": "", "username": "", "isLoggedIn": False, "notDeletedGroupCount": 0, "deletedGroupCount": 0})
 
         # user is logged in
         response = self.logged_in_client.get('/api/user/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.content.decode()), {"id": 1, "username": "user1", "isLoggedIn": True, "notDeletedGroupCount" : 0, "deletedGroupCount": 0})
+        self.assertEqual(json.loads(response.content.decode()), {
+                         "id": 1, "username": "user1", "isLoggedIn": True, "notDeletedGroupCount": 0, "deletedGroupCount": 0})
 
     def test_user_405(self):
         """
@@ -127,7 +126,6 @@ class UserTestCase(TestCase):
                                            'password': 'testtest'}),
                                content_type='application/json')
         self.assertEqual(response.status_code, 409)
-
 
     def test_signup_405(self):
         """

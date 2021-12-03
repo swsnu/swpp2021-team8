@@ -1,6 +1,8 @@
 from django.db import models
 
 # Create your models here.
+
+
 class Ott(models.Model):
     ott_type = (
         ('Watcha', 'Watcha'),

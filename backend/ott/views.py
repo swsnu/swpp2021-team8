@@ -1,6 +1,7 @@
 from django.http import HttpResponse, JsonResponse
-from .models import Ott
 from deco import require_http_methods, login_required
+from .models import Ott
+
 
 @require_http_methods(["GET"])
 @login_required
@@ -19,6 +20,7 @@ def ott_list(request):
         } for name in ott_names]
 
         return JsonResponse(ott_all_list, safe=False, status=200)
+
 
 @require_http_methods(["GET"])
 @login_required

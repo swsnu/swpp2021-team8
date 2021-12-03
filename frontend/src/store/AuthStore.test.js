@@ -77,7 +77,7 @@ describe('AuthStore', () => {
       signUp({ username: 'username', password: 'password' }),
     );
 
-    expect(axios.post).toHaveBeenCalledWith('/api/signup/', {
+    expect(axios.post).toHaveBeenCalledWith('/api/user/signup/', {
       username: 'username',
       password: 'password',
     });

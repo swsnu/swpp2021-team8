@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 
+
 def require_http_methods(methods):
     """
     Decorator to check whether user sends request using allowed method
@@ -11,6 +12,7 @@ def require_http_methods(methods):
             return HttpResponse(status=405)
         return wrapper
     return check_request
+
 
 def login_required(func):
     """

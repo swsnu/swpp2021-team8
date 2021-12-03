@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from ott.models import Ott
 
 # Create your models here.
+
+
 class Group(models.Model):
     # Basic Group Settings
     name = models.CharField(max_length=64, default="New Group")

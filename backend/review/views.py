@@ -1,7 +1,8 @@
 import json
 from django.http import HttpResponse, JsonResponse
-from .models import Review
 from deco import require_http_methods, login_required
+from .models import Review
+
 
 @require_http_methods(["GET", "PUT", "DELETE"])
 @login_required
@@ -34,7 +35,6 @@ def review_detail(request, review_id):
         }
 
         return JsonResponse(response_dict, status=200)
-
 
     elif request.method == 'PUT':
         req_data = json.loads(request.body.decode())

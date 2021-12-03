@@ -1,16 +1,17 @@
 import json
 import time
 import random
+from json.decoder import JSONDecodeError
 import requests
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.contrib.auth.models import User
 from django.conf import settings
-from json.decoder import JSONDecodeError
 from deco import require_http_methods, login_required
 from review.models import Review
 from .models import Content
 
-def request_the_movie_api(url, _params, max_retries = 2, sleep_time = 5):
+
+def request_the_movie_api(url, _params, max_retries=2, sleep_time=5):
     """
     Request The MOVIE API
 
@@ -46,6 +47,7 @@ def request_the_movie_api(url, _params, max_retries = 2, sleep_time = 5):
 
     return None
 
+
 @require_http_methods(["GET"])
 @login_required
 def content_trending(request):
@@ -63,7 +65,7 @@ def content_trending(request):
 
         # if data is not provided retrun placeholder images
         if not data:
-            trending_contents = [ {"id": 0, "poster": placeholder} ] * 5
+            trending_contents = [{"id": 0, "poster": placeholder}] * 5
 
         else:
             trending_contents = [
@@ -86,7 +88,7 @@ def content_search(request, search_str):
     """
     if request.method == 'GET':
         url = 'https://api.themoviedb.org/3/search/movie'
-        params = { 'query': search_str.replace(" ","+") }
+        params = {'query': search_str.replace(" ", "+")}
         data = request_the_movie_api(url, params)
 
         if not data:
@@ -94,11 +96,12 @@ def content_search(request, search_str):
 
         search_contents = [{
             "id": content["id"],
-            "poster": 'https://image.tmdb.org/t/p/original/' +  content["poster_path"] if content["poster_path"] else "",
+            "poster": 'https://image.tmdb.org/t/p/original/' + content["poster_path"] if content["poster_path"] else "",
             "title": content["title"]
         } for content in data["results"]]
 
         return JsonResponse(search_contents, status=200, safe=False)
+
 
 @require_http_methods(["GET"])
 @login_required
@@ -139,6 +142,7 @@ def content_detail(request, content_id):
         }
 
         return JsonResponse(content_detail, safe=False, status=200)
+
 
 @require_http_methods(["GET"])
 @login_required
@@ -206,6 +210,7 @@ def content_recommendation(request, user_id):
 
         return JsonResponse(recommendation_contents, safe=False, status=200)
 
+
 @require_http_methods(["GET"])
 @login_required
 def user_favorite_list(request, user_id):
@@ -225,6 +230,7 @@ def user_favorite_list(request, user_id):
         fav_contents = list(user.favorite_contents.all().values())
 
         return JsonResponse(fav_contents, safe=False, status=200)
+
 
 @require_http_methods(["PUT", "DELETE"])
 @login_required

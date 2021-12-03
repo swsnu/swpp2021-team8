@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from deco import require_http_methods, login_required
 
+
 @ensure_csrf_cookie
 @require_http_methods(['GET'])
 def token(request):
@@ -17,6 +18,7 @@ def token(request):
     if request.method == 'GET':
         return HttpResponse(status=204)
 
+
 @ensure_csrf_cookie
 @require_http_methods(['GET'])
 def user(request):
@@ -28,14 +30,18 @@ def user(request):
     """
     if request.method == 'GET':
         if request.user.is_authenticated:
-            user = User.objects.prefetch_related('group_leader', 'user_groups').get(id=request.user.id)
+            user = User.objects.prefetch_related(
+                'group_leader', 'user_groups').get(id=request.user.id)
 
-            not_deleted_group_count = user.group_leader.filter(will_be_deleted=False).count() + user.user_groups.filter(will_be_deleted=False).count()
-            deleted_group_count = user.group_leader.filter(will_be_deleted=True).count() + user.user_groups.filter(will_be_deleted=True).count()
+            not_deleted_group_count = user.group_leader.filter(will_be_deleted=False).count(
+            ) + user.user_groups.filter(will_be_deleted=False).count()
+            deleted_group_count = user.group_leader.filter(will_be_deleted=True).count(
+            ) + user.user_groups.filter(will_be_deleted=True).count()
 
-            return JsonResponse({"id": request.user.id, "username": request.user.username, "isLoggedIn": True ,"notDeletedGroupCount" : not_deleted_group_count, "deletedGroupCount": deleted_group_count}, status=200)
+            return JsonResponse({"id": request.user.id, "username": request.user.username, "isLoggedIn": True, "notDeletedGroupCount": not_deleted_group_count, "deletedGroupCount": deleted_group_count}, status=200)
         else:
-            return JsonResponse({"id": "", "username": "","isLoggedIn": False, "notDeletedGroupCount" : 0, "deletedGroupCount": 0}, status=200)
+            return JsonResponse({"id": "", "username": "", "isLoggedIn": False, "notDeletedGroupCount": 0, "deletedGroupCount": 0}, status=200)
+
 
 @require_http_methods(['POST'])
 def signup(request):
@@ -57,6 +63,7 @@ def signup(request):
             return HttpResponse(status=201)
         # ERR 409 : Username Already Exists
         return HttpResponse(status=409)
+
 
 @require_http_methods(['POST'])
 def login(request):
@@ -81,6 +88,7 @@ def login(request):
 
         auth_login(request, user)
         return HttpResponse(status=204)
+
 
 @require_http_methods(['GET'])
 @login_required

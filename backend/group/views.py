@@ -2,10 +2,12 @@ import json
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.contrib.auth.models import User
 from django.db.models import Q
-from .models import Ott, Group
 from deco import require_http_methods, login_required
+from .models import Ott, Group
 
 # Create your views here.
+
+
 @require_http_methods(['GET', 'POST'])
 @login_required
 def group_list(request):
@@ -96,6 +98,7 @@ def group_list(request):
         }
         return JsonResponse(response_dict, status=201)
 
+
 @require_http_methods(["GET", "PUT", "DELETE"])
 @login_required
 def group_detail(request, group_id):
@@ -142,7 +145,7 @@ def group_detail(request, group_id):
             "accountName": group.account_name,
             "description": group.description,
             "payday": group.payday,
-            "leader": { "id": leader.id, "username": leader.username},
+            "leader": {"id": leader.id, "username": leader.username},
         }
 
         return JsonResponse(response_dict, safe=False, status=200)
@@ -167,7 +170,7 @@ def group_detail(request, group_id):
         # ERR 403 : Not Leader
         if(group.leader != request.user):
             response_dict = {"leader": group.leader.id,
-                                "request user": request.user.id}
+                             "request user": request.user.id}
             return JsonResponse(response_dict, status=403)
 
         group.name = group_name
@@ -211,6 +214,7 @@ def group_detail(request, group_id):
         }
 
         return JsonResponse(response_dict, status=200)
+
 
 @require_http_methods(["PUT", "DELETE"])
 @login_required

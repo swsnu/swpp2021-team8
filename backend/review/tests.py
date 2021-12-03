@@ -4,6 +4,7 @@ from django.test import TestCase, Client
 from content.models import Content
 from .models import Review
 
+
 class ReviewTestCase(TestCase):
     def setUp(self):
         """
@@ -30,7 +31,8 @@ class ReviewTestCase(TestCase):
             ------------------------------------
             1   content_1   review_detail   1
         """
-        new_user1 = User.objects.create_user(username='user1', password='user1_password')  # Django default user model
+        new_user1 = User.objects.create_user(
+            username='user1', password='user1_password')  # Django default user model
         User.objects.create_user(username='user2', password='user2_password')
 
         new_content = Content(favorite_cnt=0)
@@ -40,7 +42,7 @@ class ReviewTestCase(TestCase):
         new_content2.favorite_users.add(new_user1)
         new_content2.save()
 
-        new_content3 = Content(id=68718,favorite_cnt=1)
+        new_content3 = Content(id=68718, favorite_cnt=1)
         new_content3.save()
         new_content3.favorite_users.add(new_user1)
         new_content3.save()
@@ -50,14 +52,10 @@ class ReviewTestCase(TestCase):
         new_review.save()
 
         self.logged_in_client = Client()
-        response = self.logged_in_client.get('/api/user/token/')
-        self.csrf_token = response.cookies['csrftoken'].value
-
         self.logged_in_client.post('/api/user/login/',
-                               json.dumps({'username': 'user1',
-                                           'password': 'user1_password'}),
-                               content_type='application/json',
-                               HTTP_X_CSRFTOKEN=self.csrf_token)
+                                   json.dumps({'username': 'user1',
+                                               'password': 'user1_password'}),
+                                   content_type='application/json')
 
     def test_review_detail_get(self):
         """

@@ -4,6 +4,7 @@ from django.test import TestCase, Client
 from review.models import Review
 from .models import Content
 
+
 class ContentTestCase(TestCase):
     def setUp(self):
         """
@@ -31,7 +32,8 @@ class ContentTestCase(TestCase):
             1   content_1   review_detail   1
 
         """
-        new_user1 = User.objects.create_user(username='user1', password='user1_password')  # Django default user model
+        new_user1 = User.objects.create_user(
+            username='user1', password='user1_password')  # Django default user model
         User.objects.create_user(username='user2', password='user2_password')
 
         new_content = Content(favorite_cnt=0)
@@ -41,7 +43,7 @@ class ContentTestCase(TestCase):
         new_content2.favorite_users.add(new_user1)
         new_content2.save()
 
-        new_content3 = Content(id=68718,favorite_cnt=1)
+        new_content3 = Content(id=68718, favorite_cnt=1)
         new_content3.save()
         new_content3.favorite_users.add(new_user1)
         new_content3.save()
@@ -55,11 +57,10 @@ class ContentTestCase(TestCase):
         self.csrf_token = response.cookies['csrftoken'].value
 
         self.logged_in_client.post('/api/user/login/',
-                               json.dumps({'username': 'user1',
-                                           'password': 'user1_password'}),
-                               content_type='application/json',
-                               HTTP_X_CSRFTOKEN=self.csrf_token)
-
+                                   json.dumps({'username': 'user1',
+                                               'password': 'user1_password'}),
+                                   content_type='application/json',
+                                   HTTP_X_CSRFTOKEN=self.csrf_token)
 
     def test_content_search(self):
         """
@@ -93,7 +94,6 @@ class ContentTestCase(TestCase):
         # GET SUCCESS : 200
         response = client.get('/api/content/566525/')
         self.assertEqual(response.status_code, 200)
-
 
     def test_content_detail_405(self):
         """

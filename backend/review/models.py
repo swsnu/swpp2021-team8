@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from content.models import Content
 
 # Create your models here.
+
+
 class Review(models.Model):
     content = models.ForeignKey(
         Content,

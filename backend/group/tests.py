@@ -5,6 +5,7 @@ from django.test import TestCase, Client
 from ott.models import Ott
 from .models import Group
 
+
 class GroupTestCase(TestCase):
     def setUp(self):
         """
@@ -32,7 +33,8 @@ class GroupTestCase(TestCase):
             2   group_name  group_description   True        -1          False           new_ott2    1       Woori           group2_account  1234            user1   1
 
         """
-        new_user1 = User.objects.create_user(username='user1', password='user1_password')  # Django default user model
+        new_user1 = User.objects.create_user(
+            username='user1', password='user1_password')  # Django default user model
         User.objects.create_user(username='user2', password='user2_password')
 
         new_ott = Ott(
@@ -86,10 +88,10 @@ class GroupTestCase(TestCase):
         self.csrf_token = response.cookies['csrftoken'].value
 
         self.logged_in_client.post('/api/user/login/',
-                               json.dumps({'username': 'user1',
-                                           'password': 'user1_password'}),
-                               content_type='application/json',
-                               HTTP_X_CSRFTOKEN=self.csrf_token)
+                                   json.dumps({'username': 'user1',
+                                               'password': 'user1_password'}),
+                                   content_type='application/json',
+                                   HTTP_X_CSRFTOKEN=self.csrf_token)
 
     def test_group_list_get(self):
         """
@@ -121,7 +123,8 @@ class GroupTestCase(TestCase):
         })
 
         # GET Request with query
-        response = self.logged_in_client.get('/api/group/?name=group&ott=watcha__standard')
+        response = self.logged_in_client.get(
+            '/api/group/?name=group&ott=watcha__standard')
         self.assertEqual(response.status_code, 200)
         group = json.loads(response.content.decode())[0]
 
@@ -238,9 +241,8 @@ class GroupTestCase(TestCase):
             "isPublic": self.new_group.is_public,
             "password": self.new_group.password,
             "payday": self.new_group.payday,
-            "leader": { "id": 1, "username": "user1"},
+            "leader": {"id": 1, "username": "user1"},
         })
-
 
         # GET ERR group doesn't exist : 404
         response = self.logged_in_client.get('/api/group/10/')
@@ -258,7 +260,6 @@ class GroupTestCase(TestCase):
         response = client.put(
             '/api/review/1/', content_type='application/json')
         self.assertEqual(response.status_code, 401)
-
 
         # PUT SUCCESS : 200
         response = self.logged_in_client.put('/api/group/1/', json.dumps({

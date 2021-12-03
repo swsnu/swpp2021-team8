@@ -18,11 +18,14 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Review',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('detail', models.TextField(default='')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('content', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='content_reviews', to='content.content')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='user_reviews', to=settings.AUTH_USER_MODEL)),
+                ('content', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                 related_name='content_reviews', to='content.content')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                 related_name='user_reviews', to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]

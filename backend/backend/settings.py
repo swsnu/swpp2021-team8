@@ -28,7 +28,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 # API key for THE MOVIE DB
-THE_MOVIE_API_KEY  = "e50a928b29c2b7ed1f82ba2e6ce4982c"
+THE_MOVIE_API_KEY = "e50a928b29c2b7ed1f82ba2e6ce4982c"
 
 # Application definition
 

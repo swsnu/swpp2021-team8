@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase, Client
 from .models import Ott
 
+
 class OttTestCase(TestCase):
     def setUp(self):
         """
@@ -24,7 +25,8 @@ class OttTestCase(TestCase):
             Watcha  Standard    4           7900    tempfile
 
         """
-        User.objects.create_user(username='user1', password='user1_password')  # Django default user model
+        User.objects.create_user(
+            username='user1', password='user1_password')  # Django default user model
         User.objects.create_user(username='user2', password='user2_password')
 
         new_ott = Ott(
@@ -48,10 +50,10 @@ class OttTestCase(TestCase):
         self.csrf_token = response.cookies['csrftoken'].value
 
         self.logged_in_client.post('/api/user/login/',
-                               json.dumps({'username': 'user1',
-                                           'password': 'user1_password'}),
-                               content_type='application/json',
-                               HTTP_X_CSRFTOKEN=self.csrf_token)
+                                   json.dumps({'username': 'user1',
+                                               'password': 'user1_password'}),
+                                   content_type='application/json',
+                                   HTTP_X_CSRFTOKEN=self.csrf_token)
 
     def test_ott_list(self):
         """
