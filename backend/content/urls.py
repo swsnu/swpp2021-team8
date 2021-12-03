@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path('initialize/genre/', views.initialize_genre),
     path('trending/', views.content_trending),
     path('search/<str:search_str>/', views.content_search),
     path('<int:user_id>/recommendation/', views.content_recommendation),

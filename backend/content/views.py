@@ -11,6 +11,30 @@ from deco import login_required
 from review.models import Review
 from .models import Content, Genre, Actor
 
+@login_required
+@require_http_methods(["GET"])
+def initialize_genre(request):
+    if request.method == 'GET':
+        Genre.objects.create( name = 'Action' )
+        Genre.objects.create( name = 'Adventure' )
+        Genre.objects.create( name = 'Animation' )
+        Genre.objects.create( name = 'Comedy' )
+        Genre.objects.create( name = 'Crime' )
+        Genre.objects.create( name = 'Documentary' )
+        Genre.objects.create( name = 'Drama' )
+        Genre.objects.create( name = 'Family' )
+        Genre.objects.create( name = 'Fantasy' )
+        Genre.objects.create( name = 'History' )
+        Genre.objects.create( name = 'Horror' )
+        Genre.objects.create( name = 'Music' )
+        Genre.objects.create( name = 'Mystery' )
+        Genre.objects.create( name = 'Romance' )
+        Genre.objects.create( name = 'Science Fiction' )
+        Genre.objects.create( name = 'TV Movie' )
+        Genre.objects.create( name = 'Thriller' )
+        Genre.objects.create( name = 'War' )
+        Genre.objects.create( name = 'Western' )
+        return HttpResponse(status=201)
 
 def request_the_movie_api(url, _params, max_retries=2, sleep_time=5):
     """
