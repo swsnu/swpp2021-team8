@@ -282,6 +282,8 @@ def group_detail(request, group_id):
             "name": group.name,
             "platform": group.membership.ott,
             "membership": group.membership.membership,
+            "isPublic": group.is_public,
+            "password": group.password,
             "cost": group.membership.cost,
             "maxPeople": group.membership.max_people,
             "currentPeople": group.current_people,

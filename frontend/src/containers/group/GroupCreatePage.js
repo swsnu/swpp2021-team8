@@ -136,7 +136,7 @@ const GroupCreatePage = ({ history }) => {
   });
   const membershipSelectContent = (
     <select
-      id="membership-select"
+      id="groupcreate-membership-select"
       name="membership"
       onChange={onMembershipSelect}
       disabled={!platform}
@@ -169,12 +169,12 @@ const GroupCreatePage = ({ history }) => {
       <input
         type="checkbox"
         name="public"
-        id="public-input"
+        id="groupcreate-public-input"
         onChange={onPublicToggle}
       />
-      <label htmlFor="public-input" className="round-slider-container">
-        <div>On</div>
-        <div>Off</div>
+      <label htmlFor="groupcreate-public-input" className="round-slider-container">
+        <div />
+        <div />
         <div className="round-slider" />
       </label>
     </>
@@ -182,13 +182,13 @@ const GroupCreatePage = ({ history }) => {
   const passwordContent = (
     <>
       <input
-        id="password-input"
+        id="groupcreate-password-input"
         name="password"
         type="password"
         onChange={onPasswordChange}
       />
       <input
-        id="password-confirm-input"
+        id="groupcreate-password-confirm-input"
         name="password-confirm"
         type="password"
         onChange={onPasswordConfirmChange}
@@ -218,7 +218,7 @@ const GroupCreatePage = ({ history }) => {
   const titleInputContent = (
     <>
       <input
-        id="group-title-input"
+        id="groupcreate-group-title-input"
         name="group-title"
         type="text"
         placeholder="your group title"
@@ -230,7 +230,7 @@ const GroupCreatePage = ({ history }) => {
   const descriptionInputContent = (
     <>
       <textarea
-        id="description-input"
+        id="groupcreate-description-input"
         name="description"
         type="text"
         placeholder="your group description"
@@ -242,7 +242,7 @@ const GroupCreatePage = ({ history }) => {
   const accountInputContent = (
     <>
       <select
-        id="account-bank-select"
+        id="groupcreate-account-bank-select"
         name="account-bank"
         type="text"
         onChange={onAccountBankChange}
@@ -261,7 +261,7 @@ const GroupCreatePage = ({ history }) => {
         <option value="KDB">KDB</option>
       </select>
       <input
-        id="account-number-input"
+        id="groupcreate-account-number-input"
         name="account-number"
         type="text"
         placeholder="your bank account number"
@@ -269,7 +269,7 @@ const GroupCreatePage = ({ history }) => {
         onChange={onAccountNumberChange}
       />
       <input
-        id="account-name-input"
+        id="groupcreate-account-name-input"
         name="account-name"
         type="text"
         placeholder="your bank account name"
@@ -288,7 +288,7 @@ const GroupCreatePage = ({ history }) => {
   const paydayInputContent = (
     <>
       <select
-        id="payday-select"
+        id="groupcreate-payday-select"
         name="payday"
         type="number"
         onChange={onPaydayChange}
@@ -332,7 +332,7 @@ const GroupCreatePage = ({ history }) => {
           </div>
         </div>
         <div className="groupcreate__buttons">
-          <button id="cancel-button" onClick={onCancelClick} type="button">
+          <button id="groupcreate-cancel-button" onClick={onCancelClick} type="button">
             Cancel
           </button>
           <button
