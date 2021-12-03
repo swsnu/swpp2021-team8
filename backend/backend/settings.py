@@ -18,17 +18,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-a)wwuk0mog7lwko_4fc6k==(q74i7f51h%ce71$4z^uwhw-(qt"
-#SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# API key for THE MOVIE DB
-THE_MOVIE_API_KEY = "e50a928b29c2b7ed1f82ba2e6ce4982c"
+with open('./secrets.txt') as f:
+    line = f.readlines()
+    SECRET_KEY = line[0].strip()
+    THE_MOVIE_API_KEY = line[1].strip()
 
 # Application definition
 
