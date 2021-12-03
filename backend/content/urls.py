@@ -11,4 +11,5 @@ urlpatterns = [
     path('<int:user_id>/favorite/<int:content_id>/', views.content_favorite),
     path('<int:content_id>/review/', views.review_content),
     path('<int:content_id>/', views.content_detail),
+    path('<str:content_title>/ott/', views.content_ott)
 ]
