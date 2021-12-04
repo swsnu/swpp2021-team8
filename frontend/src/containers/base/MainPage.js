@@ -8,6 +8,7 @@ import './MainPage.scss';
 import { getGroups } from '../../store/GroupStore';
 import {
   getRecommendationContents,
+  getSearchContents,
   getTrendingContents,
 } from '../../store/ContentStore';
 
@@ -46,6 +47,8 @@ const MainPage = ({ history }) => {
     (state) => state.content.trendingContents,
   );
 
+  const searchContents = useSelector((state) => state.content.searchContents);
+
   // Group Pagination
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
@@ -58,6 +61,7 @@ const MainPage = ({ history }) => {
   // Content Pagination
   const [recommendationItemOffset, setRecommendationItemOffset] = useState(0);
   const [trendingItemOffset, setTrendingItemOffset] = useState(0);
+  const [searchItemOffset, setSearchItemOffset] = useState(0);
 
   useEffect(() => {
     dispatch(getGroups());
@@ -80,6 +84,8 @@ const MainPage = ({ history }) => {
       );
     } else if (e.target.dataset.type === 'trending') {
       setTrendingItemOffset(Math.max(trendingItemOffset - itemsPerPage, 0));
+    } else if (e.target.dataset.type === 'search') {
+      setSearchItemOffset(Math.max(searchItemOffset - itemsPerPage, 0));
     }
   };
   const onContentNextClick = (e) => {
@@ -95,6 +101,13 @@ const MainPage = ({ history }) => {
         Math.min(
           trendingItemOffset + itemsPerPage,
           trendingContents.length - itemsPerPage,
+        ),
+      );
+    } else if (e.target.dataset.type === 'search') {
+      setSearchItemOffset(
+        Math.min(
+          searchItemOffset + itemsPerPage,
+          searchContents.length - itemsPerPage,
         ),
       );
     }
@@ -139,7 +152,9 @@ const MainPage = ({ history }) => {
     dispatch(getGroups(queries.join('&')));
     setVisibility(false);
   };
-  const onContentSearchClick = () => {}; // TODO
+  const onContentSearchClick = () => {
+    dispatch(getSearchContents(contentSearchInput));
+  };
 
   const onFilterButtonClick = () => {
     setVisibility(!visibility);
@@ -380,6 +395,43 @@ const MainPage = ({ history }) => {
                 </button>
               </div>
             </div>
+
+            {searchContents.length !== 0 ? (
+              <div className="main__content-list">
+                <div className="main__content-list__title">Search Contents</div>
+                <div className="main__content-list__poster">
+                  <div
+                    className="main__content-list__poster__previous"
+                    onClick={onContentPreviousClick}
+                    role="button"
+                    tabIndex={0}
+                    data-type="search"
+                  >
+                    &lt;
+                  </div>
+
+                  {searchContents
+                    .slice(searchItemOffset, searchItemOffset + itemsPerPage)
+                    .map((content) => {
+                      return (
+                        <ContentListItem content={content} key={content.id} />
+                      );
+                    })}
+
+                  <div
+                    className="main__content-list__poster__next"
+                    onClick={onContentNextClick}
+                    role="button"
+                    tabIndex={0}
+                    data-type="search"
+                  >
+                    &gt;
+                  </div>
+                </div>
+              </div>
+            ) : (
+              ''
+            )}
 
             <div className="main__content-list">
               <div className="main__content-list__title">
