@@ -78,7 +78,7 @@ const MainPage = ({ history }) => {
       setRecommendationItemOffset(
         Math.max(recommendationItemOffset - itemsPerPage, 0),
       );
-    } else if (e.target.dataset.type === 'trending') {
+    } else {
       setTrendingItemOffset(Math.max(trendingItemOffset - itemsPerPage, 0));
     }
   };
@@ -90,7 +90,7 @@ const MainPage = ({ history }) => {
           recommendationContents.length - itemsPerPage,
         ),
       );
-    } else if (e.target.dataset.type === 'trending') {
+    } else {
       setTrendingItemOffset(
         Math.min(
           trendingItemOffset + itemsPerPage,

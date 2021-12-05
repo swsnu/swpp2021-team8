@@ -40,13 +40,19 @@ const CalendarTableBody = (year, month, groups) => {
               className={`cell ${day === 0 && 'sunday'}`}
               key={7 * week + day}
             >
-              <div className="payday">
-                <div className="group-detail-view">
+              <div className="payday" key={`payday_${7 * week + day}`}>
+                <div
+                  className="group-detail-view"
+                  key={`group-detail-view_${7 * week + day}`}
+                >
                   {groups
                     .filter((group) => group.payday > date.getDate())
                     .map((group) => {
                       return (
-                        <div className="group-detail">
+                        <div
+                          className="group-detail"
+                          key={`group-detail_${7 * week + day}`}
+                        >
                           <div className="group-detail__name">{group.name}</div>
                           <div className="group-detail__cost">
                             {`₩${group.cost / group.currentPeople}`}
@@ -73,13 +79,20 @@ const CalendarTableBody = (year, month, groups) => {
                 className={`today ${
                   payday.includes(date.getDate()) ? 'payday' : ''
                 }`}
+                key={`payday_${7 * week + day}`}
               >
-                <div className="group-detail-view">
+                <div
+                  className="group-detail-view"
+                  key={`group-detail-view_${7 * week + day}`}
+                >
                   {groups
                     .filter((group) => group.payday === date.getDate())
                     .map((group) => {
                       return (
-                        <div className="group-detail">
+                        <div
+                          className="group-detail"
+                          key={`group-detail_${7 * week + day}`}
+                        >
                           <div className="group-detail__name">{group.name}</div>
                           <div className="group-detail__cost">
                             {`₩${group.cost / group.currentPeople}`}
@@ -100,13 +113,20 @@ const CalendarTableBody = (year, month, groups) => {
             >
               <div
                 className={`${payday.includes(date.getDate()) ? 'payday' : ''}`}
+                key={`payday_${7 * week + day}`}
               >
-                <div className="group-detail-view">
+                <div
+                  className="group-detail-view"
+                  key={`group-detail-view_${7 * week + day}`}
+                >
                   {groups
                     .filter((group) => group.payday === date.getDate())
                     .map((group) => {
                       return (
-                        <div className="group-detail">
+                        <div
+                          className="group-detail"
+                          key={`group-detail_${7 * week + day}`}
+                        >
                           <div className="group-detail__name">{group.name}</div>
                           <div className="group-detail__cost">
                             {`₩${group.cost / group.currentPeople}`}
