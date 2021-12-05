@@ -1,24 +1,27 @@
 @import '../../base.scss';
 
 .calendar {
+  display: flex;
+  flex-direction: column;
   background-color: white;
-  align-self: center;
-  padding-top: 5%;
-  height: 95%;
-  width: 100%;
-  flex-shrink: 0;
-  .calendar__header {
-    margin: 3% 0 7% 0;
+  padding-bottom: 7%;
+  margin-bottom: 40px;
+
+  &__header {
+    margin: 5% 0 7% 0;
     text-align: center;
     vertical-align: middle;
+    font-size: 1.2em;
   }
-  .calendar__body {
+  &__body {
     display: flex;
-    .calendar__body__table {
+    align-items: center;
+    &__table {
       height: 100%;
       width: 100%;
-      margin: 0 0 0 0;
+      margin: 0;
     }
+
     #previous-button {
       height: 3%;
       width: 3%;
@@ -26,8 +29,9 @@
       display: flex;
       justify-content: center;
       align-content: middle;
-      margin: 15% 1% 0 3%;
+      margin-left: 2%;
     }
+
     #next-button {
       height: 3%;
       width: 3%;
@@ -35,7 +39,25 @@
       display: flex;
       justify-content: center;
       align-content: middle;
-      margin: 15% 1% 0 3%;
+      margin-right: 2%;
+    }
+
+    .payday {
+      display: flex;
+      background-color: blue;
+      width: fit-content;
+      color: white;
+      padding: 18%;
+      margin: auto;
+      border-radius: 50%;
+    }
+
+    .payday:hover {
+      .group-detail-view {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
     }
   }
 }
@@ -48,10 +70,30 @@
 .sunday {
   color: red;
 }
+
 .today {
   background-color: red;
-  height: 3%;
-  width: 2%;
-  border-radius: 50%;
+  width: fit-content;
   color: white;
+  padding: 18%;
+  margin: auto;
+  border-radius: 50%;
+}
+
+.group-detail-view {
+  display: none;
+  position: absolute;
+  background-color: grey;
+  color: black;
+  padding: 5px;
+  z-index: 1;
+
+  .group-detail {
+    display: flex;
+    justify-content: space-between;
+
+    &__name {
+      margin-right: 20px;
+    }
+  }
 }

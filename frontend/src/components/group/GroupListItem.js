@@ -45,7 +45,7 @@ const GroupListItem = ({ group, history, onlyTitle = false }) => {
         </div>
         <div className="group-item__title">
           <span className="group-item__title--title">{group.name}</span>
-          <span className="group-item__title--creator">{group.leader}</span>
+          <span className="group-item__title--leader">{group.leader}</span>
         </div>
         {!onlyTitle ? (
           <>
@@ -53,12 +53,12 @@ const GroupListItem = ({ group, history, onlyTitle = false }) => {
               <span className="group-item__membership--membership">
                 {group.membership}
               </span>
-              <span className="group-item__membership--price">
+              <span className="group-item__membership--cost">
                 {`₩${group.cost}`}
               </span>
             </div>
             <div className="group-item__member">{`${group.currentPeople}/${group.maxPeople}`}</div>
-            <div className="group-item__duration">{group.payday}</div>
+            <div className="group-item__payday">{group.payday}</div>
           </>
         ) : (
           ''

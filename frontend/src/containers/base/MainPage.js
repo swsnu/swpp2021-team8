@@ -339,9 +339,9 @@ const MainPage = ({ history }) => {
               <div className="main__group-list__header">
                 <div className="group-item__platform">Platform</div>
                 <div className="group-item__title">Title / Creator</div>
-                <div className="group-item__membership">Membership / Price</div>
+                <div className="group-item__membership">Membership / Cost</div>
                 <div className="group-item__member">Members</div>
-                <div className="group-item__duration">Duration</div>
+                <div className="group-item__payday">Payday</div>
               </div>
               {groups
                 .slice(itemOffset, itemOffset + itemsPerPage)

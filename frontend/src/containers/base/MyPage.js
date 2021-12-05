@@ -58,7 +58,7 @@ const MyPage = () => {
         <hr />
         <div className="mypage__calendar">
           <h2>Calendar</h2>
-          <Calendar />
+          <Calendar groups={groups} />
         </div>
       </div>
     </div>
