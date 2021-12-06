@@ -145,7 +145,7 @@ def content_trending(request):
             trending_contents = [
                 {
                     "id": content["id"],
-                    "poster": 'https://image.tmdb.org/t/p/original/' + content["poster_path"]
+                    "poster": ('https://image.tmdb.org/t/p/original/' + content["poster_path"]) if content["poster_path"] else 'https://via.placeholder.com/150?text=No+Content'
                 } for content in data["results"]]
 
         return JsonResponse(trending_contents, safe=False, status=200)
@@ -170,7 +170,7 @@ def content_search(request, search_str):
 
         search_contents = [{
             "id": content["id"],
-            "poster": 'https://image.tmdb.org/t/p/original/' + content["poster_path"] if content["poster_path"] else "",
+            "poster": ('https://image.tmdb.org/t/p/original/' + content["poster_path"]) if content["poster_path"] else 'https://via.placeholder.com/150?text=No+Content',
             "title": content["title"]
         } for content in data["results"]]
 
@@ -212,7 +212,7 @@ def content_detail(request, content_id):
             content = Content(
                 id = info_data["id"],
                 title = info_data["title"],
-                poster = 'https://image.tmdb.org/t/p/original' + info_data['poster_path'],
+                poster = ('https://image.tmdb.org/t/p/original/' + info_data["poster_path"]) if info_data["poster_path"] else 'https://via.placeholder.com/150?text=No+Content',
                 overview = info_data["overview"],
                 release_date = info_data["release_date"],
                 rate = info_data["vote_average"],
@@ -324,8 +324,8 @@ def content_recommendation(request, user_id):
                 recommendation_contents = [
                     {
                         "id": content["id"],
-                        "poster": 'https://image.tmdb.org/t/p/original/' +
-                        content["poster_path"]} for content in data["results"]]
+                        "poster": ('https://image.tmdb.org/t/p/original/' + content["poster_path"]) if content["poster_path"] else 'https://via.placeholder.com/150?text=No+Content'
+                    } for content in data["results"]]
 
         # If user has favorite contents
         else:
@@ -338,7 +338,7 @@ def content_recommendation(request, user_id):
                     recommendation_contents.extend(
                         [{
                             "id": content["id"],
-                            "poster": 'https://image.tmdb.org/t/p/original/' + content["poster_path"]
+                            "poster": ('https://image.tmdb.org/t/p/original/' + content["poster_path"]) if content["poster_path"] else 'https://via.placeholder.com/150?text=No+Content'
                         } for content in data["results"]])
 
             if not recommendation_contents:

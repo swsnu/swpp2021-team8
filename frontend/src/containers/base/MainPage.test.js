@@ -8,6 +8,7 @@ import MainPage from './MainPage';
 import { getMockStore, history } from '../../test-utils/mock';
 import * as AuthReducer from '../../store/AuthStore';
 import * as GroupReducer from '../../store/GroupStore';
+import * as ContentReducer from '../../store/ContentStore';
 
 jest.mock('../../components/group/GroupListItem', () => {
   return jest.fn(({ group }) => {
@@ -46,6 +47,7 @@ jest.mock('../../components/content/ContentListItem', () => {
 const mockStore = getMockStore(
   { isLoggedIn: true },
   {
+    searchContents: [],
     recommendationContents: [
       { id: 1 },
       { id: 2 },
@@ -89,6 +91,16 @@ const mockStore = getMockStore(
 const mockPaginationStore = getMockStore(
   { isLoggedIn: true },
   {
+    searchContents: [
+      { id: 1 },
+      { id: 2 },
+      { id: 3 },
+      { id: 4 },
+      { id: 5 },
+      { id: 6 },
+      { id: 7 },
+      { id: 8 },
+    ],
     recommendationContents: [
       { id: 1 },
       { id: 2 },
@@ -386,11 +398,13 @@ describe('<MainPage /> GroupTab', () => {
 
     nextButtonWrapper.at(0).simulate('click');
     nextButtonWrapper.at(1).simulate('click');
+    nextButtonWrapper.at(2).simulate('click');
 
     expect(component.find('.content-list-item').at(0).text()).toBe('4');
 
     previousButtonWrapper.at(0).simulate('click');
     previousButtonWrapper.at(1).simulate('click');
+    previousButtonWrapper.at(2).simulate('click');
 
     expect(component.find('.content-list-item').at(0).text()).toBe('1');
   });
@@ -413,5 +427,26 @@ describe('<MainPage /> GroupTab', () => {
     expect(component.find('#content-search-input').props().value).toBe(
       'mockInput',
     );
+  });
+
+  it('should render search Contents when click search Click button', () => {
+    mockMainPage = (
+      <Provider store={mockStore}>
+        <ConnectedRouter history={history}>
+          <Route path="/" component={MainPage} exact />
+        </ConnectedRouter>
+      </Provider>
+    );
+    localStorage.setItem('mainTab', 'content');
+    ContentReducer.getSearchContents = jest.fn(() => () => {});
+    const component = mount(mockMainPage);
+
+    component
+      .find('#content-search-input')
+      .simulate('change', { target: { value: 'harry' } });
+
+    component.find('#content-search-button').simulate('click');
+
+    expect(ContentReducer.getSearchContents).toHaveBeenCalledTimes(1);
   });
 });
