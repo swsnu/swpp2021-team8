@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from deco import login_required
 from review.models import Review
-from .models import Content
+from .models import Content, Genre, Actor
 
 
 def request_the_movie_api(url, _params, max_retries=2, sleep_time=5):
@@ -114,35 +114,73 @@ def content_detail(request, content_id):
         Get Content detail information from THE MOVIE API
     """
     if request.method == 'GET':
-        url = 'https://api.themoviedb.org/3/movie/' + str(content_id)
-        data = request_the_movie_api(url, dict())
-
-        if not data:
-            return HttpResponse(status=405)
-
-        # If Content does not exist in DB, make a new Content
+        # Check if Content exists in DB
         try:
-            content = Content.objects.get(id=data["id"])
+            content = Content.objects.get(id=content_id)
+        # Create Content
         except Content.DoesNotExist as _:
-            content = Content(id=data["id"])
-            content.favorite_cnt = 0
-            content.favorite_users.set([])
+            info_url = 'https://api.themoviedb.org/3/movie/' + str(content_id)
+            credit_url = 'https://api.themoviedb.org/3/movie/' + str(content_id) + '/credits'
+            info_data = request_the_movie_api(info_url, dict())
+            credit_data = request_the_movie_api(credit_url, dict())
+
+            # Exception : no info found in TMDB
+            if not info_data or not credit_data:
+                return HttpResponse(status=405)
+
+            director=''
+            for member in credit_data['crew']:
+                if member['job'] == "Director":
+                    director = member['name']
+                    break
+            content = Content(
+                id = info_data["id"],
+                title = info_data["title"],
+                poster = 'https://image.tmdb.org/t/p/original' + info_data['poster_path'],
+                overview = info_data["overview"],
+                release_date = info_data["release_date"],
+                rate = info_data["vote_average"],
+                director = director
+                )
             content.save()
 
-        content_detail = {
-            "id": data["id"],
-            "name": data["title"],
-            "genres": ",".join([genre['name'] for genre in data['genres']]),
-            "countries": ",".join([country['name'] for country in data['production_countries']]),
-            "poster": 'https://image.tmdb.org/t/p/original/' + data['poster_path'],
-            "overview": data["overview"],
-            "release_date": data["release_date"],
-            "rate": data["vote_average"],
-            "favorite_users": list(content.favorite_users.all().values()),
-            "favorite_cnt": content.favorite_cnt
-        }
+            genres = []
+            for genre in info_data["genres"]:
+                genre_name = Genre.objects.get(name = genre["name"])
+                genres.append(genre_name)
+            content.genres.set(genres)
 
+            cast = []
+            for actor in credit_data["cast"][:4]:
+                try:
+                    actor = Actor.objects.get(name = actor["name"])
+                except Actor.DoesNotExist as _:
+                    actor = Actor(name = actor["name"])
+                    actor.save()
+                cast.append(actor)
+            content.cast.set(cast)
+
+        genre_list = list(content.genres.all().values())
+        return_genres = ", ".join([genre['name'] for genre in genre_list]),
+
+        cast_list = list(content.cast.all().values())
+        return_cast = ", ".join([cast['name'] for cast in cast_list]),
+
+        content_detail = {
+            "id": content.id,
+            "name": content.title,
+            "genres": return_genres,
+            "poster": content.poster,
+            "overview": content.overview,
+            "release_date": content.release_date,
+            "rate": content.rate,
+            "cast" : return_cast,
+            "director" : content.director,
+            "favorite_users": list(content.favorite_users.all().values()),
+            "favorite_cnt": content.favorite_cnt,
+        }
         return JsonResponse(content_detail, safe=False, status=200)
+
 
 
 @login_required
