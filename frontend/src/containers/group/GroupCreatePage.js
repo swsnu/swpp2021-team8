@@ -313,10 +313,7 @@ const GroupCreatePage = ({ history }) => {
             <FieldInfoItem container="groupcreate" category="Membership" content={membershipSelectContent} section="membership" />
             <FieldInfoItem container="groupcreate" category="People" content={peopleContent} section="membership" />
             <FieldInfoItem container="groupcreate" category="Cost" content={costContent} section="membership" />
-            <FieldInfoItem container="groupcreate" category="Public" content={isPublicContent} section="membership" />
-            {isPublic
-              ? null
-              : <FieldInfoItem container="groupcreate" category="Password" content={passwordContent} section="membership" />}
+            <FieldInfoItem container="groupcreate" category="Payday" content={paydayInputContent} section="group" />
           </div>
         </div>
         <hr />
@@ -328,7 +325,10 @@ const GroupCreatePage = ({ history }) => {
             <FieldInfoItem container="groupcreate" category="Title" content={titleInputContent} section="group" />
             <FieldInfoItem container="groupcreate" category="Description" content={descriptionInputContent} section="group" />
             <FieldInfoItem container="groupcreate" category="Account" content={accountInputContent} section="group" />
-            <FieldInfoItem container="groupcreate" category="Payday" content={paydayInputContent} section="group" />
+            <FieldInfoItem container="groupcreate" category="Public" content={isPublicContent} section="membership" />
+            {isPublic
+              ? null
+              : <FieldInfoItem container="groupcreate" category="Password" content={passwordContent} section="membership" />}
           </div>
         </div>
         <div className="groupcreate__buttons">

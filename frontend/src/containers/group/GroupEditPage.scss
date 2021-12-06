@@ -74,6 +74,47 @@
                         color: rgb(209, 204, 204);
                     }
                 }
+            }
+        }
+        hr {
+            margin-top: 50px;
+            margin-bottom: 50px;
+            width : 800px;
+            color:white;
+            size: 5;
+        }
+        .groupedit__group {
+            .groupedit__group__header {
+                display: flex;
+                margin: 20px 0 50px 0px;
+                text-align: center;
+                align-items: center;
+                .groupedit__group__info {
+                    font-size: 24pt;
+                    font-family: $font-base-stack;
+                    font-weight:bolder;
+                }
+            }
+            .groupedit__group__body {
+                .content {
+                    input, textarea, select{
+                        height : 35px;
+                        width : 400px;
+                        color: gray;
+                        font-size: 12pt;
+                    }
+                    textarea {
+                        height : 90px;
+                    }
+                }                
+                .account {
+                    .content {
+                        display: grid;
+                        input{
+                            margin-top: 1%;
+                        }
+                    }
+                }
                 .public {
                     .content{
                         [type=checkbox]{
@@ -128,46 +169,18 @@
                 }    
             }
         }
-        hr {
-            margin-top: 50px;
-            margin-bottom: 50px;
-            width : 800px;
-            color:white;
-            size: 5;
-        }
-        .groupedit__group {
-            .groupedit__group__header {
-                display: flex;
-                margin: 20px 0 50px 0px;
-                text-align: center;
-                align-items: center;
-                .groupedit__group__info {
-                    font-size: 24pt;
-                    font-family: $font-base-stack;
-                    font-weight:bolder;
-                }
-            }
-            .groupedit__group__body {
-                .content {
-                    input, textarea, select{
-                        height : 35px;
-                        width : 400px;
-                        color: gray;
-                        font-size: 12pt;
-                    }
-                    textarea {
-                        height : 90px;
-                    }
-                }                
-                .account {
-                    .content {
-                        display: grid;
-                        input{
-                            margin-top: 1%;
-                        }
-                    }
-                }
-            }
-        }
+    }
+}
+.groupedit__buttons{
+    #groupedit-cancel-button, #edit-group-button {
+        width:290px;
+        height: 50px;
+        font-size: 15pt;
+        font-family: $font-title-stack;
+        font-weight: bolder;
+        background: #fcb70d;
+        margin-top: 30px;
+        margin-right: 50px;
+        margin-bottom: 50px;
     }
 }
