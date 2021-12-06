@@ -82,9 +82,6 @@ const GroupEditPage = ({ history, match }) => {
     checkPasswordEqual();
   }, [password, passwordConfirm]);
 
-  useEffect(() => {
-    console.log(accountBank);
-  }, [accountBank]);
   const onTitleChange = (e) => {
     setTitle(e.target.value);
   };
@@ -168,7 +165,7 @@ const GroupEditPage = ({ history, match }) => {
         id="groupedit-account-bank-select"
         name="account-bank"
         type="text"
-        defalutValue={accountBank}
+        defalutvalue={accountBank}
         onChange={onAccountBankChange}
       >
         <option value="NongHyup">NongHyup</option>
@@ -223,14 +220,14 @@ const GroupEditPage = ({ history, match }) => {
         id="groupedit-password-input"
         name="password"
         type="password"
-        defaultValue={password}
+        defaultvalue={password}
         onChange={onPasswordChange}
       />
       <input
         id="groupedit-password-confirm-input"
         name="password-confirm"
         type="password"
-        defaultValue={passwordConfirm}
+        defaultvalue={passwordConfirm}
         onChange={onPasswordConfirmChange}
       />
       <div className="password-validcheck">

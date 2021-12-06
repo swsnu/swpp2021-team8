@@ -456,6 +456,8 @@ class SubrokerTestCase(TestCase):
             "name": self.new_group.name,
             "platform": self.new_group.membership.ott,
             "membership": self.new_group.membership.membership,
+            "isPublic": self.new_group.is_public,
+            "password": self.new_group.password,
             "cost": self.new_group.membership.cost,
             "maxPeople": self.new_group.membership.max_people,
             "currentPeople": self.new_group.current_people,
@@ -467,7 +469,6 @@ class SubrokerTestCase(TestCase):
             "payday": self.new_group.payday,
             "leader": { "id": 1, "username": "user1"},
         })
-
 
         # GET ERR group doesn't exist : 404
         response = self.logged_in_client.get('/api/group/10/')
