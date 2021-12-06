@@ -11,7 +11,6 @@ from deco import login_required
 from review.models import Review
 from .models import Content, Genre, Actor
 
-
 def request_the_movie_api(url, _params, max_retries=2, sleep_time=5):
     """
     Request The MOVIE API
@@ -48,6 +47,80 @@ def request_the_movie_api(url, _params, max_retries=2, sleep_time=5):
 
     return None
 
+@login_required
+@require_http_methods(["GET"])
+def initialize_genre(request):
+    if request.method == 'GET':
+        Genre.objects.create( name = 'Action' )
+        Genre.objects.create( name = 'Adventure' )
+        Genre.objects.create( name = 'Animation' )
+        Genre.objects.create( name = 'Comedy' )
+        Genre.objects.create( name = 'Crime' )
+        Genre.objects.create( name = 'Documentary' )
+        Genre.objects.create( name = 'Drama' )
+        Genre.objects.create( name = 'Family' )
+        Genre.objects.create( name = 'Fantasy' )
+        Genre.objects.create( name = 'History' )
+        Genre.objects.create( name = 'Horror' )
+        Genre.objects.create( name = 'Music' )
+        Genre.objects.create( name = 'Mystery' )
+        Genre.objects.create( name = 'Romance' )
+        Genre.objects.create( name = 'Science Fiction' )
+        Genre.objects.create( name = 'TV Movie' )
+        Genre.objects.create( name = 'Thriller' )
+        Genre.objects.create( name = 'War' )
+        Genre.objects.create( name = 'Western' )
+        return HttpResponse(status=201)
+
+@login_required
+@require_http_methods(['GET'])
+def initialize_contents(request):
+    if request.method == 'GET':
+        trending_list = request_the_movie_api('https://api.themoviedb.org/3/trending/movie/week', dict())['results']
+        for content in trending_list:
+            content_id = content["id"]
+            info_url = 'https://api.themoviedb.org/3/movie/' + str(content_id)
+            credit_url = 'https://api.themoviedb.org/3/movie/' + str(content_id) + '/credits'
+            info_data = request_the_movie_api(info_url, dict())
+            credit_data = request_the_movie_api(credit_url, dict())
+
+            # Exception : no info found in TMDB
+            if not info_data or not credit_data:
+                return HttpResponse(status=405)
+
+            director=''
+            for member in credit_data['crew']:
+                if member['job'] == "Director":
+                    director = member['name']
+                    break
+            content = Content(
+                id = info_data["id"],
+                title = info_data["title"],
+                poster = 'https://image.tmdb.org/t/p/original' + info_data['poster_path'],
+                overview = info_data["overview"],
+                release_date = info_data["release_date"],
+                rate = info_data["vote_average"],
+                director = director
+                )
+            content.save()
+
+            genres = []
+            for genre in info_data["genres"]:
+                genre_name = Genre.objects.get(name = genre["name"])
+                genres.append(genre_name)
+            content.genres.set(genres)
+
+            cast = []
+            for actor in credit_data["cast"][:4]:
+                try:
+                    actor = Actor.objects.get(name = actor["name"])
+                except Actor.DoesNotExist as _:
+                    actor = Actor(name = actor["name"])
+                    actor.save()
+                cast.append(actor)
+            content.cast.set(cast)
+
+        return HttpResponse(status=201)
 
 @login_required
 @require_http_methods(["GET"])
@@ -128,11 +201,14 @@ def content_detail(request, content_id):
             if not info_data or not credit_data:
                 return HttpResponse(status=405)
 
+            # Find 'Director'
             director=''
             for member in credit_data['crew']:
                 if member['job'] == "Director":
                     director = member['name']
-                    break
+                    break        
+            
+            # Create Content
             content = Content(
                 id = info_data["id"],
                 title = info_data["title"],
@@ -140,16 +216,43 @@ def content_detail(request, content_id):
                 overview = info_data["overview"],
                 release_date = info_data["release_date"],
                 rate = info_data["vote_average"],
-                director = director
+                director = director,
                 )
+
+            # Find 'Ott'
+            content_title = content.title.replace(" ", "+")
+            search_url = 'https://api.kinolights.com/v1/search?keyword='+ content_title
+            response = requests.get(search_url).json()
+            ott_string = ""
+            content_found = True
+            # See if content is available in kinolights
+            try: 
+                movie_id = response["movies"][0]["Idx"]
+            except IndexError as _:
+                ott_string = "Currently not available in any Ott :("
+                content_found = False
+            if content_found:
+                detail_url = 'https://api.kinolights.com/v1/movie/' + str(movie_id) + '/prices'
+                response = requests.get(detail_url).json()
+                ott_list = list(set([movie["TechnicalName"] for movie in response["data"]]))
+                # Ott list not empty
+                if ott_list:
+                    for ott_name in ott_list:
+                        ott_name = ott_name.replace("-", " ").title().replace(" ", "")
+                        ott_string = ott_string + ott_name + '  ' 
+                    ott_string = ", ".join([ott_name.replace("-", " ").title().replace(" ", "") for ott_name in ott_list])
+
+            content.ott = ott_string
             content.save()
 
+            # Find 'Genres'
             genres = []
             for genre in info_data["genres"]:
                 genre_name = Genre.objects.get(name = genre["name"])
                 genres.append(genre_name)
             content.genres.set(genres)
 
+            # Find 'Cast'
             cast = []
             for actor in credit_data["cast"][:4]:
                 try:
@@ -176,6 +279,7 @@ def content_detail(request, content_id):
             "rate": content.rate,
             "cast" : return_cast,
             "director" : content.director,
+            "ott" : content.ott,
             "favorite_users": list(content.favorite_users.all().values()),
             "favorite_cnt": content.favorite_cnt,
         }
