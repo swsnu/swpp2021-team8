@@ -285,6 +285,72 @@ def content_detail(request, content_id):
         }
         return JsonResponse(content_detail, safe=False, status=200)
 
+@login_required
+@require_http_methods(["GET"])
+def content_recommendation_2(request, user_id):
+    """
+    /api/content/<int:user_id>/recommendation/
+
+    GET
+        Get recommended contents for current user from THE MOIVE API
+    """
+    if request.method == "GET":
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            # ERR 404 : User Doesn't Exist
+            return HttpResponse(status=404)
+
+        fav_contents_id = [content["id"]
+                           for content in user.favorite_contents.all().values()]
+        recommendation_contents = []
+        recommendation_url = 'https://api.themoviedb.org/3/movie/{0}/recommendations'
+        placeholder = 'https://via.placeholder.com/150?text=No+Content'
+
+        # If user has no favorite contents
+        if not fav_contents_id:
+            DEFAULT_CONTENT_ID = 68718  # Django Unchained
+            url = recommendation_url.format(DEFAULT_CONTENT_ID)
+            data = request_the_movie_api(url, dict())
+
+            # if data is not provided retrun placeholder images
+            if not data:
+                recommendation_contents = [
+                    {"id": 0, "poster": placeholder}] * 5
+
+            else:
+                recommendation_contents = [
+                    {
+                        "id": content["id"],
+                        "poster": 'https://image.tmdb.org/t/p/original/' +
+                        content["poster_path"]} for content in data["results"]]
+
+        # If user has favorite contents
+        else:
+            # generate recommendation only using last 5
+            for favorite_id in fav_contents_id[-5:]:
+                content_list = Content.objects.all()
+                # TODO
+
+                if data:
+                    recommendation_contents.extend(
+                        [{
+                            "id": content["id"],
+                            "poster": 'https://image.tmdb.org/t/p/original/' + content["poster_path"]
+                        } for content in data["results"]])
+
+            if not recommendation_contents:
+                recommendation_contents = [
+                    {"id": 0, "poster": placeholder}] * 5
+
+            else:
+                # pick only 21 samples
+                recommendation_contents = random.sample(
+                    recommendation_contents, min(
+                        len(recommendation_contents), 21))
+
+        return JsonResponse(recommendation_contents, safe=False, status=200)
+
 
 
 @login_required
