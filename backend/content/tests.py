@@ -2,7 +2,7 @@ import json
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
 from review.models import Review
-from .models import Content
+from .models import Content, Genre
 
 
 class ContentTestCase(TestCase):
@@ -51,6 +51,26 @@ class ContentTestCase(TestCase):
         new_review = Review(content=new_content,
                             detail='review_detail', user=new_user1)
         new_review.save()
+
+        Genre.objects.create( name = 'Action' )
+        Genre.objects.create( name = 'Adventure' )
+        Genre.objects.create( name = 'Animation' )
+        Genre.objects.create( name = 'Comedy' )
+        Genre.objects.create( name = 'Crime' )
+        Genre.objects.create( name = 'Documentary' )
+        Genre.objects.create( name = 'Drama' )
+        Genre.objects.create( name = 'Family' )
+        Genre.objects.create( name = 'Fantasy' )
+        Genre.objects.create( name = 'History' )
+        Genre.objects.create( name = 'Horror' )
+        Genre.objects.create( name = 'Music' )
+        Genre.objects.create( name = 'Mystery' )
+        Genre.objects.create( name = 'Romance' )
+        Genre.objects.create( name = 'Science Fiction' )
+        Genre.objects.create( name = 'TV Movie' )
+        Genre.objects.create( name = 'Thriller' )
+        Genre.objects.create( name = 'War' )
+        Genre.objects.create( name = 'Western' )
 
         self.logged_in_client = Client()
         response = self.logged_in_client.get('/api/user/token/')
