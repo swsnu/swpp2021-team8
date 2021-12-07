@@ -225,8 +225,6 @@ class GroupTestCase(TestCase):
             "accountNumber": self.new_group.account_number,
             "accountName": self.new_group.account_name,
             "description": self.new_group.description,
-            "isPublic": self.new_group.is_public,
-            "password": self.new_group.password,
             "payday": self.new_group.payday,
             "leader": {"id": 1, "username": "user1"},
         })

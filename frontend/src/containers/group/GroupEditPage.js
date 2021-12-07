@@ -165,7 +165,7 @@ const GroupEditPage = ({ history, match }) => {
         id="groupedit-account-bank-select"
         name="account-bank"
         type="text"
-        defalutvalue={accountBank}
+        defaultValue={accountBank}
         onChange={onAccountBankChange}
       >
         <option value="NongHyup">NongHyup</option>
@@ -207,7 +207,10 @@ const GroupEditPage = ({ history, match }) => {
         defaultChecked={!isPublic}
         onChange={onPublicToggle}
       />
-      <label htmlFor="groupedit-public-input" className="round-slider-container">
+      <label
+        htmlFor="groupedit-public-input"
+        className="round-slider-container"
+      >
         <div />
         <div />
         <div className="round-slider" />
@@ -220,14 +223,14 @@ const GroupEditPage = ({ history, match }) => {
         id="groupedit-password-input"
         name="password"
         type="password"
-        defaultvalue={password}
+        defaultValue={password}
         onChange={onPasswordChange}
       />
       <input
         id="groupedit-password-confirm-input"
         name="password-confirm"
         type="password"
-        defaultvalue={passwordConfirm}
+        defaultValue={passwordConfirm}
         onChange={onPasswordConfirmChange}
       />
       <div className="password-validcheck">
@@ -282,11 +285,36 @@ const GroupEditPage = ({ history, match }) => {
             <h1 className="groupedit__membership__info">Membership Info</h1>
           </div>
           <div className="groupedit__membership__body">
-            <FieldInfoItem container="groupedit" category="OTT" content={platformContent} section="membership" />
-            <FieldInfoItem container="groupedit" category="Membership" content={membershipContent} section="membership" />
-            <FieldInfoItem container="groupedit" category="People" content={peopleContent} section="membership" />
-            <FieldInfoItem container="groupedit" category="Cost" content={costContent} section="membership" />
-            <FieldInfoItem container="groupedit" category="Payday" content={paydayContent} section="group" />
+            <FieldInfoItem
+              container="groupedit"
+              category="OTT"
+              content={platformContent}
+              section="membership"
+            />
+            <FieldInfoItem
+              container="groupedit"
+              category="Membership"
+              content={membershipContent}
+              section="membership"
+            />
+            <FieldInfoItem
+              container="groupedit"
+              category="People"
+              content={peopleContent}
+              section="membership"
+            />
+            <FieldInfoItem
+              container="groupedit"
+              category="Cost"
+              content={costContent}
+              section="membership"
+            />
+            <FieldInfoItem
+              container="groupedit"
+              category="Payday"
+              content={paydayContent}
+              section="group"
+            />
           </div>
         </div>
         <hr />
@@ -295,16 +323,40 @@ const GroupEditPage = ({ history, match }) => {
             <h1 className="groupedit__group__info">Group Info</h1>
           </div>
           <div className="groupedit__group__body">
-            <FieldInfoItem container="groupedit" category="Description" content={descriptionInputContent} section="group" />
-            <FieldInfoItem container="groupedit" category="Account" content={accountInputContent} section="group" />
-            <FieldInfoItem container="groupedit" category="Public" content={isPublicContent} section="membership" />
-            {isPublic
-              ? null
-              : <FieldInfoItem container="groupedit" category="Password" content={passwordContent} section="membership" />}
+            <FieldInfoItem
+              container="groupedit"
+              category="Description"
+              content={descriptionInputContent}
+              section="group"
+            />
+            <FieldInfoItem
+              container="groupedit"
+              category="Account"
+              content={accountInputContent}
+              section="group"
+            />
+            <FieldInfoItem
+              container="groupedit"
+              category="Public"
+              content={isPublicContent}
+              section="membership"
+            />
+            {isPublic ? null : (
+              <FieldInfoItem
+                container="groupedit"
+                category="Password"
+                content={passwordContent}
+                section="membership"
+              />
+            )}
           </div>
         </div>
         <div className="groupedit__buttons">
-          <button id="groupedit-cancel-button" onClick={onCancelClick} type="button">
+          <button
+            id="groupedit-cancel-button"
+            onClick={onCancelClick}
+            type="button"
+          >
             Cancel
           </button>
           <button
@@ -313,15 +365,13 @@ const GroupEditPage = ({ history, match }) => {
             type="button"
             disabled={
               !group.id ||
-              (
-                title === group.name &&
+              (title === group.name &&
                 isPublic === group.isPublic &&
                 password === group.password &&
                 description === group.description &&
                 accountBank === group.accountBank &&
                 accountName === group.accountName &&
-                accountNumber === group.accountNumber
-              )
+                accountNumber === group.accountNumber)
             }
           >
             Edit Group
