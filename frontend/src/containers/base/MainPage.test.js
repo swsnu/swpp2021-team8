@@ -378,7 +378,7 @@ describe('<MainPage /> GroupTab', () => {
     expect(component.find('.group-item').length).toBe(2);
   });
 
-  it('should render previous/next content when press click button', () => {
+  it('should render previous/next content when press click button in recommendation', () => {
     mockMainPage = (
       <Provider store={mockPaginationStore}>
         <ConnectedRouter history={history}>
@@ -397,16 +397,53 @@ describe('<MainPage /> GroupTab', () => {
     );
 
     nextButtonWrapper.at(0).simulate('click');
-    nextButtonWrapper.at(1).simulate('click');
-    nextButtonWrapper.at(2).simulate('click');
 
     expect(component.find('.content-list-item').at(0).text()).toBe('4');
 
     previousButtonWrapper.at(0).simulate('click');
-    previousButtonWrapper.at(1).simulate('click');
-    previousButtonWrapper.at(2).simulate('click');
 
     expect(component.find('.content-list-item').at(0).text()).toBe('1');
+  });
+
+  it('should render previous/next content when press click button in trending', () => {
+    mockMainPage = (
+      <Provider store={mockPaginationStore}>
+        <ConnectedRouter history={history}>
+          <Route path="/" component={MainPage} exact />
+        </ConnectedRouter>
+      </Provider>
+    );
+    localStorage.setItem('mainTab', 'content');
+    const component = mount(mockMainPage);
+
+    const previousButtonWrapper = component.find(
+      '.main__content-list__poster__previous',
+    );
+    const nextButtonWrapper = component.find(
+      '.main__content-list__poster__next',
+    );
+
+    nextButtonWrapper.at(1).simulate('click');
+
+    expect(
+      component
+        .find('.main__content-list')
+        .at(1)
+        .find('.content-list-item')
+        .at(0)
+        .text(),
+    ).toBe('4');
+
+    previousButtonWrapper.at(1).simulate('click');
+
+    expect(
+      component
+        .find('.main__content-list')
+        .at(1)
+        .find('.content-list-item')
+        .at(0)
+        .text(),
+    ).toBe('1');
   });
 
   it('should set content search input with user input', () => {

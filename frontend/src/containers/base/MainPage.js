@@ -82,7 +82,7 @@ const MainPage = ({ history }) => {
       setRecommendationItemOffset(
         Math.max(recommendationItemOffset - itemsPerPage, 0),
       );
-    } else if (e.target.dataset.type === 'trending') {
+    } else {
       setTrendingItemOffset(Math.max(trendingItemOffset - itemsPerPage, 0));
     } else if (e.target.dataset.type === 'search') {
       setSearchItemOffset(Math.max(searchItemOffset - itemsPerPage, 0));
@@ -96,7 +96,7 @@ const MainPage = ({ history }) => {
           recommendationContents.length - itemsPerPage,
         ),
       );
-    } else if (e.target.dataset.type === 'trending') {
+    } else {
       setTrendingItemOffset(
         Math.min(
           trendingItemOffset + itemsPerPage,
@@ -354,9 +354,9 @@ const MainPage = ({ history }) => {
               <div className="main__group-list__header">
                 <div className="group-item__platform">Platform</div>
                 <div className="group-item__title">Title / Creator</div>
-                <div className="group-item__membership">Membership / Price</div>
+                <div className="group-item__membership">Membership / Cost</div>
                 <div className="group-item__member">Members</div>
-                <div className="group-item__duration">Duration</div>
+                <div className="group-item__payday">Payday</div>
               </div>
               {groups
                 .slice(itemOffset, itemOffset + itemsPerPage)

@@ -46,4 +46,18 @@ describe('<GroupListItem />', () => {
 
     expect(history.push).toHaveBeenCalledWith('/group/1');
   });
+
+  it('should render only title when only Title option is true', () => {
+    const mockGroup = { id: 1, currentPeople: 1, maxPeople: 4 };
+    history.push = jest.fn(() => {});
+    const component = shallow(
+      <GroupListItem.WrappedComponent
+        group={mockGroup}
+        history={history}
+        onlyTitle
+      />,
+    );
+
+    expect(component.find('.group-item__membership').length).toBe(0);
+  });
 });
