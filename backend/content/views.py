@@ -376,7 +376,7 @@ def user_favorite_list(request, user_id):
 
 
 @login_required
-@require_http_methods(["PUT", "DELETE"])
+@require_http_methods(["GET", "PUT", "DELETE"])
 def content_favorite(request, user_id, content_id):
     """
     /api/content/<int:user_id>/favorite/<int:content_id>/
@@ -387,7 +387,27 @@ def content_favorite(request, user_id, content_id):
     DELETE
         Delete content from user's favorite list
     """
-    if request.method == 'PUT':
+    if request.method == 'GET':
+        try:
+            new_user = User.objects.get(id=user_id)
+        # ERR 404 : User Doesn't Exist
+        except(User.DoesNotExist) as _:
+            return HttpResponse(status=404)
+
+        # ERR 400 : Content Doesn't Exist
+        try:
+            content = Content.objects.get(id=content_id)
+        except(Content.DoesNotExist) as _:
+            return HttpResponse(status=404)
+
+        is_favorite = False
+        for user in content.favorite_users.all():
+            if user.id == user_id:
+                is_favorite = True
+                break
+        return JsonResponse({"is_favorite":is_favorite}, status=200)
+
+    elif request.method == 'PUT':
         try:
             new_user = User.objects.get(id=user_id)
         # ERR 404 : User Doesn't Exist
@@ -416,7 +436,7 @@ def content_favorite(request, user_id, content_id):
 
     elif request.method == 'DELETE':
         try:
-            User.objects.get(id=user_id)
+            new_user = User.objects.get(id=user_id)
         # ERR 404 : User Doesn't Exist
         except(User.DoesNotExist) as _:
             return HttpResponse(status=404)
@@ -427,10 +447,19 @@ def content_favorite(request, user_id, content_id):
         except(Content.DoesNotExist) as _:
             return HttpResponse(status=404)
 
-        content.favorite_users.remove(request.user)
+        content.favorite_users.remove(new_user)
         content.favorite_cnt = content.favorite_cnt - 1
+        content.save()
 
-        return HttpResponse(status=200)
+        fav_users = list(content.favorite_users.all().values())
+
+        response_dict = {
+            "id": content.id,
+            "favorite_users": fav_users,
+            "favorite_cnt": content.favorite_cnt
+        }
+
+        return JsonResponse(response_dict, status=200)
 
 
 @login_required
