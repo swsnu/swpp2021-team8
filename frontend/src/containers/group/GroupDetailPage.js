@@ -20,6 +20,10 @@ const GroupDetailPage = ({ history, match }) => {
     dispatch(getGroupDetail(id));
     dispatch(getLoginStatus());
   }, []);
+
+  useEffect(() => {
+    dispatch(getLoginStatus());
+  }, [group]);
   const onBackClick = () => {
     history.goBack();
   };
@@ -41,16 +45,16 @@ const GroupDetailPage = ({ history, match }) => {
   let payday = '';
   let members = group.members
     ? group.members.map((member, index) => {
-      return (
-        /* eslint react/no-array-index-key: ['off'] */
-        <div className="groupdetail__member" key={`member-${index}`}>
-          <div className="groupdetail__member__index" />
-          <div className="groupdetail__member__username">
-            {member.username}
+        return (
+          /* eslint react/no-array-index-key: ['off'] */
+          <div className="groupdetail__member" key={`member-${index}`}>
+            <div className="groupdetail__member__index" />
+            <div className="groupdetail__member__username">
+              {member.username}
+            </div>
           </div>
-        </div>
-      );
-    })
+        );
+      })
     : null;
   for (let i = group.currentPeople; i < group.maxPeople; i += 1) {
     const empty = (
@@ -93,13 +97,41 @@ const GroupDetailPage = ({ history, match }) => {
           <h1 className="groupdetail__name">{group.name}</h1>
         </div>
         <div className="groupdetail__body">
-          <FieldInfoItem container="groupdetail" category="Membership" content={group.membership} />
-          <FieldInfoItem container="groupdetail" category="Cost" content={cost.toString().concat(' Won')} />
-          <FieldInfoItem container="groupdetail" category="People" content={group.currentPeople} />
-          <FieldInfoItem container="groupdetail" category="Members" content={members} />
-          <FieldInfoItem container="groupdetail" category="Account" content={account} />
-          <FieldInfoItem container="groupdetail" category="Payday" content={payday} />
-          <FieldInfoItem container="groupdetail" category="Description" content={group.description} />
+          <FieldInfoItem
+            container="groupdetail"
+            category="Membership"
+            content={group.membership}
+          />
+          <FieldInfoItem
+            container="groupdetail"
+            category="Cost"
+            content={cost.toString().concat(' Won')}
+          />
+          <FieldInfoItem
+            container="groupdetail"
+            category="People"
+            content={group.currentPeople}
+          />
+          <FieldInfoItem
+            container="groupdetail"
+            category="Members"
+            content={members}
+          />
+          <FieldInfoItem
+            container="groupdetail"
+            category="Account"
+            content={account}
+          />
+          <FieldInfoItem
+            container="groupdetail"
+            category="Payday"
+            content={payday}
+          />
+          <FieldInfoItem
+            container="groupdetail"
+            category="Description"
+            content={group.description}
+          />
         </div>
         <div className="groupdetail__footer">
           {group.members &&
@@ -107,11 +139,11 @@ const GroupDetailPage = ({ history, match }) => {
             <button id="quit-button" onClick={onQuitClick} type="button">
               Quit
             </button>
-            ) : (
-              <button id="join-button" onClick={onJoinClick} type="button">
-                Join
-              </button>
-            )}
+          ) : (
+            <button id="join-button" onClick={onJoinClick} type="button">
+              Join
+            </button>
+          )}
           {group.leader && group.leader.id === user.id ? (
             <>
               <button id="edit-button" onClick={onEditClick} type="button">

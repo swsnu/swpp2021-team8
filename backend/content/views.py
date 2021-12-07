@@ -206,8 +206,8 @@ def content_detail(request, content_id):
             for member in credit_data['crew']:
                 if member['job'] == "Director":
                     director = member['name']
-                    break        
-            
+                    break
+
             # Create Content
             content = Content(
                 id = info_data["id"],
@@ -226,7 +226,7 @@ def content_detail(request, content_id):
             ott_string = ""
             content_found = True
             # See if content is available in kinolights
-            try: 
+            try:
                 movie_id = response["movies"][0]["Idx"]
             except IndexError as _:
                 ott_string = "Currently not available in any Ott :("
@@ -239,7 +239,7 @@ def content_detail(request, content_id):
                 if ott_list:
                     for ott_name in ott_list:
                         ott_name = ott_name.replace("-", " ").title().replace(" ", "")
-                        ott_string = ott_string + ott_name + '  ' 
+                        ott_string = ott_string + ott_name + '  '
                     ott_string = ", ".join([ott_name.replace("-", " ").title().replace(" ", "") for ott_name in ott_list])
 
             content.ott = ott_string
@@ -264,10 +264,10 @@ def content_detail(request, content_id):
             content.cast.set(cast)
 
         genre_list = list(content.genres.all().values())
-        return_genres = ", ".join([genre['name'] for genre in genre_list]),
+        return_genres = ", ".join([genre['name'] for genre in genre_list])
 
         cast_list = list(content.cast.all().values())
-        return_cast = ", ".join([cast['name'] for cast in cast_list]),
+        return_cast = ", ".join([cast['name'] for cast in cast_list])
 
         content_detail = {
             "id": content.id,
