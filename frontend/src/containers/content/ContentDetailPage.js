@@ -113,7 +113,7 @@ const ContentDetailPage = ({ history }) => {
             </div>
             <div className="contentdetail__ott">
               <p>
-                Available on
+                Where To Watch :
               </p>
               {content.ott}
             </div>
