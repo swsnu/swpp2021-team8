@@ -51,20 +51,6 @@ const ContentDetailPage = ({ history }) => {
     dispatch(createReview(id, review));
   };
 
-  const renderField = (category, detail) => {
-    const classname = 'contentdetail__field '.concat(category.toLowerCase());
-    return (
-      <div className={classname}>
-        <div className={category.toLowerCase().concat(' category')}>
-          {category}
-        </div>
-        <div className={category.toLowerCase().concat(' detail')}>
-          {detail}
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="contentdetail">
       <button id="back-button" onClick={onBackClick} type="button">
@@ -76,34 +62,46 @@ const ContentDetailPage = ({ history }) => {
             <img className="contentdetail__poster" src={content.poster} alt="poster" />
           </div>
           <div className="contentdetail__right">
-            <h1 className="contentdetail__name">
+            <div className="contentdetail__name">
               {content.name}
-            </h1>
+            </div>
             <div className="contentdetail__favorite">
               <button id="heart" onClick={onFavoriteClick} type="button" aria-label="favorite" />
               <div className="contentdetail__favoritecount">
                 {content.favorite_cnt}
               </div>
-            </div>
-            <div className="contentdetail__category">
-              {content.category}
-            </div>
-            <div className="contentdetail__rate">
-              {content.rate}
+              <div className="contentdetail__rate">
+                IMDb&nbsp;&nbsp;
+                {content.rate}
+                &nbsp;/&nbsp;10
+              </div>
             </div>
             <div className="contentdetail__genre">
-              {content.genre}
+              Genres&nbsp;&nbsp;:&nbsp;&nbsp;
+              {content.genres}
             </div>
-            <div className="contentdetail__countries">
-              {content.countries}
+            <div className="contentdetail__cast">
+              Actors&nbsp;&nbsp;:&nbsp;&nbsp;
+              {content.cast}
+            </div>
+            <div className="contentdetail__director">
+              Director&nbsp;&nbsp;:&nbsp;&nbsp;
+              {content.director}
             </div>
             <div className="contentdetail__releasedate">
+              Released On&nbsp;&nbsp;:&nbsp;&nbsp;
               {content.release_date}
+            </div>
+            <div className="contentdetail__ott">
+              <p>
+                Available on
+              </p>
+              {content.ott}
             </div>
           </div>
         </div>
-        <div className="contentdetail__body">
-          {renderField('Description', content.description)}
+        <div className="contentdetail__overview">
+          {content.overview}
         </div>
         <br />
         <div className="contentdetail__footer">
