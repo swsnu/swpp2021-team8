@@ -82,9 +82,9 @@ const MainPage = ({ history }) => {
       setRecommendationItemOffset(
         Math.max(recommendationItemOffset - itemsPerPage, 0),
       );
-    } else {
+    } else if (e.target.dataset.type === 'trending') {
       setTrendingItemOffset(Math.max(trendingItemOffset - itemsPerPage, 0));
-    } else if (e.target.dataset.type === 'search') {
+    } else {
       setSearchItemOffset(Math.max(searchItemOffset - itemsPerPage, 0));
     }
   };
@@ -96,14 +96,14 @@ const MainPage = ({ history }) => {
           recommendationContents.length - itemsPerPage,
         ),
       );
-    } else {
+    } else if (e.target.dataset.type === 'trending') {
       setTrendingItemOffset(
         Math.min(
           trendingItemOffset + itemsPerPage,
           trendingContents.length - itemsPerPage,
         ),
       );
-    } else if (e.target.dataset.type === 'search') {
+    } else {
       setSearchItemOffset(
         Math.min(
           searchItemOffset + itemsPerPage,

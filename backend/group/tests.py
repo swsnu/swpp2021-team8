@@ -215,6 +215,8 @@ class GroupTestCase(TestCase):
             "name": self.new_group.name,
             "platform": self.new_group.membership.ott,
             "membership": self.new_group.membership.membership,
+            "isPublic": self.new_group.is_public,
+            "password": self.new_group.password,
             "cost": self.new_group.membership.cost,
             "maxPeople": self.new_group.membership.max_people,
             "currentPeople": self.new_group.current_people,
