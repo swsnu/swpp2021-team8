@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import ReviewList from '../../components/review/ReviewList';
-import { addFavoriteContent, getContentDetail } from '../../store/ContentStore';
+import { addFavoriteContent, deleteFavoriteContent, getContentDetail, getIsFavoriteContent } from '../../store/ContentStore';
 import { createReview } from '../../store/ReviewStore';
 import './ContentDetailPage.scss';
-// import posterTmp from './temp/best_offer.png';
 
 const ContentDetailPage = ({ history }) => {
   const { id } = useParams();
@@ -13,17 +12,30 @@ const ContentDetailPage = ({ history }) => {
     id: 1,
     username: 'swpp',
   };
+  const dispatch = useDispatch();
+  const content = useSelector((state) => state.content.selectedContent);
+  const favorite = useSelector((state) => state.content.isFavorite);
 
   const [newComment, setnewComment] = useState('');
   const [commentAdded, setCommentAdded] = useState(false);
-  // const [favorite, setFavorite] = useState(false);
-
-  const dispatch = useDispatch();
-  const content = useSelector((state) => state.content.selectedContent);
+  const [otherFavoriteCnt, setOtherFavoriteCnt] = useState(0);
+  const [myFavoriteCnt, setMyFavoriteCnt] = useState(0);
+  const [favButtonId, setFavButtonId] = useState('heart_false');
 
   useEffect(() => {
     dispatch(getContentDetail(id));
-  }, [id, commentAdded]);
+    dispatch(getIsFavoriteContent(user1.id, id));
+  }, [id]);
+
+  useEffect(() => {
+    if (content.id && favorite) {
+      if (favorite.is_favorite) {
+        setMyFavoriteCnt(1);
+        setFavButtonId('heart_true');
+      }
+      setOtherFavoriteCnt(content.favorite_cnt - myFavoriteCnt);
+    }
+  }, [content, favorite]);
 
   const gradientStyle = {
     background: 'linear-gradient(#C99208 5%, #000000 60%)',
@@ -38,7 +50,14 @@ const ContentDetailPage = ({ history }) => {
   };
 
   const onFavoriteClick = () => {
-    dispatch(addFavoriteContent(user1.id, id));
+    setMyFavoriteCnt(1 - myFavoriteCnt);
+    if (myFavoriteCnt === 0) {
+      setFavButtonId('heart_true');
+      dispatch(addFavoriteContent(user1.id, id));
+    } else {
+      setFavButtonId('heart_false');
+      dispatch(deleteFavoriteContent(user1.id, id));
+    }
   };
 
   const onCreateReviewClick = () => {
@@ -66,9 +85,9 @@ const ContentDetailPage = ({ history }) => {
               {content.name}
             </div>
             <div className="contentdetail__favorite">
-              <button id="heart" onClick={onFavoriteClick} type="button" aria-label="favorite" />
+              <button id={favButtonId} onClick={onFavoriteClick} type="button" aria-label="favorite" />
               <div className="contentdetail__favoritecount">
-                {content.favorite_cnt}
+                {otherFavoriteCnt + myFavoriteCnt}
               </div>
               <div className="contentdetail__rate">
                 IMDb&nbsp;&nbsp;

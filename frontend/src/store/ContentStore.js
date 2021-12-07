@@ -6,6 +6,7 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 const initialState = {
   searchContents: [],
   favoriteContents: [],
+  isFavorite: false,
   recommendationContents: [
     { id: 1 },
     { id: 2 },
@@ -39,6 +40,10 @@ const _getRecommendationContents = (contents) => {
 
 const _getFavoriteContents = (contents) => {
   return { type: 'content/GET_FAVORITE_CONTENTS', contents };
+};
+
+const _getIsFavoriteContent = (isFavorite) => {
+  return { type: 'content/GET_IS_FAVORITE_CONTENT', isFavorite };
 };
 
 const _addFavoriteContent = (content) => {
@@ -85,9 +90,18 @@ export const getFavoriteContents = (userId) => async (dispatch) => {
   } catch (e) {}
 };
 
+export const getIsFavoriteContent = (userId, contentId) => async (dispatch) => {
+  try {
+    const res = await axios.get(
+      `/api/content/${userId}/favorite/${contentId}/`,
+    );
+    dispatch(_getIsFavoriteContent(res.data));
+  } catch (e) {}
+};
+
 export const addFavoriteContent = (userId, contentId) => async (dispatch) => {
   try {
-    const res = await axios.post(
+    const res = await axios.put(
       `/api/content/${userId}/favorite/${contentId}/`,
     );
     dispatch(_addFavoriteContent(res.data));
@@ -122,6 +136,9 @@ export default function ContentReducer(state = initialState, action) {
 
     case 'content/GET_TRENDING_CONTENTS':
       return { ...state, trendingContents: action.contents };
+
+    case 'content/GET_IS_FAVORITE_CONTENT':
+      return { ...state, isFavorite: action.isFavorite };
 
     case 'content/ADD_FAVORITE_CONTENT':
       return {
