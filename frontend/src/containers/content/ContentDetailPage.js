@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import ReviewList from '../../components/review/ReviewList';
 import { addFavoriteContent, deleteFavoriteContent, getContentDetail, getIsFavoriteContent } from '../../store/ContentStore';
-import { createReview } from '../../store/ReviewStore';
+import { createReview, getReviews } from '../../store/ReviewStore';
 import './ContentDetailPage.scss';
 
 const ContentDetailPage = ({ history }) => {
@@ -16,8 +16,8 @@ const ContentDetailPage = ({ history }) => {
   const content = useSelector((state) => state.content.selectedContent);
   const favorite = useSelector((state) => state.content.isFavorite);
 
-  const [newComment, setnewComment] = useState('');
-  const [commentAdded, setCommentAdded] = useState(false);
+  const [newReview, setnewReview] = useState('');
+  const [reviewAdded, setReviewAdded] = useState(false);
   const [otherFavoriteCnt, setOtherFavoriteCnt] = useState(0);
   const [myFavoriteCnt, setMyFavoriteCnt] = useState(0);
   const [favButtonId, setFavButtonId] = useState('heart_false');
@@ -25,6 +25,7 @@ const ContentDetailPage = ({ history }) => {
   useEffect(() => {
     dispatch(getContentDetail(id));
     dispatch(getIsFavoriteContent(user1.id, id));
+    dispatch(getReviews(id));
   }, [id]);
 
   useEffect(() => {
@@ -37,12 +38,16 @@ const ContentDetailPage = ({ history }) => {
     }
   }, [content, favorite]);
 
+  useEffect(() => {
+    dispatch(getReviews(id));
+  }, [reviewAdded]);
+
   const gradientStyle = {
     background: 'linear-gradient(#C99208 5%, #000000 60%)',
   };
 
   const onReviewContentChange = (e) => {
-    setnewComment(e.target.value);
+    setnewReview(e.target.value);
   };
 
   const onBackClick = () => {
@@ -60,13 +65,14 @@ const ContentDetailPage = ({ history }) => {
     }
   };
 
-  const onCreateReviewClick = () => {
+  const onCreateReviewClick = (e) => {
+    e.preventDefault();
     const review = {
       content: content.id,
-      detail: newComment,
+      detail: newReview,
       user: user1,
     };
-    setCommentAdded(!commentAdded);
+    setReviewAdded(!reviewAdded);
     dispatch(createReview(id, review));
   };
 
@@ -132,20 +138,20 @@ const ContentDetailPage = ({ history }) => {
             <input
               type="text"
               id="new-review-content-input"
-              value={newComment}
+              value={newReview}
               onChange={onReviewContentChange}
             />
             <button
               id="create-review-button"
               onClick={onCreateReviewClick}
               type="button"
-              disabled={newComment === ''}
+              disabled={newReview === ''}
             >
               write
             </button>
           </div>
           <div className="contentdetail__reviewlist">
-            <ReviewList />
+            <ReviewList contentId={id} />
           </div>
         </div>
       </div>
