@@ -14,7 +14,7 @@ const ContentListItem = ({ content, history }) => {
         onClick={onImageClick}
         role="button"
         tabIndex={0}
-        className={content.id === 0 ? 'noClick' : ''}
+        className={`content-item ${content.id === 0 ? 'noClick' : ''}`}
       >
         <img src={content.poster} alt={content.poster} />
       </div>
