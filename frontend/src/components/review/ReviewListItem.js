@@ -1,19 +1,16 @@
-import { React, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { React, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { deleteReview, editReview } from '../../store/ReviewStore';
 import './ReviewListItem.scss';
 
-const ReviewListItem = () => {
+const ReviewListItem = ({ review }) => {
   const dispatch = useDispatch();
   const [editDetail, setEditDetail] = useState('');
+  const logginUserId = useSelector((state) => state.auth.user.id);
 
-  const review = {
-    id: 1,
-    content: 1,
-    detail: 'I love it. This was the best movie of my life!!',
-    user: 'swpp',
-    created_at: '2021-11-11',
-  };
+  useEffect(() => {
+    console.log(review);
+  }, []);
 
   const onEditClick = () => {
     /* eslint no-alert: ['off'] */
@@ -37,12 +34,19 @@ const ReviewListItem = () => {
         <div className="review__user">{review.user}</div>
         <div className="review__createdat">{review.created_at}</div>
         <div className="buttons">
-          <button id="edit-button" onClick={onEditClick} type="button">
-            Edit
-          </button>
-          <button id="delete-button" onClick={onDeleteClick} type="button">
-            Delete
-          </button>
+          {review.user_id === logginUserId ?
+            (
+              <div className="review-detail-buttons">
+                <button id="edit-button" onClick={onEditClick} type="button">
+                  Edit
+                </button>
+                <button id="delete-button" onClick={onDeleteClick} type="button">
+                  Delete
+                </button>
+              </div>
+            )
+            :
+              <></>}
         </div>
       </div>
     </>

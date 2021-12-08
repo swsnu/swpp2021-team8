@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import ReviewList from '../../components/review/ReviewList';
-import { addFavoriteContent, getContentDetail } from '../../store/ContentStore';
-import { createReview } from '../../store/ReviewStore';
+import { addFavoriteContent, deleteFavoriteContent, getContentDetail, getIsFavoriteContent } from '../../store/ContentStore';
+import { createReview, getReviews } from '../../store/ReviewStore';
 import './ContentDetailPage.scss';
-// import posterTmp from './temp/best_offer.png';
 
 const ContentDetailPage = ({ history }) => {
   const { id } = useParams();
@@ -13,24 +12,42 @@ const ContentDetailPage = ({ history }) => {
     id: 1,
     username: 'swpp',
   };
-
-  const [newComment, setnewComment] = useState('');
-  const [commentAdded, setCommentAdded] = useState(false);
-  // const [favorite, setFavorite] = useState(false);
-
   const dispatch = useDispatch();
   const content = useSelector((state) => state.content.selectedContent);
+  const favorite = useSelector((state) => state.content.isFavorite);
+
+  const [newReview, setnewReview] = useState('');
+  const [reviewAdded, setReviewAdded] = useState(false);
+  const [otherFavoriteCnt, setOtherFavoriteCnt] = useState(0);
+  const [myFavoriteCnt, setMyFavoriteCnt] = useState(0);
+  const [favButtonId, setFavButtonId] = useState('heart_false');
 
   useEffect(() => {
     dispatch(getContentDetail(id));
-  }, [id, commentAdded]);
+    dispatch(getIsFavoriteContent(user1.id, id));
+    dispatch(getReviews(id));
+  }, [id]);
+
+  useEffect(() => {
+    if (content.id && favorite) {
+      if (favorite.is_favorite) {
+        setMyFavoriteCnt(1);
+        setFavButtonId('heart_true');
+      }
+      setOtherFavoriteCnt(content.favorite_cnt - myFavoriteCnt);
+    }
+  }, [content, favorite]);
+
+  useEffect(() => {
+    dispatch(getReviews(id));
+  }, [reviewAdded]);
 
   const gradientStyle = {
     background: 'linear-gradient(#C99208 5%, #000000 60%)',
   };
 
   const onReviewContentChange = (e) => {
-    setnewComment(e.target.value);
+    setnewReview(e.target.value);
   };
 
   const onBackClick = () => {
@@ -38,31 +55,25 @@ const ContentDetailPage = ({ history }) => {
   };
 
   const onFavoriteClick = () => {
-    dispatch(addFavoriteContent(user1.id, id));
+    setMyFavoriteCnt(1 - myFavoriteCnt);
+    if (myFavoriteCnt === 0) {
+      setFavButtonId('heart_true');
+      dispatch(addFavoriteContent(user1.id, id));
+    } else {
+      setFavButtonId('heart_false');
+      dispatch(deleteFavoriteContent(user1.id, id));
+    }
   };
 
-  const onCreateReviewClick = () => {
+  const onCreateReviewClick = (e) => {
+    e.preventDefault();
     const review = {
       content: content.id,
-      detail: newComment,
+      detail: newReview,
       user: user1,
     };
-    setCommentAdded(!commentAdded);
+    setReviewAdded(!reviewAdded);
     dispatch(createReview(id, review));
-  };
-
-  const renderField = (category, detail) => {
-    const classname = 'contentdetail__field '.concat(category.toLowerCase());
-    return (
-      <div className={classname}>
-        <div className={category.toLowerCase().concat(' category')}>
-          {category}
-        </div>
-        <div className={category.toLowerCase().concat(' detail')}>
-          {detail}
-        </div>
-      </div>
-    );
   };
 
   return (
@@ -76,34 +87,46 @@ const ContentDetailPage = ({ history }) => {
             <img className="contentdetail__poster" src={content.poster} alt="poster" />
           </div>
           <div className="contentdetail__right">
-            <h1 className="contentdetail__name">
+            <div className="contentdetail__name">
               {content.name}
-            </h1>
+            </div>
             <div className="contentdetail__favorite">
-              <button id="heart" onClick={onFavoriteClick} type="button" aria-label="favorite" />
+              <button id={favButtonId} onClick={onFavoriteClick} type="button" aria-label="favorite" />
               <div className="contentdetail__favoritecount">
-                {content.favorite_cnt}
+                {otherFavoriteCnt + myFavoriteCnt}
+              </div>
+              <div className="contentdetail__rate">
+                IMDb&nbsp;&nbsp;
+                {content.rate}
+                &nbsp;/&nbsp;10
               </div>
             </div>
-            <div className="contentdetail__category">
-              {content.category}
-            </div>
-            <div className="contentdetail__rate">
-              {content.rate}
-            </div>
             <div className="contentdetail__genre">
-              {content.genre}
+              Genres&nbsp;&nbsp;:&nbsp;&nbsp;
+              {content.genres}
             </div>
-            <div className="contentdetail__countries">
-              {content.countries}
+            <div className="contentdetail__cast">
+              Actors&nbsp;&nbsp;:&nbsp;&nbsp;
+              {content.cast}
+            </div>
+            <div className="contentdetail__director">
+              Director&nbsp;&nbsp;:&nbsp;&nbsp;
+              {content.director}
             </div>
             <div className="contentdetail__releasedate">
+              Released On&nbsp;&nbsp;:&nbsp;&nbsp;
               {content.release_date}
+            </div>
+            <div className="contentdetail__ott">
+              <p>
+                Where To Watch :
+              </p>
+              {content.ott}
             </div>
           </div>
         </div>
-        <div className="contentdetail__body">
-          {renderField('Description', content.description)}
+        <div className="contentdetail__overview">
+          {content.overview}
         </div>
         <br />
         <div className="contentdetail__footer">
@@ -115,20 +138,20 @@ const ContentDetailPage = ({ history }) => {
             <input
               type="text"
               id="new-review-content-input"
-              value={newComment}
+              value={newReview}
               onChange={onReviewContentChange}
             />
             <button
               id="create-review-button"
               onClick={onCreateReviewClick}
               type="button"
-              disabled={newComment === ''}
+              disabled={newReview === ''}
             >
               write
             </button>
           </div>
           <div className="contentdetail__reviewlist">
-            <ReviewList />
+            <ReviewList contentId={id} />
           </div>
         </div>
       </div>
