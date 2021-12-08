@@ -31,7 +31,8 @@ def review_detail(request, review_id):
             "id": review.id,
             "content_id": review.content.id,
             "detail": review.detail,
-            "user": review.user.id,
+            "user_id": review.user.id,
+            "username": review.user.username,
             "created_at": review.created_at
         }
 
@@ -58,7 +59,9 @@ def review_detail(request, review_id):
             "id": review.id,
             "content_id": review.content.id,
             "detail": review.detail,
-            "user_id": review.user.id
+            "user_id": review.user.id,
+            "username": review.user.username,
+            "created_at": review.created_at
         }
 
         return JsonResponse(response_dict, status=200)

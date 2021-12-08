@@ -39,7 +39,9 @@ export const createReview = (contentId, review) => async (dispatch) => {
 
 export const editReview = (reviewId, reviewContent) => async (dispatch) => {
   try {
-    const res = await axios.put(`/api/review/${reviewId}/`, reviewContent);
+    const res = await axios.put(`/api/review/${reviewId}/`, {
+      detail: reviewContent,
+    });
     dispatch(_editReview(res.data));
   } catch (e) {}
 };
@@ -57,6 +59,7 @@ export default function ContentReducer(state = initialState, action) {
       return { ...state, reviews: action.reviews };
 
     case 'review/CREATE_REVIEW':
+      console.log(action.review);
       return { ...state, reviews: state.reviews.concat(action.review) };
 
     case 'review/EDIT_REVIEW':

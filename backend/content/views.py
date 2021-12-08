@@ -306,6 +306,9 @@ def content_favorite(request, user_id, content_id):
     """
     /api/content/<int:user_id>/favorite/<int:content_id>/
 
+    GET
+        Check that content is in user's favorite list
+
     PUT
         Add content to user's favorite list
 
@@ -353,7 +356,6 @@ def content_favorite(request, user_id, content_id):
 
         response_dict = {
             "id": content.id,
-            "favorite_users": fav_users,
             "favorite_cnt": content.favorite_cnt
         }
 
@@ -406,9 +408,16 @@ def review_content(request, content_id):
         except(Content.DoesNotExist) as _:
             return HttpResponse(status=404)
 
-        reviews = list(content.content_reviews.all().values())
+        response_dict = [{
+            "id": review.id,
+            "content_id": review.content.id,
+            "detail": review.detail,
+            "user_id": review.user.id,
+            "username": review.user.username,
+            "created_at": review.created_at
+        } for review in content.content_reviews.all()]
 
-        return JsonResponse(reviews, safe=False, status=200)
+        return JsonResponse(response_dict, safe=False, status=200)
 
     elif request.method == 'POST':
         try:
@@ -430,11 +439,12 @@ def review_content(request, content_id):
         review.save()
 
         response_dict = {
-            'id': review.id,
-            'content': review.content.id,
-            'detail': review.detail,
-            'user': review.user.id,
-            'created_at': review.created_at
+            "id": review.id,
+            "content_id": review.content.id,
+            "detail": review.detail,
+            "user_id": review.user.id,
+            "username": review.user.username,
+            "created_at": review.created_at
         }
 
         return JsonResponse(response_dict, status=201)

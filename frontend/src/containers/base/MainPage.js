@@ -20,6 +20,7 @@ const MainPage = ({ history }) => {
 
   const [groupSearchInput, setGroupSearchInput] = useState('');
   const [contentSearchInput, setContentSearchInput] = useState('');
+  const [contentSearchClicked, setContentSearchClicked] = useState(false);
 
   // filter visibility
   const [visibility, setVisibility] = useState(false);
@@ -168,6 +169,7 @@ const MainPage = ({ history }) => {
   };
   const onContentSearchClick = () => {
     dispatch(getSearchContents(contentSearchInput));
+    setContentSearchClicked(true);
   };
 
   const onFilterButtonClick = () => {
@@ -313,38 +315,52 @@ const MainPage = ({ history }) => {
               </div>
             </div>
 
-            {searchContents.length !== 0 ? (
+            {contentSearchClicked ? (
               <div className="main__content-list">
                 <div className="main__content-list__title">Search Contents</div>
-                <div className="main__content-list__poster">
-                  <div
-                    className="main__content-list__poster__previous"
-                    onClick={onContentPreviousClick}
-                    role="button"
-                    tabIndex={0}
-                    data-type="search"
-                  >
-                    &lt;
-                  </div>
+                {searchContents.length !== 0 ? (
+                  <>
+                    <div className="main__content-list__poster">
+                      <div
+                        className="main__content-list__poster__previous"
+                        onClick={onContentPreviousClick}
+                        role="button"
+                        tabIndex={0}
+                        data-type="search"
+                      >
+                        &lt;
+                      </div>
 
-                  {searchContents
-                    .slice(searchItemOffset, searchItemOffset + itemsPerPage)
-                    .map((content) => {
-                      return (
-                        <ContentListItem content={content} key={content.id} />
-                      );
-                    })}
+                      {searchContents
+                        .slice(
+                          searchItemOffset,
+                          searchItemOffset + itemsPerPage,
+                        )
+                        .map((content) => {
+                          return (
+                            <ContentListItem
+                              content={content}
+                              key={content.id}
+                            />
+                          );
+                        })}
 
-                  <div
-                    className="main__content-list__poster__next"
-                    onClick={onContentNextClick}
-                    role="button"
-                    tabIndex={0}
-                    data-type="search"
-                  >
-                    &gt;
+                      <div
+                        className="main__content-list__poster__next"
+                        onClick={onContentNextClick}
+                        role="button"
+                        tabIndex={0}
+                        data-type="search"
+                      >
+                        &gt;
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="main__content-list__not-found">
+                    No Contents found!
                   </div>
-                </div>
+                )}
               </div>
             ) : (
               ''
