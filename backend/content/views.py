@@ -329,15 +329,23 @@ def content_recommendation_2(request, user_id):
         else:
             # generate recommendation only using last 5
             for favorite_id in fav_contents_id[-5:]:
-                content_list = Content.objects.all()
-                # TODO
+                contents = Content.objects.all()
+                content_list = []
+                for content in contents:
+                    cast = " ".join(c.name for c in content.cast.all())
+                    genre = " ".join(g.name for g in content.genres.all())
+                    content_info = {
+                        "id": content.id,
+                        "overview": content.overview,
+                        "director": content.director,
+                        "cast": cast,
+                        "genres": genre
+                    }
+                    content_list.append(content_info)
+                #return_genres = ", ".join([genre['name'] for genre in genre_list]),
 
-                if data:
-                    recommendation_contents.extend(
-                        [{
-                            "id": content["id"],
-                            "poster": 'https://image.tmdb.org/t/p/original/' + content["poster_path"]
-                        } for content in data["results"]])
+                
+                # TODO
 
             if not recommendation_contents:
                 recommendation_contents = [
@@ -349,7 +357,7 @@ def content_recommendation_2(request, user_id):
                     recommendation_contents, min(
                         len(recommendation_contents), 21))
 
-        return JsonResponse(recommendation_contents, safe=False, status=200)
+        return JsonResponse(content_list, safe=False, status=200)
 
 
 
