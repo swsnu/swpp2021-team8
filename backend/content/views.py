@@ -371,7 +371,10 @@ def user_favorite_list(request, user_id):
         except(User.DoesNotExist) as _:
             return HttpResponse(status=404)
 
-        fav_contents = list(user.favorite_contents.all().values())
+        fav_contents = [{
+            "id": content.id,
+            "poster": ('https://image.tmdb.org/t/p/original/' + content.poster) if content.poster else 'https://via.placeholder.com/150?text=No+Content'
+        } for content in user.favorite_contents.all()]
 
         return JsonResponse(fav_contents, safe=False, status=200)
 
