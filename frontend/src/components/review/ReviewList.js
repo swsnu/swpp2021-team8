@@ -1,20 +1,11 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getReviews } from '../../store/ReviewStore';
+import React from 'react';
 import ReviewListItem from './ReviewListItem';
 
-const ReviewList = ({ contentId }) => {
-  const dispatch = useDispatch();
-  const reviews = useSelector((state) => state.review.reviews);
-
-  useEffect(() => {
-    dispatch(getReviews(contentId));
-  }, [contentId]);
-
+const ReviewList = ({ reviews, onEdit, onDelete }) => {
   return (
     <div className="reviewList">
       {reviews.map((r) => (
-        <ReviewListItem review={r} />
+        <ReviewListItem review={r} onEdit={onEdit} onDelete={onDelete} />
       ))}
     </div>
   );

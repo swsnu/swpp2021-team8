@@ -7,26 +7,8 @@ const initialState = {
   searchContents: [],
   favoriteContents: [],
   isFavorite: false,
-  recommendationContents: [
-    { id: 1 },
-    { id: 2 },
-    { id: 3 },
-    { id: 4 },
-    { id: 5 },
-    { id: 6 },
-    { id: 7 },
-    { id: 8 },
-  ],
-  trendingContents: [
-    { id: 1 },
-    { id: 2 },
-    { id: 3 },
-    { id: 4 },
-    { id: 5 },
-    { id: 6 },
-    { id: 7 },
-    { id: 8 },
-  ],
+  recommendationContents: [],
+  trendingContents: [],
   selectedContent: {},
 };
 
@@ -47,11 +29,19 @@ const _getIsFavoriteContent = (isFavorite) => {
 };
 
 const _addFavoriteContent = (content) => {
-  return { type: 'content/ADD_FAVORITE_CONTENT', content };
+  return {
+    type: 'content/ADD_FAVORITE_CONTENT',
+    id: content.id,
+    favoriteCount: content.favorite_cnt,
+  };
 };
 
-const _deleteFavoriteContent = (id) => {
-  return { type: 'content/DELETE_FAVORITE_CONTENT', id };
+const _deleteFavoriteContent = (content) => {
+  return {
+    type: 'content/DELETE_FAVORITE_CONTENT',
+    id: content.id,
+    favoriteCount: content.favorite_cnt,
+  };
 };
 
 const _getTrendingContents = (contents) => {
@@ -111,8 +101,10 @@ export const addFavoriteContent = (userId, contentId) => async (dispatch) => {
 export const deleteFavoriteContent =
   (userId, contentId) => async (dispatch) => {
     try {
-      await axios.delete(`/api/content/${userId}/favorite/${contentId}/`);
-      dispatch(_deleteFavoriteContent(contentId));
+      const res = await axios.delete(
+        `/api/content/${userId}/favorite/${contentId}/`,
+      );
+      dispatch(_deleteFavoriteContent(res.data));
     } catch (e) {}
   };
 
@@ -138,17 +130,25 @@ export default function ContentReducer(state = initialState, action) {
       return { ...state, trendingContents: action.contents };
 
     case 'content/GET_IS_FAVORITE_CONTENT':
-      return { ...state, isFavorite: action.isFavorite };
+      return { ...state, isFavorite: action.isFavorite.is_favorite };
 
     case 'content/ADD_FAVORITE_CONTENT':
       return {
         ...state,
-        favoriteContents: state.favoriteContents.concat(action.content),
+        selectedContent: {
+          ...state.selectedContent,
+          favorite_cnt: action.favoriteCount,
+        },
+        favoriteContents: state.favoriteContents.concat(action.id),
       };
 
     case 'content/DELETE_FAVORITE_CONTENT':
       return {
         ...state,
+        selectedContent: {
+          ...state.selectedContent,
+          favorite_cnt: action.favoriteCount,
+        },
         favoriteContents: state.favoriteContents.filter(
           (content) => content.id !== action.id,
         ),
