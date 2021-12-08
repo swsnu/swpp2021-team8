@@ -10,6 +10,7 @@ from django.conf import settings
 from deco import login_required
 from review.models import Review
 from .models import Content, Genre, Actor
+from .recommend import recommender
 
 def request_the_movie_api(url, _params, max_retries=2, sleep_time=5):
     """
@@ -327,26 +328,28 @@ def content_recommendation_2(request, user_id):
 
         # If user has favorite contents
         else:
+            # generate all content info for recommendation
+            result = []
+            contents = Content.objects.all()
+            content_list = []
+            for content in contents:
+                cast = " ".join(c.name for c in content.cast.all())
+                genre = " ".join(g.name for g in content.genres.all())
+                content_info = {
+                    "id": content.id,
+                    "overview": content.overview,
+                    "director": content.director,
+                    "cast": cast,
+                    "genres": genre,
+                    "poster": content.poster
+                }
+                content_list.append(content_info)
+
             # generate recommendation only using last 5
+            result = []
             for favorite_id in fav_contents_id[-5:]:
-                contents = Content.objects.all()
-                content_list = []
-                for content in contents:
-                    cast = " ".join(c.name for c in content.cast.all())
-                    genre = " ".join(g.name for g in content.genres.all())
-                    content_info = {
-                        "id": content.id,
-                        "overview": content.overview,
-                        "director": content.director,
-                        "cast": cast,
-                        "genres": genre
-                    }
-                    content_list.append(content_info)
-                #return_genres = ", ".join([genre['name'] for genre in genre_list]),
-
-                
-                # TODO
-
+                result = result + [item for item in recommender(content_list, favorite_id) if item not in result]
+            
             if not recommendation_contents:
                 recommendation_contents = [
                     {"id": 0, "poster": placeholder}] * 5
@@ -357,7 +360,7 @@ def content_recommendation_2(request, user_id):
                     recommendation_contents, min(
                         len(recommendation_contents), 21))
 
-        return JsonResponse(content_list, safe=False, status=200)
+        return JsonResponse(result, safe=False, status=200)
 
 
 
