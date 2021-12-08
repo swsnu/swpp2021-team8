@@ -289,11 +289,16 @@ describe('<MainPage /> GroupTab', () => {
 
     const expectedResult = [
       { ott: 'netflix', membership: 'basic' },
+      { ott: 'netflix', membership: 'standard' },
       { ott: 'netflix', membership: 'premium' },
-      { ott: 'watcha', membership: 'basic' },
-      { ott: 'watcha', membership: 'standard' },
       { ott: 'watcha', membership: 'premium' },
-      { ott: 'tving', membership: 'basic' },
+      { ott: 'tving', membership: 'standard' },
+      { ott: 'tving', membership: 'premium' },
+      { ott: 'youtube', membership: 'premium' },
+      { ott: 'disney', membership: 'basic' },
+      { ott: 'coupangPlay', membership: 'basic' },
+      { ott: 'wavve', membership: 'standard' },
+      { ott: 'wavve', membership: 'premium' },
     ];
 
     for (let i = 0; i < wrapper.length; i += 1) {
@@ -330,11 +335,16 @@ describe('<MainPage /> GroupTab', () => {
 
     const ottList = [
       { ott: 'netflix', membership: 'basic' },
+      { ott: 'netflix', membership: 'standard' },
       { ott: 'netflix', membership: 'premium' },
-      { ott: 'watcha', membership: 'basic' },
-      { ott: 'watcha', membership: 'standard' },
       { ott: 'watcha', membership: 'premium' },
-      { ott: 'tving', membership: 'basic' },
+      { ott: 'tving', membership: 'standard' },
+      { ott: 'tving', membership: 'premium' },
+      { ott: 'youtube', membership: 'premium' },
+      { ott: 'disney', membership: 'basic' },
+      { ott: 'coupangPlay', membership: 'basic' },
+      { ott: 'wavve', membership: 'standard' },
+      { ott: 'wavve', membership: 'premium' },
     ];
 
     for (let i = 0; i < wrapper.length; i += 1) {
@@ -485,5 +495,46 @@ describe('<MainPage /> GroupTab', () => {
     component.find('#content-search-button').simulate('click');
 
     expect(ContentReducer.getSearchContents).toHaveBeenCalledTimes(1);
+  });
+
+  it('should render previous/next content when press click button in searched', () => {
+    mockMainPage = (
+      <Provider store={mockPaginationStore}>
+        <ConnectedRouter history={history}>
+          <Route path="/" component={MainPage} exact />
+        </ConnectedRouter>
+      </Provider>
+    );
+    localStorage.setItem('mainTab', 'content');
+    const component = mount(mockMainPage);
+
+    const previousButtonWrapper = component.find(
+      '.main__content-list__poster__previous',
+    );
+    const nextButtonWrapper = component.find(
+      '.main__content-list__poster__next',
+    );
+
+    nextButtonWrapper.at(2).simulate('click');
+
+    expect(
+      component
+        .find('.main__content-list')
+        .at(2)
+        .find('.content-list-item')
+        .at(0)
+        .text(),
+    ).toBe('4');
+
+    previousButtonWrapper.at(2).simulate('click');
+
+    expect(
+      component
+        .find('.main__content-list')
+        .at(2)
+        .find('.content-list-item')
+        .at(0)
+        .text(),
+    ).toBe('1');
   });
 });

@@ -11,6 +11,7 @@ import {
   getSearchContents,
   getTrendingContents,
 } from '../../store/ContentStore';
+import FilterButton from '../../components/base/FilterButton';
 
 const MainPage = ({ history }) => {
   const [tab, setTab] = useState(
@@ -25,15 +26,28 @@ const MainPage = ({ history }) => {
   const [filterOTT, setFilterOTT] = useState({
     netflix: {
       basic: false,
-      premium: false,
-    },
-    watcha: {
-      basic: false,
       standard: false,
       premium: false,
     },
+    watcha: {
+      premium: false,
+    },
     tving: {
+      standard: false,
+      premium: false,
+    },
+    youtube: {
+      premium: false,
+    },
+    disney: {
       basic: false,
+    },
+    coupangPlay: {
+      basic: false,
+    },
+    wavve: {
+      standard: false,
+      premium: false,
     },
   });
 
@@ -239,114 +253,17 @@ const MainPage = ({ history }) => {
                 <div className="main__group-filter__ott__title">
                   OTT Platform / Membership
                 </div>
-                <div className="main__group-filter__ott__option">
-                  <img
-                    src="/images/netflix.png"
-                    alt="netflix"
-                    height="40"
-                    width="40"
-                  />
-                  <div
-                    className={`main__group-filter__ott__option__button ${
-                      filterOTT.netflix.basic
-                        ? 'main__group-filter__ott__option__button--active'
-                        : ''
-                    }`}
-                    onClick={onFilterOTTClick}
-                    role="button"
-                    tabIndex={0}
-                    data-ott="netflix"
-                    data-membership="basic"
-                  >
-                    Basic
-                  </div>
-                  <div
-                    className={`main__group-filter__ott__option__button ${
-                      filterOTT.netflix.premium
-                        ? 'main__group-filter__ott__option__button--active'
-                        : ''
-                    }`}
-                    onClick={onFilterOTTClick}
-                    role="button"
-                    tabIndex={0}
-                    data-ott="netflix"
-                    data-membership="premium"
-                  >
-                    Premium
-                  </div>
-                </div>
-                <div className="main__group-filter__ott__option">
-                  <img
-                    src="/images/watcha.png"
-                    alt="watcha"
-                    height="40"
-                    width="40"
-                  />
-                  <div
-                    className={`main__group-filter__ott__option__button ${
-                      filterOTT.watcha.basic
-                        ? 'main__group-filter__ott__option__button--active'
-                        : ''
-                    }`}
-                    onClick={onFilterOTTClick}
-                    role="button"
-                    tabIndex={0}
-                    data-ott="watcha"
-                    data-membership="basic"
-                  >
-                    Basic
-                  </div>
-                  <div
-                    className={`main__group-filter__ott__option__button ${
-                      filterOTT.watcha.standard
-                        ? 'main__group-filter__ott__option__button--active'
-                        : ''
-                    }`}
-                    onClick={onFilterOTTClick}
-                    role="button"
-                    tabIndex={0}
-                    data-ott="watcha"
-                    data-membership="standard"
-                  >
-                    Standard
-                  </div>
-                  <div
-                    className={`main__group-filter__ott__option__button ${
-                      filterOTT.watcha.premium
-                        ? 'main__group-filter__ott__option__button--active'
-                        : ''
-                    }`}
-                    onClick={onFilterOTTClick}
-                    role="button"
-                    tabIndex={0}
-                    data-ott="watcha"
-                    data-membership="premium"
-                  >
-                    Premium
-                  </div>
-                </div>
-                <div className="main__group-filter__ott__option">
-                  <img
-                    src="/images/tving.png"
-                    alt="tving"
-                    height="40"
-                    width="40"
-                  />
-                  <div
-                    className={`main__group-filter__ott__option__button ${
-                      filterOTT.tving.basic
-                        ? 'main__group-filter__ott__option__button--active'
-                        : ''
-                    }`}
-                    onClick={onFilterOTTClick}
-                    role="button"
-                    tabIndex={0}
-                    data-ott="tving"
-                    data-membership="basic"
-                  >
-                    Basic
-                  </div>
-                </div>
+
+                {Object.entries(filterOTT).map(([ott, memberships]) => {
+                  return (
+                    <FilterButton
+                      ott={ott}
+                      memberships={memberships}
+                      onClick={onFilterOTTClick}
+                      key={`filterButton-${ott}`}
+                    />
+                  );
+                })}
               </div>
             </div>
 
