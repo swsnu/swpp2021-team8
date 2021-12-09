@@ -8,7 +8,7 @@ import { getMockStore, history } from '../../test-utils/mock';
 
 const mockStore = getMockStore(
   { user: { username: 'mock Username' }, isLoggedIn: true },
-  {},
+  { favoriteContents: [{ id: 1 }] },
   {
     groups: [
       {

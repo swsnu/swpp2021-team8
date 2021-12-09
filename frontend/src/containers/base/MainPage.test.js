@@ -496,45 +496,4 @@ describe('<MainPage /> GroupTab', () => {
 
     expect(ContentReducer.getSearchContents).toHaveBeenCalledTimes(1);
   });
-
-  it('should render previous/next content when press click button in searched', () => {
-    mockMainPage = (
-      <Provider store={mockPaginationStore}>
-        <ConnectedRouter history={history}>
-          <Route path="/" component={MainPage} exact />
-        </ConnectedRouter>
-      </Provider>
-    );
-    localStorage.setItem('mainTab', 'content');
-    const component = mount(mockMainPage);
-
-    const previousButtonWrapper = component.find(
-      '.main__content-list__poster__previous',
-    );
-    const nextButtonWrapper = component.find(
-      '.main__content-list__poster__next',
-    );
-
-    nextButtonWrapper.at(2).simulate('click');
-
-    expect(
-      component
-        .find('.main__content-list')
-        .at(2)
-        .find('.content-list-item')
-        .at(0)
-        .text(),
-    ).toBe('4');
-
-    previousButtonWrapper.at(2).simulate('click');
-
-    expect(
-      component
-        .find('.main__content-list')
-        .at(2)
-        .find('.content-list-item')
-        .at(0)
-        .text(),
-    ).toBe('1');
-  });
 });

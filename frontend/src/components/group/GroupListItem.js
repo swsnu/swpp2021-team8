@@ -37,7 +37,7 @@ const GroupListItem = ({ group, history, onlyTitle = false }) => {
       >
         <div className="group-item__platform">
           <img
-            src={`/images/${group.platform}.png`}
+            src={`/images/${group.platform.toLowerCase()}.png`}
             alt={group.platform}
             width="50"
             height="50"
