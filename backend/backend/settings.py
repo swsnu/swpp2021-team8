@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
+import my_settings
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -22,12 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['subroker.shop', 'ec2-15-164-57-207.ap-northeast-2.compute.amazonaws.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'subroker.shop', 'ec2-15-164-57-207.ap-northeast-2.compute.amazonaws.com']
 
-with open('./secrets.txt') as f:
-    line = f.readlines()
-    SECRET_KEY = line[0].strip()
-    THE_MOVIE_API_KEY = line[1].strip()
+SECRET_KEY = my_settings.SECRET_KEY
+THE_MOVIE_API_KEY = my_settings.THE_MOVIE_API_KEY
 
 # Application definition
 

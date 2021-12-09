@@ -4,42 +4,6 @@ from deco import login_required
 from .models import Ott
 
 @login_required
-@require_http_methods(['GET'])
-def initialize_ott(request):
-    if request.method == 'GET':
-        Ott.objects.create(
-            ott='Watcha', membership='Premium', max_people=4, cost=12900, image='../ott_image/watcha_logo_ZmSSD6P.jpeg'
-            )
-        Ott.objects.create(
-            ott='Netflix', membership='Standard', max_people=2, cost=12000, image='../ott_image/watcha_logo_ZmSSD6P.jpeg'
-            )
-        Ott.objects.create(
-            ott='Netflix', membership='Premium', max_people=4, cost=14500, image='../ott_image/watcha_logo_ZmSSD6P.jpeg'
-            )
-        Ott.objects.create(
-            ott='Tving', membership='Standard', max_people=2, cost=10900, image='../ott_image/watcha_logo_ZmSSD6P.jpeg'
-            )
-        Ott.objects.create(
-            ott='Netflix', membership='Premium', max_people=4, cost=13900, image='../ott_image/watcha_logo_ZmSSD6P.jpeg'
-            )
-        Ott.objects.create(
-            ott='Youtube', membership='Premium', max_people=10, cost=9500, image='../ott_image/watcha_logo_ZmSSD6P.jpeg'
-            )
-        Ott.objects.create(
-            ott='Disney', membership='Basic', max_people=4, cost=9900, image='../ott_image/watcha_logo_ZmSSD6P.jpeg'
-            )
-        Ott.objects.create(
-            ott='CoupangPlay', membership='Basic', max_people=5, cost=2900, image='../ott_image/watcha_logo_ZmSSD6P.jpeg'
-            )
-        Ott.objects.create(
-            ott='Wavve', membership='Standard', max_people=2, cost=10900, image='../ott_image/watcha_logo_ZmSSD6P.jpeg'
-            )
-        Ott.objects.create(
-            ott='Wavve', membership='Premium', max_people=4, cost=12900, image='../ott_image/watcha_logo_ZmSSD6P.jpeg'
-            )
-        return HttpResponse(status=201)
-
-@login_required
 @require_http_methods(["GET"])
 def ott_list(request):
     """
