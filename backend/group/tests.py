@@ -115,15 +115,15 @@ class GroupTestCase(TestCase):
         group = json.loads(response.content.decode())[0]
 
         self.assertEqual(group, {
-            'id': self.new_group.id,
-            'platform': self.new_group.membership.ott,
-            'membership': self.new_group.membership.membership,
-            'name': self.new_group.name,
-            'leader': self.new_group.leader.username,
-            'cost': self.new_group.membership.cost,
-            'currentPeople': self.new_group.current_people,
-            'maxPeople': self.new_group.membership.max_people,
-            'payday': self.new_group.payday
+            'id': self.new_group2.id,
+            'platform': self.new_group2.membership.ott,
+            'membership': self.new_group2.membership.membership,
+            'name': self.new_group2.name,
+            'leader': self.new_group2.leader.username,
+            'cost': self.new_group2.membership.cost,
+            'currentPeople': self.new_group2.current_people,
+            'maxPeople': self.new_group2.membership.max_people,
+            'payday': self.new_group2.payday
         })
 
         # GET Request with query
@@ -230,6 +230,7 @@ class GroupTestCase(TestCase):
             "accountName": self.new_group.account_name,
             "description": self.new_group.description,
             "payday": self.new_group.payday,
+            "willBeDeleted": self.new_group.will_be_deleted,
             "leader": {"id": 1, "username": "user1"},
         })
 

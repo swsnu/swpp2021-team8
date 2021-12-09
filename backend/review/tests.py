@@ -85,7 +85,7 @@ class ReviewTestCase(TestCase):
         review = json.loads(response.content.decode())
         self.assertEqual(1, review['id'])
         self.assertEqual(1, review['content_id'])
-        self.assertEqual(1, review['user'])
+        self.assertEqual(1, review['user_id'])
         self.assertEqual('review_detail', review['detail'])
 
         # GET ERR review doesn't exist : 404

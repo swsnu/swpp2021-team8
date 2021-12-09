@@ -184,7 +184,6 @@ class ContentTestCase(TestCase):
 
         content = json.loads(response.content.decode())[0]
         self.assertEqual(2, content['id'])
-        self.assertEqual(1, content['favorite_cnt'])
 
         # GET ERR user doesn't exist : 404
         response = client.get('/api/content/10/favorite/')
@@ -356,8 +355,8 @@ class ContentTestCase(TestCase):
         self.assertEqual(response.status_code, 201)
         review = json.loads(response.content.decode())
         self.assertEqual(2, review['id'])
-        self.assertEqual(1, review['content'])
-        self.assertEqual(1, review['user'])
+        self.assertEqual(1, review['content_id'])
+        self.assertEqual(1, review['user_id'])
         self.assertEqual('review1', review['detail'])
 
         # POST ERR content doesn't exist : 404
