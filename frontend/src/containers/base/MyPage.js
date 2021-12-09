@@ -16,8 +16,6 @@ const MyPage = () => {
     (state) => state.content.favoriteContents,
   );
 
-  console.log(favoriteContents);
-
   // Group Pagination
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
