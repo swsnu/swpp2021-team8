@@ -59,7 +59,6 @@ export default function ContentReducer(state = initialState, action) {
       return { ...state, reviews: action.reviews };
 
     case 'review/CREATE_REVIEW':
-      console.log(action.review);
       return { ...state, reviews: state.reviews.concat(action.review) };
 
     case 'review/EDIT_REVIEW':

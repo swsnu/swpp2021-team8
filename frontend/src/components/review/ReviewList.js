@@ -5,7 +5,12 @@ const ReviewList = ({ reviews, onEdit, onDelete }) => {
   return (
     <div className="reviewList">
       {reviews.map((r) => (
-        <ReviewListItem review={r} onEdit={onEdit} onDelete={onDelete} />
+        <ReviewListItem
+          review={r}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          key={`review-${r.id}`}
+        />
       ))}
     </div>
   );

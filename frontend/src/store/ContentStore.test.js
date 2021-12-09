@@ -6,6 +6,7 @@ import content, {
   deleteFavoriteContent,
   getContentDetail,
   getFavoriteContents,
+  getIsFavoriteContent,
   getRecommendationContents,
   getSearchContents,
   getTrendingContents,
@@ -68,45 +69,38 @@ describe('ContentStore', () => {
       return { data: [{ id: 1, name: 'mockContent' }] };
     });
 
-    axios.post = jest.fn(async () => {
-      return { data: { id: 2, name: 'mockContent2' } };
+    axios.put = jest.fn(async () => {
+      return { data: { id: 2, favorite_cnt: 1 } };
     });
 
     await store.dispatch(getFavoriteContents());
     await store.dispatch(addFavoriteContent(1, 2));
     const state = store.getState();
 
-    expect(state.favoriteContents).toEqual([
-      { id: 1, name: 'mockContent' },
-      { id: 2, name: 'mockContent2' },
-    ]);
+    expect(state.selectedContent.favorite_cnt).toEqual(1);
+    expect(state.favoriteContents[1]).toEqual(2);
   });
 
   it('should delete favorite content properly', async () => {
     axios.get = jest.fn(async () => {
-      return { data: [{ id: 1, name: 'mockContent' }] };
+      return {
+        data: [
+          { id: 1, name: 'mockContent' },
+          { id: 2, name: 'mockContent2' },
+        ],
+      };
     });
 
-    axios.post = jest.fn(async () => {
-      return { data: { id: 2, name: 'mockContent2' } };
+    axios.delete = jest.fn(async () => {
+      return { data: { id: 2, favorite_cnt: 1 } };
     });
-
-    axios.delete = jest.fn(async () => {});
 
     await store.dispatch(getFavoriteContents());
-    await store.dispatch(addFavoriteContent(1, 1));
+    await store.dispatch(deleteFavoriteContent(1, 2));
     const state = store.getState();
 
-    expect(state.favoriteContents).toEqual([
-      { id: 1, name: 'mockContent' },
-      { id: 2, name: 'mockContent2' },
-    ]);
-
-    await store.dispatch(deleteFavoriteContent(1, 2));
-
-    expect(store.getState().favoriteContents).toEqual([
-      { id: 1, name: 'mockContent' },
-    ]);
+    expect(state.selectedContent.favorite_cnt).toEqual(1);
+    expect(state.favoriteContents).toEqual([{ id: 1, name: 'mockContent' }]);
   });
 
   it('should return trending content properly', async () => {
@@ -118,5 +112,52 @@ describe('ContentStore', () => {
     const state = store.getState();
 
     expect(state.trendingContents).toEqual([{ id: 1, name: 'mockContent' }]);
+  });
+
+  it('should return recommended content properly', async () => {
+    axios.get = jest.fn(async () => {
+      return { data: [{ id: 1, name: 'mockContent' }] };
+    });
+
+    await store.dispatch(getRecommendationContents());
+    const state = store.getState();
+
+    expect(state.recommendationContents).toEqual([
+      { id: 1, name: 'mockContent' },
+    ]);
+  });
+
+  it('should return current true favorite state correctly', async () => {
+    axios.get = jest.fn(async () => {
+      return { data: { is_favorite: true } };
+    });
+
+    await store.dispatch(getIsFavoriteContent(1, 1));
+    const state = store.getState();
+
+    expect(state.isFavorite).toEqual(true);
+  });
+
+  it('should return current false favorite state correctly', async () => {
+    axios.get = jest.fn(async () => {
+      return { data: { is_favorite: false } };
+    });
+
+    await store.dispatch(getIsFavoriteContent(1, 1));
+    const state = store.getState();
+
+    expect(state.isFavorite).toEqual(false);
+  });
+
+  it('should add favorite content to user', async () => {
+    axios.put = jest.fn(async () => {
+      return { data: { id: 1, favorite_cnt: 1 } };
+    });
+
+    await store.dispatch(addFavoriteContent(1, 1));
+    const state = store.getState();
+
+    expect(state.selectedContent.favorite_cnt).toEqual(1);
+    expect(state.favoriteContents[0]).toEqual({ id: 1, name: 'mockContent' });
   });
 });
