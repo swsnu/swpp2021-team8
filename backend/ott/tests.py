@@ -55,6 +55,32 @@ class OttTestCase(TestCase):
                                    content_type='application/json',
                                    HTTP_X_CSRFTOKEN=self.csrf_token)
 
+    def test_ott_name(self):
+        ott = Ott(
+            ott='Watcha',
+            membership='Basic',
+            max_people=1,
+            cost=7900,
+            image=tempfile.NamedTemporaryFile(suffix=".jpg").name)
+        ott.save()
+        self.assertEqual(str(ott), 'Watcha / Basic')
+
+    def test_ott_initialize(self):
+        """
+        /api/initialize/
+
+        GET
+        """
+        client = Client()
+        response = client.get('/api/ott/initialize/')
+        self.assertEqual(response.status_code, 401)
+        client.post('/api/user/login/',
+                    json.dumps({'username': 'user1',
+                                'password': 'user1_password'}),
+                    content_type='application/json')
+        response = client.get('/api/ott/initialize/')
+        self.assertEqual(response.status_code, 201)
+
     def test_ott_list(self):
         """
         /api/ott/
