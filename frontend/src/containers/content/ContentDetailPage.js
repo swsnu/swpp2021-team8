@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import Loading from '../../components/base/Loading';
@@ -28,6 +30,8 @@ const ContentDetailPage = ({ history }) => {
 
   const [newReview, setNewReview] = useState('');
   const [favButtonId, setFavButtonId] = useState('heart_false');
+
+  const MySwal = withReactContent(Swal);
 
   useEffect(() => {
     dispatch(getContentDetail(id));
@@ -67,17 +71,43 @@ const ContentDetailPage = ({ history }) => {
   };
 
   const onEditReviewClick = (review) => {
-    /* eslint no-alert: ['off'] */
-    const changedDetail = window.prompt('Edit Review', review.detail);
-    if (changedDetail && changedDetail !== review.detail) {
-      dispatch(editReview(review.id, changedDetail));
-    }
+    MySwal.fire({
+      title: 'Edit your review!',
+      input: 'text',
+      inputValue: review.detail,
+      inputAttributes: {
+        autocapitalize: 'off',
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Edit',
+      showLoaderOnConfirm: true,
+      preConfirm: (changedReview) => {
+        if (changedReview && changedReview !== review.detail) {
+          dispatch(editReview(review.id, changedReview));
+        }
+      },
+      allowOutsideClick: () => !MySwal.isLoading(),
+    }).then((result) => {
+      if (result.isConfirmed) {
+        MySwal.fire('Edited!', 'Your review has been edited!', 'success');
+      }
+    });
   };
 
   const onDeleteReviewClick = (review) => {
-    if (window.confirm('Are you sure you want to delete your comment?')) {
-      dispatch(deleteReview(review.id));
-    }
+    MySwal.fire({
+      title: 'Are you sure?',
+      text: 'Your review will be deleted forever!',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(deleteReview(review.id));
+        MySwal.fire('Deleted!', 'Your review has been deleted!', 'success');
+      }
+    });
   };
 
   const onCreateReviewClick = (e) => {

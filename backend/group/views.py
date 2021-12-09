@@ -25,6 +25,7 @@ def group_list(request):
         # /api/group/?name=title-of-movie&ott=netflix__premium&ott=watcha__standard
         query_name = request.GET.get("name", None)
         query_ott = request.GET.getlist("ott", None)
+        query_id = request.GET.get("id", None)
 
         groups = Group.objects.all()
         group_all_list = []
@@ -42,6 +43,9 @@ def group_list(request):
 
             groups = groups.filter(q_ott)
 
+        if query_id:
+            groups = groups.filter(members__in=query_id)
+
         group_all_list = [{
             'id': group.id,
             'platform': group.membership.ott,
@@ -53,6 +57,11 @@ def group_list(request):
             'maxPeople': group.membership.max_people,
             'payday': group.payday
         } for group in groups]
+
+        if not query_id:
+            group_all_list = list(filter(lambda group: group["currentPeople"] < group["maxPeople"], group_all_list))
+
+        group_all_list.sort(key=lambda group: (group["currentPeople"]/group["maxPeople"]), reverse=True)
 
         return JsonResponse(group_all_list, safe=False, status=200)
 
@@ -146,6 +155,7 @@ def group_detail(request, group_id):
             "description": group.description,
             "payday": group.payday,
             "leader": {"id": leader.id, "username": leader.username},
+            "willBeDeleted": group.will_be_deleted
         }
 
         return JsonResponse(response_dict, safe=False, status=200)
