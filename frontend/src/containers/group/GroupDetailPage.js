@@ -165,7 +165,8 @@ const GroupDetailPage = ({ history, match }) => {
     ? 'Every'.concat(' ', group.payday.toString(), 'th')
     : 'None';
 
-  const renderer = ({ days, hours, minutes, seconds }) => {
+  const renderer = ({ days, hours, minutes, seconds, api: { start } }) => {
+    start();
     return (
       <span>{`${days}days ${hours}:${minutes}:${seconds} left until delete`}</span>
     );
@@ -277,7 +278,7 @@ const GroupDetailPage = ({ history, match }) => {
                 </>
               ) : null}
 
-              {group.willBeDeleted && deletedDate !== 0 ? (
+              {group.willBeDeleted ? (
                 <div className="groupdetail__timer">
                   <div className="groupdetail__timer__title">
                     {`This will be deleted at <${deletedDate.toDateString()}>!!`}
