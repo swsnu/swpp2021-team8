@@ -57,6 +57,10 @@ class ReviewTestCase(TestCase):
                                                'password': 'user1_password'}),
                                    content_type='application/json')
 
+    def test_ott_name(self):
+        review = Review.objects.get(detail='review_detail')
+        self.assertEqual(str(review), 'review_detail')
+
     def test_review_detail_get(self):
         """
         /api/review/<int:review_id>/

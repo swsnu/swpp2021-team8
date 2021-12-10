@@ -6,6 +6,12 @@ from .models import Ott
 @login_required
 @require_http_methods(['GET'])
 def initialize_ott(request):
+    """
+    /api/initialize/
+
+    GET
+        Initialize ott list
+    """
     if request.method == 'GET':
         Ott.objects.create(
             ott='Watcha', membership='Premium', max_people=4, cost=12900, image='../ott_image/watcha_logo_ZmSSD6P.jpeg'
