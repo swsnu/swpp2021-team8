@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import { useDispatch, useSelector } from 'react-redux';
 import Calendar from '../../components/base/Calendar';
+import ContentListItem from '../../components/content/ContentListItem';
 import GroupListItem from '../../components/group/GroupListItem';
+import { getFavoriteContents } from '../../store/ContentStore';
 import { getGroups } from '../../store/GroupStore';
 import './MyPage.scss';
 
@@ -10,6 +12,9 @@ const MyPage = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const groups = useSelector((state) => state.group.groups);
+  const favoriteContents = useSelector(
+    (state) => state.content.favoriteContents,
+  );
 
   // Group Pagination
   const [pageCount, setPageCount] = useState(0);
@@ -18,6 +23,7 @@ const MyPage = () => {
 
   useEffect(() => {
     dispatch(getGroups(`id=${user.id}`));
+    dispatch(getFavoriteContents(user.id));
   }, []);
 
   useEffect(() => {
@@ -60,6 +66,12 @@ const MyPage = () => {
           <h2>Calendar</h2>
           <Calendar groups={groups} />
         </div>
+      </div>
+      <div className="mypage__favorite">
+        <div className="mypage__favorite__title">Favorite Contents</div>
+        {favoriteContents.map((content) => {
+          return <ContentListItem content={content} key={content.id} />;
+        })}
       </div>
     </div>
   );

@@ -39,7 +39,9 @@ export const createReview = (contentId, review) => async (dispatch) => {
 
 export const editReview = (reviewId, reviewContent) => async (dispatch) => {
   try {
-    const res = await axios.put(`/api/review/${reviewId}/`, reviewContent);
+    const res = await axios.put(`/api/review/${reviewId}/`, {
+      detail: reviewContent,
+    });
     dispatch(_editReview(res.data));
   } catch (e) {}
 };

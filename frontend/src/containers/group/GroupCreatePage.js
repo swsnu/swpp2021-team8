@@ -172,7 +172,10 @@ const GroupCreatePage = ({ history }) => {
         id="groupcreate-public-input"
         onChange={onPublicToggle}
       />
-      <label htmlFor="groupcreate-public-input" className="round-slider-container">
+      <label
+        htmlFor="groupcreate-public-input"
+        className="round-slider-container"
+      >
         <div />
         <div />
         <div className="round-slider" />
@@ -309,11 +312,36 @@ const GroupCreatePage = ({ history }) => {
             <h1 className="groupcreate__membership__info">Membership Info</h1>
           </div>
           <div className="groupcreate__membership__body">
-            <FieldInfoItem container="groupcreate" category="OTT" content={platformSelectContent} section="membership" />
-            <FieldInfoItem container="groupcreate" category="Membership" content={membershipSelectContent} section="membership" />
-            <FieldInfoItem container="groupcreate" category="People" content={peopleContent} section="membership" />
-            <FieldInfoItem container="groupcreate" category="Cost" content={costContent} section="membership" />
-            <FieldInfoItem container="groupcreate" category="Payday" content={paydayInputContent} section="group" />
+            <FieldInfoItem
+              container="groupcreate"
+              category="OTT"
+              content={platformSelectContent}
+              section="membership"
+            />
+            <FieldInfoItem
+              container="groupcreate"
+              category="Membership"
+              content={membershipSelectContent}
+              section="membership"
+            />
+            <FieldInfoItem
+              container="groupcreate"
+              category="People"
+              content={peopleContent}
+              section="membership"
+            />
+            <FieldInfoItem
+              container="groupcreate"
+              category="Cost"
+              content={costContent}
+              section="membership"
+            />
+            <FieldInfoItem
+              container="groupcreate"
+              category="Payday"
+              content={paydayInputContent}
+              section="group"
+            />
           </div>
         </div>
         <hr />
@@ -322,17 +350,46 @@ const GroupCreatePage = ({ history }) => {
             <h1 className="groupcreate__group__info">Group Info</h1>
           </div>
           <div className="groupcreate__group__body">
-            <FieldInfoItem container="groupcreate" category="Title" content={titleInputContent} section="group" />
-            <FieldInfoItem container="groupcreate" category="Description" content={descriptionInputContent} section="group" />
-            <FieldInfoItem container="groupcreate" category="Account" content={accountInputContent} section="group" />
-            <FieldInfoItem container="groupcreate" category="Public" content={isPublicContent} section="membership" />
-            {isPublic
-              ? null
-              : <FieldInfoItem container="groupcreate" category="Password" content={passwordContent} section="membership" />}
+            <FieldInfoItem
+              container="groupcreate"
+              category="Title"
+              content={titleInputContent}
+              section="group"
+            />
+            <FieldInfoItem
+              container="groupcreate"
+              category="Description"
+              content={descriptionInputContent}
+              section="group"
+            />
+            <FieldInfoItem
+              container="groupcreate"
+              category="Account"
+              content={accountInputContent}
+              section="group"
+            />
+            <FieldInfoItem
+              container="groupcreate"
+              category="Public"
+              content={isPublicContent}
+              section="membership"
+            />
+            {isPublic ? null : (
+              <FieldInfoItem
+                container="groupcreate"
+                category="Password"
+                content={passwordContent}
+                section="membership"
+              />
+            )}
           </div>
         </div>
         <div className="groupcreate__buttons">
-          <button id="groupcreate-cancel-button" onClick={onCancelClick} type="button">
+          <button
+            id="groupcreate-cancel-button"
+            onClick={onCancelClick}
+            type="button"
+          >
             Cancel
           </button>
           <button

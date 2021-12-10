@@ -11,6 +11,7 @@ import {
   getSearchContents,
   getTrendingContents,
 } from '../../store/ContentStore';
+import FilterButton from '../../components/base/FilterButton';
 
 const MainPage = ({ history }) => {
   const [tab, setTab] = useState(
@@ -19,21 +20,35 @@ const MainPage = ({ history }) => {
 
   const [groupSearchInput, setGroupSearchInput] = useState('');
   const [contentSearchInput, setContentSearchInput] = useState('');
+  const [contentSearchClicked, setContentSearchClicked] = useState(false);
 
   // filter visibility
   const [visibility, setVisibility] = useState(false);
   const [filterOTT, setFilterOTT] = useState({
     netflix: {
       basic: false,
-      premium: false,
-    },
-    watcha: {
-      basic: false,
       standard: false,
       premium: false,
     },
+    watcha: {
+      premium: false,
+    },
     tving: {
+      standard: false,
+      premium: false,
+    },
+    youtube: {
+      premium: false,
+    },
+    disney: {
       basic: false,
+    },
+    coupangPlay: {
+      basic: false,
+    },
+    wavve: {
+      standard: false,
+      premium: false,
     },
   });
 
@@ -154,6 +169,7 @@ const MainPage = ({ history }) => {
   };
   const onContentSearchClick = () => {
     dispatch(getSearchContents(contentSearchInput));
+    setContentSearchClicked(true);
   };
 
   const onFilterButtonClick = () => {
@@ -239,114 +255,17 @@ const MainPage = ({ history }) => {
                 <div className="main__group-filter__ott__title">
                   OTT Platform / Membership
                 </div>
-                <div className="main__group-filter__ott__option">
-                  <img
-                    src="/images/netflix.png"
-                    alt="netflix"
-                    height="40"
-                    width="40"
-                  />
-                  <div
-                    className={`main__group-filter__ott__option__button ${
-                      filterOTT.netflix.basic
-                        ? 'main__group-filter__ott__option__button--active'
-                        : ''
-                    }`}
-                    onClick={onFilterOTTClick}
-                    role="button"
-                    tabIndex={0}
-                    data-ott="netflix"
-                    data-membership="basic"
-                  >
-                    Basic
-                  </div>
-                  <div
-                    className={`main__group-filter__ott__option__button ${
-                      filterOTT.netflix.premium
-                        ? 'main__group-filter__ott__option__button--active'
-                        : ''
-                    }`}
-                    onClick={onFilterOTTClick}
-                    role="button"
-                    tabIndex={0}
-                    data-ott="netflix"
-                    data-membership="premium"
-                  >
-                    Premium
-                  </div>
-                </div>
-                <div className="main__group-filter__ott__option">
-                  <img
-                    src="/images/watcha.png"
-                    alt="watcha"
-                    height="40"
-                    width="40"
-                  />
-                  <div
-                    className={`main__group-filter__ott__option__button ${
-                      filterOTT.watcha.basic
-                        ? 'main__group-filter__ott__option__button--active'
-                        : ''
-                    }`}
-                    onClick={onFilterOTTClick}
-                    role="button"
-                    tabIndex={0}
-                    data-ott="watcha"
-                    data-membership="basic"
-                  >
-                    Basic
-                  </div>
-                  <div
-                    className={`main__group-filter__ott__option__button ${
-                      filterOTT.watcha.standard
-                        ? 'main__group-filter__ott__option__button--active'
-                        : ''
-                    }`}
-                    onClick={onFilterOTTClick}
-                    role="button"
-                    tabIndex={0}
-                    data-ott="watcha"
-                    data-membership="standard"
-                  >
-                    Standard
-                  </div>
-                  <div
-                    className={`main__group-filter__ott__option__button ${
-                      filterOTT.watcha.premium
-                        ? 'main__group-filter__ott__option__button--active'
-                        : ''
-                    }`}
-                    onClick={onFilterOTTClick}
-                    role="button"
-                    tabIndex={0}
-                    data-ott="watcha"
-                    data-membership="premium"
-                  >
-                    Premium
-                  </div>
-                </div>
-                <div className="main__group-filter__ott__option">
-                  <img
-                    src="/images/tving.png"
-                    alt="tving"
-                    height="40"
-                    width="40"
-                  />
-                  <div
-                    className={`main__group-filter__ott__option__button ${
-                      filterOTT.tving.basic
-                        ? 'main__group-filter__ott__option__button--active'
-                        : ''
-                    }`}
-                    onClick={onFilterOTTClick}
-                    role="button"
-                    tabIndex={0}
-                    data-ott="tving"
-                    data-membership="basic"
-                  >
-                    Basic
-                  </div>
-                </div>
+
+                {Object.entries(filterOTT).map(([ott, memberships]) => {
+                  return (
+                    <FilterButton
+                      ott={ott}
+                      memberships={memberships}
+                      onClick={onFilterOTTClick}
+                      key={`filterButton-${ott}`}
+                    />
+                  );
+                })}
               </div>
             </div>
 
@@ -396,38 +315,52 @@ const MainPage = ({ history }) => {
               </div>
             </div>
 
-            {searchContents.length !== 0 ? (
+            {contentSearchClicked ? (
               <div className="main__content-list">
                 <div className="main__content-list__title">Search Contents</div>
-                <div className="main__content-list__poster">
-                  <div
-                    className="main__content-list__poster__previous"
-                    onClick={onContentPreviousClick}
-                    role="button"
-                    tabIndex={0}
-                    data-type="search"
-                  >
-                    &lt;
-                  </div>
+                {searchContents.length !== 0 ? (
+                  <>
+                    <div className="main__content-list__poster">
+                      <div
+                        className="main__content-list__poster__previous"
+                        onClick={onContentPreviousClick}
+                        role="button"
+                        tabIndex={0}
+                        data-type="search"
+                      >
+                        &lt;
+                      </div>
 
-                  {searchContents
-                    .slice(searchItemOffset, searchItemOffset + itemsPerPage)
-                    .map((content) => {
-                      return (
-                        <ContentListItem content={content} key={content.id} />
-                      );
-                    })}
+                      {searchContents
+                        .slice(
+                          searchItemOffset,
+                          searchItemOffset + itemsPerPage,
+                        )
+                        .map((content) => {
+                          return (
+                            <ContentListItem
+                              content={content}
+                              key={content.id}
+                            />
+                          );
+                        })}
 
-                  <div
-                    className="main__content-list__poster__next"
-                    onClick={onContentNextClick}
-                    role="button"
-                    tabIndex={0}
-                    data-type="search"
-                  >
-                    &gt;
+                      <div
+                        className="main__content-list__poster__next"
+                        onClick={onContentNextClick}
+                        role="button"
+                        tabIndex={0}
+                        data-type="search"
+                      >
+                        &gt;
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="main__content-list__not-found">
+                    No Contents found!
                   </div>
-                </div>
+                )}
               </div>
             ) : (
               ''

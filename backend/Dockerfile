@@ -9,5 +9,6 @@ COPY . .
 
 RUN pip install -r requirements.txt
 RUN pip install uwsgi
+RUN python manage.py makemigrations && python manage.py migrate
 
-CMD uwsgi --wsgi-file backend/backend/wsgi.py --http :8000
+CMD uwsgi --wsgi-file backend/wsgi.py --http :8000

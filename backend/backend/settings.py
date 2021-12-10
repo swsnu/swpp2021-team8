@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['subroker.shop', 'ec2-15-164-57-207.ap-northeast-2.compute.amazonaws.com']
+ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0', 'subroker.shop', 'ec2-15-164-57-207.ap-northeast-2.compute.amazonaws.com']
 
 with open('./secrets.txt') as f:
     line = f.readlines()

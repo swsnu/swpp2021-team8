@@ -1,5 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
+import { Img } from 'react-image';
 import ContentListItem from './ContentListItem';
 import { history } from '../../test-utils/mock';
 
@@ -10,7 +11,7 @@ describe('<ContentListItem />', () => {
       <ContentListItem.WrappedComponent content={mockContent} />,
     );
 
-    expect(component.find('img').length).toBe(1);
+    expect(component.find(Img).length).toBe(1);
   });
 
   it('should move to ContentDetailPage when clicks content', () => {

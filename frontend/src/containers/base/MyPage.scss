@@ -83,4 +83,20 @@
       flex: 1;
     }
   }
+  .mypage__favorite {
+    color: white;
+    font-size: 2em;
+    margin-top: 30px;
+
+    &__title {
+      display: flex;
+      width: 100%;
+      margin-bottom: 30px;
+    }
+
+    .content-list {
+      display: inline-flex;
+      margin: auto;
+    }
+  }
 }

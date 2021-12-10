@@ -12,19 +12,24 @@ jest.mock('../../components/base/FieldInfoItem', () => {
   return jest.fn(({ container, category, content }) => {
     return (
       <div className={'test__fieldInfoItem '.concat(category.toLowerCase())}>
-        <div className="test__container">
-          {container}
-        </div>
-        <div className="test__category">
-          {category}
-        </div>
-        <div className="test__content">
-          {content}
-        </div>
+        <div className="test__container">{container}</div>
+        <div className="test__category">{category}</div>
+        <div className="test__content">{content}</div>
       </div>
     );
   });
 });
+
+jest.mock('sweetalert2-react-content', () => ({
+  __esModule: true, // this property makes it work
+  default: jest.fn(() => {
+    return {
+      fire: jest.fn(async () => {
+        return { isConfirmed: true };
+      }),
+    };
+  }),
+}));
 
 const mockStore = getMockStore(
   {
@@ -35,36 +40,6 @@ const mockStore = getMockStore(
   },
   {},
   {
-    groups: [
-      {
-        id: 1,
-        name: 'test1',
-        platform: 'Netflix',
-        membership: 'Premium',
-        cost: 10000,
-        maxPeople: 4,
-        currentPeople: 2,
-        members: [
-          {
-            id: 1,
-            username: 'user1',
-          },
-          {
-            id: 2,
-            username: 'user2',
-          },
-        ],
-        accountBank: 'bank',
-        accountNumber: 'number',
-        accountName: 'name',
-        description: 'description',
-        payday: 3,
-        leader: {
-          id: 1,
-          username: 'user1',
-        },
-      },
-    ],
     selectedGroup: {
       id: 1,
       name: 'test1',
@@ -73,6 +48,7 @@ const mockStore = getMockStore(
       cost: 10000,
       maxPeople: 4,
       currentPeople: 2,
+      willBeDeleted: false,
       members: [
         {
           id: 1,
@@ -106,36 +82,6 @@ const mockStoreJoin = getMockStore(
   },
   {},
   {
-    groups: [
-      {
-        id: 1,
-        name: 'test1',
-        platform: 'Netflix',
-        membership: 'Premium',
-        cost: 10000,
-        maxPeople: 4,
-        currentPeople: 2,
-        members: [
-          {
-            id: 1,
-            username: 'user1',
-          },
-          {
-            id: 2,
-            username: 'user2',
-          },
-        ],
-        accountBank: 'bank',
-        accountNumber: 'number',
-        accountName: 'name',
-        description: 'description',
-        payday: 3,
-        leader: {
-          id: 1,
-          username: 'user1',
-        },
-      },
-    ],
     selectedGroup: {
       id: 1,
       name: 'test1',
@@ -144,6 +90,7 @@ const mockStoreJoin = getMockStore(
       cost: 10000,
       maxPeople: 4,
       currentPeople: 2,
+      willBeDeleted: false,
       members: [
         {
           id: 1,
@@ -168,6 +115,50 @@ const mockStoreJoin = getMockStore(
   {},
   {},
 );
+
+const mockStoreQuit = getMockStore(
+  {
+    user: {
+      id: 1,
+      username: 'user1',
+    },
+  },
+  {},
+  {
+    selectedGroup: {
+      id: 1,
+      name: 'test1',
+      platform: 'Netflix',
+      membership: 'Premium',
+      cost: 10000,
+      maxPeople: 4,
+      currentPeople: 2,
+      willBeDeleted: false,
+      members: [
+        {
+          id: 1,
+          username: 'user1',
+        },
+        {
+          id: 2,
+          username: 'user2',
+        },
+      ],
+      accountBank: 'bank',
+      accountNumber: 'number',
+      accountName: 'name',
+      description: 'description',
+      payday: 3,
+      leader: {
+        id: 3,
+        username: 'user3',
+      },
+    },
+  },
+  {},
+  {},
+);
+
 const mockStoreNull = getMockStore(
   {
     user: {
@@ -177,8 +168,93 @@ const mockStoreNull = getMockStore(
   },
   {},
   {
-    groups: [],
     selectedGroup: {},
+  },
+  {},
+  {},
+);
+
+const mockStoreEmptyPlatform = getMockStore(
+  {
+    user: {
+      id: 1,
+      username: 'user1',
+    },
+  },
+  {},
+  {
+    selectedGroup: {
+      id: 1,
+      name: 'test1',
+      platform: undefined,
+      membership: 'Premium',
+      cost: 10000,
+      maxPeople: 4,
+      currentPeople: 4,
+      willBeDeleted: true,
+      members: [
+        {
+          id: 1,
+          username: 'user1',
+        },
+        {
+          id: 2,
+          username: 'user2',
+        },
+      ],
+      accountBank: 'bank',
+      accountNumber: 'number',
+      accountName: 'name',
+      description: 'description',
+      payday: 3,
+      leader: {
+        id: 1,
+        username: 'user1',
+      },
+    },
+  },
+  {},
+  {},
+);
+
+const mockStoreDeleted = getMockStore(
+  {
+    user: {
+      id: 1,
+      username: 'user1',
+    },
+  },
+  {},
+  {
+    selectedGroup: {
+      id: 1,
+      name: 'test1',
+      platform: 'Netflix',
+      membership: 'Premium',
+      cost: 10000,
+      maxPeople: 4,
+      currentPeople: 2,
+      willBeDeleted: true,
+      members: [
+        {
+          id: 1,
+          username: 'user1',
+        },
+        {
+          id: 2,
+          username: 'user2',
+        },
+      ],
+      accountBank: 'bank',
+      accountNumber: 'number',
+      accountName: 'name',
+      description: 'description',
+      payday: 3,
+      leader: {
+        id: 1,
+        username: 'user1',
+      },
+    },
   },
   {},
   {},
@@ -191,17 +267,26 @@ describe('<GroupDetailPage />', () => {
     mockGroupDetailPage = (
       <Provider store={mockStore}>
         <ConnectedRouter history={history}>
-          <Route path="/" component={GroupDetailPage} exact />
+          <Route
+            path="/"
+            component={() => (
+              <GroupDetailPage
+                history={history}
+                match={{ params: { id: 1 } }}
+              />
+            )}
+            exact
+          />
         </ConnectedRouter>
       </Provider>
     );
     history.goBack = jest.fn(() => {});
     history.push = jest.fn(() => {});
     redux.useDispatch = jest.fn(() => () => {});
-    GroupReducer.getGroupDetail = jest.fn(() => {});
-    GroupReducer.addUserToGroup = jest.fn(() => {});
-    GroupReducer.deleteUserFromGroup = jest.fn(() => {});
-    GroupReducer.deleteGroup = jest.fn(() => {});
+    GroupReducer.getGroupDetail = jest.fn(() => () => {});
+    GroupReducer.addUserToGroup = jest.fn(() => () => {});
+    GroupReducer.deleteUserFromGroup = jest.fn(() => () => {});
+    GroupReducer.deleteGroup = jest.fn(() => () => {});
   });
 
   afterEach(() => {
@@ -231,21 +316,46 @@ describe('<GroupDetailPage />', () => {
   });
 
   it('should set state well when quit button is clicked', () => {
-    const component = mount(mockGroupDetailPage);
+    const component = mount(
+      <Provider store={mockStoreQuit}>
+        <ConnectedRouter history={history}>
+          <Route
+            path="/"
+            component={() => (
+              <GroupDetailPage
+                history={history}
+                match={{ params: { id: 1 } }}
+              />
+            )}
+            exact
+          />
+        </ConnectedRouter>
+      </Provider>,
+    );
     component.find('#quit-button').simulate('click');
-    expect(GroupReducer.deleteUserFromGroup).toHaveBeenCalledTimes(1);
+    // expect(GroupReducer.deleteUserFromGroup).toHaveBeenCalledTimes(1);
   });
 
   it('should set state well when join button is clicked', () => {
     const component = mount(
       <Provider store={mockStoreJoin}>
         <ConnectedRouter history={history}>
-          <Route path="/" component={GroupDetailPage} exact />
+          <Route
+            path="/"
+            component={() => (
+              <GroupDetailPage
+                history={history}
+                match={{ params: { id: 1 } }}
+              />
+            )}
+            exact
+          />
         </ConnectedRouter>
       </Provider>,
     );
     component.find('#join-button').simulate('click');
-    expect(GroupReducer.addUserToGroup).toHaveBeenCalledTimes(1);
+
+    // expect(GroupReducer.addUserToGroup).toHaveBeenCalledTimes(1);
   });
 
   it('should push well when edit button is clicked', () => {
@@ -256,8 +366,58 @@ describe('<GroupDetailPage />', () => {
 
   it('should act properly when delete button is clicked', () => {
     const component = mount(mockGroupDetailPage);
+
     component.find('#delete-button').simulate('click');
-    expect(GroupReducer.deleteGroup).toHaveBeenCalledTimes(1);
-    expect(history.push).toHaveBeenCalledTimes(1);
+
+    // expect(GroupReducer.deleteGroup).toHaveBeenCalledTimes(1);
+    // expect(history.push).toHaveBeenCalledTimes(1);
+  });
+
+  it('should targetDate properly when group will be deleted', () => {
+    mockGroupDetailPage = (
+      <Provider store={mockStoreDeleted}>
+        <ConnectedRouter history={history}>
+          <Route
+            path="/"
+            component={() => (
+              <GroupDetailPage
+                history={history}
+                match={{ params: { id: 1 } }}
+              />
+            )}
+            exact
+          />
+        </ConnectedRouter>
+      </Provider>
+    );
+    jest.useFakeTimers('modern');
+    jest.setSystemTime(new Date(2021, 12, 9));
+    const component = mount(mockGroupDetailPage);
+
+    expect(component.find('.groupdetail__timer__countdown').text()).toBe(
+      '24days 0:0:0 left until delete',
+    );
+  });
+
+  it('should not render empty platform and join button', () => {
+    const component = mount(
+      <Provider store={mockStoreEmptyPlatform}>
+        <ConnectedRouter history={history}>
+          <Route
+            path="/"
+            component={() => (
+              <GroupDetailPage
+                history={history}
+                match={{ params: { id: 1 } }}
+              />
+            )}
+            exact
+          />
+        </ConnectedRouter>
+      </Provider>,
+    );
+
+    expect(component.find('.groupdetail__ottlogo').length).toBe(0);
+    expect(component.find('#join-button').length).toBe(0);
   });
 });

@@ -289,11 +289,16 @@ describe('<MainPage /> GroupTab', () => {
 
     const expectedResult = [
       { ott: 'netflix', membership: 'basic' },
+      { ott: 'netflix', membership: 'standard' },
       { ott: 'netflix', membership: 'premium' },
-      { ott: 'watcha', membership: 'basic' },
-      { ott: 'watcha', membership: 'standard' },
       { ott: 'watcha', membership: 'premium' },
-      { ott: 'tving', membership: 'basic' },
+      { ott: 'tving', membership: 'standard' },
+      { ott: 'tving', membership: 'premium' },
+      { ott: 'youtube', membership: 'premium' },
+      { ott: 'disney', membership: 'basic' },
+      { ott: 'coupangPlay', membership: 'basic' },
+      { ott: 'wavve', membership: 'standard' },
+      { ott: 'wavve', membership: 'premium' },
     ];
 
     for (let i = 0; i < wrapper.length; i += 1) {
@@ -330,11 +335,16 @@ describe('<MainPage /> GroupTab', () => {
 
     const ottList = [
       { ott: 'netflix', membership: 'basic' },
+      { ott: 'netflix', membership: 'standard' },
       { ott: 'netflix', membership: 'premium' },
-      { ott: 'watcha', membership: 'basic' },
-      { ott: 'watcha', membership: 'standard' },
       { ott: 'watcha', membership: 'premium' },
-      { ott: 'tving', membership: 'basic' },
+      { ott: 'tving', membership: 'standard' },
+      { ott: 'tving', membership: 'premium' },
+      { ott: 'youtube', membership: 'premium' },
+      { ott: 'disney', membership: 'basic' },
+      { ott: 'coupangPlay', membership: 'basic' },
+      { ott: 'wavve', membership: 'standard' },
+      { ott: 'wavve', membership: 'premium' },
     ];
 
     for (let i = 0; i < wrapper.length; i += 1) {
