@@ -137,7 +137,7 @@ class ContentTestCase(TestCase):
 
     def test_genre_initialize(self):
         """
-        /api/content/initialize/contents/
+        /api/content/initialize/genre/
         GET
         """
         response = self.logged_in_client.get('/api/content/initialize/genre/')
