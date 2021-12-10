@@ -3,9 +3,15 @@ import { shallow } from 'enzyme';
 import GroupListItem from './GroupListItem';
 import { history } from '../../test-utils/mock';
 
+const mockGroup = {
+  id: 1,
+  currentPeople: 1,
+  maxPeople: 4,
+  platform: 'netflix',
+};
+
 describe('<GroupListItem />', () => {
   it('should render without error', () => {
-    const mockGroup = { currentPeople: 1, maxPeople: 4, platform: 'netflix' };
     const component = shallow(
       <GroupListItem.WrappedComponent group={mockGroup} />,
     );
@@ -14,9 +20,13 @@ describe('<GroupListItem />', () => {
   });
 
   it('should contain correct linearGradient when vacantPercent is 0', () => {
-    const mockGroup = { currentPeople: 4, maxPeople: 4, platform: 'netflix' };
+    const mockGroupFull = {
+      currentPeople: 4,
+      maxPeople: 4,
+      platform: 'netflix',
+    };
     const component = shallow(
-      <GroupListItem.WrappedComponent group={mockGroup} />,
+      <GroupListItem.WrappedComponent group={mockGroupFull} />,
     );
 
     expect(JSON.stringify(component.find('.group-item').props().style)).toMatch(
@@ -25,9 +35,13 @@ describe('<GroupListItem />', () => {
   });
 
   it('should contain correct linearGradient when vacantPercent is 100', () => {
-    const mockGroup = { currentPeople: 0, maxPeople: 4, platform: 'netflix' };
+    const mockGroupEmpty = {
+      currentPeople: 0,
+      maxPeople: 4,
+      platform: 'netflix',
+    };
     const component = shallow(
-      <GroupListItem.WrappedComponent group={mockGroup} />,
+      <GroupListItem.WrappedComponent group={mockGroupEmpty} />,
     );
 
     expect(JSON.stringify(component.find('.group-item').props().style)).toMatch(
@@ -36,12 +50,6 @@ describe('<GroupListItem />', () => {
   });
 
   it('should go to group detail page when clicks group Item', () => {
-    const mockGroup = {
-      id: 1,
-      currentPeople: 1,
-      maxPeople: 4,
-      platform: 'netflix',
-    };
     history.push = jest.fn(() => {});
     const component = shallow(
       <GroupListItem.WrappedComponent group={mockGroup} history={history} />,
@@ -53,12 +61,6 @@ describe('<GroupListItem />', () => {
   });
 
   it('should render only title when only Title option is true', () => {
-    const mockGroup = {
-      id: 1,
-      currentPeople: 1,
-      maxPeople: 4,
-      platform: 'netflix',
-    };
     history.push = jest.fn(() => {});
     const component = shallow(
       <GroupListItem.WrappedComponent
