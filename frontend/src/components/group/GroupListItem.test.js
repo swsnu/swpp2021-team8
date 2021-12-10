@@ -72,4 +72,17 @@ describe('<GroupListItem />', () => {
 
     expect(component.find('.group-item__membership').length).toBe(0);
   });
+
+  it('should not render image if group platform is null', () => {
+    const mockGroupNoPlatform = {
+      id: 1,
+      currentPeople: 1,
+      maxPeople: 4,
+      platform: null,    
+    };
+    const component = shallow(
+      <GroupListItem.WrappedComponent group={mockGroupNoPlatform} />,
+    );
+    expect(component.find('img').length).toBe(0);
+  });
 });

@@ -36,12 +36,16 @@ const GroupListItem = ({ group, history, onlyTitle = false }) => {
         onClick={onGroupItemClick}
       >
         <div className="group-item__platform">
-          <img
-            src={`/images/${group.platform.toLowerCase()}.png`}
-            alt={group.platform}
-            width="50"
-            height="50"
-          />
+          {group.platform ? (
+            <img
+              src={`/images/${group.platform.toLowerCase()}.png`}
+              alt={group.platform}
+              width="50"
+              height="50"
+            />
+            ) : (
+              <></>
+          )}
         </div>
         <div className="group-item__title">
           <span className="group-item__title--title">{group.name}</span>
