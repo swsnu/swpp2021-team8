@@ -30,7 +30,12 @@ const NavBar = ({
       </div>
       {isLoggedIn && (
         <div className="navbar__auth">
-          <div className="navbar__auth__group">
+          <div
+            className="navbar__auth__group"
+            role="button"
+            tabIndex={0}
+            onClick={onMyPageClick}
+          >
             <div className="navbar__auth__group__title">My Groups</div>
             <div className="navbar__auth__group__count">
               <span className="navbar__auth__group__count--not-deleted">
