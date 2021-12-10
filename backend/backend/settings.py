@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'group.apps.GroupConfig',
     'ott.apps.OttConfig',
     'review.apps.ReviewConfig',
+    'notification.apps.NotificationConfig',
     'django_apscheduler',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'notifications',
 ]
 
 MIDDLEWARE = [
