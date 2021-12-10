@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_http_methods
 from django.db.models import Q
+from notification.models import Notification
 from deco import login_required
 from .models import Ott, Group
 
@@ -99,6 +100,9 @@ def group_list(request):
 
         group.members.add(request.user.id)
         group.save()
+
+        # Make Notification
+        Notification(receiver=request.user.id, type="create", content="{0} has been created".format(group_name)).save()
 
         response_dict = {
             'id': group.id,
@@ -217,6 +221,10 @@ def group_detail(request, group_id):
         group.will_be_deleted = True
         group.save()
 
+        # Make Notification
+        for member in group.members.all():
+            Notification(receiver=member.id, type="delete", content="{0} will be deleted".format(group.name)).save()
+
         # group.delete()
         response_dict = {
             "id": group.id,
@@ -254,6 +262,12 @@ def group_add_user(request, group_id):
         group.current_people = group.current_people + 1
         group.save()
 
+        # Make Notification
+        # Leader
+        Notification(receiver=group.leader.id, type="join", content="{0} has been joined your group {1}".format(request.user.username, group.name)).save()
+        # member
+        Notification(receiver=request.user.id, type="join", content="You have been joined group {0}".format(group.name)).save()
+
         members = list(group.members.all().values())
         response_dict = {
             "id": group.id,
@@ -274,6 +288,12 @@ def group_add_user(request, group_id):
         group.members.remove(request.user)
         group.current_people = group.current_people - 1
         group.save()
+
+        # Make Notification
+        # Leader
+        Notification(receiver=group.leader.id, type="quit", content="{0} has been quit your group {1}".format(request.user.username, group.name)).save()
+        # member
+        Notification(receiver=request.user.id, type="quit", content="You have been quit group {0}".format(group.name)).save()
 
         members = list(group.members.all().values())
         response_dict = {
