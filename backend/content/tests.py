@@ -127,6 +127,22 @@ class ContentTestCase(TestCase):
         response = client.get('/api/content/566525/')
         self.assertEqual(response.status_code, 200)
 
+    def test_content_initialize(self):
+        """
+        /api/content/initialize/contents/
+        GET
+        """
+        response = self.logged_in_client.get('/api/content/initialize/contents/')
+        self.assertEqual(response.status_code, 201)
+
+    def test_genre_initialize(self):
+        """
+        /api/content/initialize/genre/
+        GET
+        """
+        response = self.logged_in_client.get('/api/content/initialize/genre/')
+        self.assertEqual(response.status_code, 201)
+
     def test_content_recommendation(self):
         """
         /api/content/<int:user_id>/recommendation/
