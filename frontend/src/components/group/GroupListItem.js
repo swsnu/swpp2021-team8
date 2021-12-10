@@ -3,23 +3,22 @@ import { withRouter } from 'react-router-dom';
 import './GroupListItem.scss';
 
 const GroupListItem = ({ group, history, onlyTitle = false }) => {
-  let vacantPercent =
-    ((group.maxPeople - group.currentPeople) * 100) / group.maxPeople;
+  let takenPercent = (group.currentPeople * 100) / group.maxPeople;
 
-  let takenPercent = 0;
-  switch (vacantPercent) {
+  let vacantPercent = 0;
+  switch (takenPercent) {
     case 0:
-      takenPercent = 0;
+      vacantPercent = 0;
       break;
     case 100:
       break;
     default:
-      vacantPercent -= 10;
-      takenPercent = vacantPercent + 10;
+      vacantPercent = takenPercent + 10;
+      takenPercent -= 10;
   }
 
   const gradientStyle = {
-    background: `linear-gradient(to right, #C99208 ${vacantPercent}%, #CD3131 ${takenPercent}%)`,
+    background: `linear-gradient(to right, #CD3131 ${takenPercent}%, #C99208 ${vacantPercent}%)`,
   };
 
   const onGroupItemClick = () => {
