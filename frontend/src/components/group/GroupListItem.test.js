@@ -78,7 +78,7 @@ describe('<GroupListItem />', () => {
       id: 1,
       currentPeople: 1,
       maxPeople: 4,
-      platform: null,    
+      platform: null,
     };
     const component = shallow(
       <GroupListItem.WrappedComponent group={mockGroupNoPlatform} />,
