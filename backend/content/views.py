@@ -7,7 +7,7 @@ from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.models import User
 from django.conf import settings
-from deco import login_required
+from deco import login_required, debounce
 from review.models import Review
 from .models import Content, Genre, Actor, Similarity
 from .recommend import create_matrix, get_recommendation, recommender
@@ -46,6 +46,34 @@ def request_the_movie_api(url, _params, max_retries=2, sleep_time=5):
             attempt_num += 1
             time.sleep(sleep_time)
 
+    return None
+
+@debounce(0.5)
+def content_recommendation_matrix():
+    contents = Content.objects.all()
+    content_list = []
+    for content in contents:
+        cast = " ".join(c.name for c in content.cast.all())
+        genre = " ".join(g.name for g in content.genres.all())
+        content_info = {
+            "id": content.id,
+            "overview": content.overview,
+            "director": content.director,
+            "cast": cast,
+            "genres": genre,
+            "poster": content.poster
+        }
+        content_list.append(content_info)
+
+    similarity = Similarity.objects.all()
+    # no similarity matrix exists
+    if not similarity:
+        similarity = Similarity(matrix = create_matrix(content_list))
+        similarity.save()
+    else:
+        similarity_before = similarity[0]
+        similarity_before.matrix = create_matrix(content_list)
+        similarity_before.save()
     return None
 
 @login_required
@@ -264,6 +292,9 @@ def content_detail(request, content_id):
                 cast.append(actor)
             content.cast.set(cast)
 
+            #build similarity matrix
+            content_recommendation_matrix()
+
         genre_list = list(content.genres.all().values())
         return_genres = ", ".join([genre['name'] for genre in genre_list]),
 
@@ -284,45 +315,8 @@ def content_detail(request, content_id):
             "favorite_users": list(content.favorite_users.all().values()),
             "favorite_cnt": content.favorite_cnt,
         }
+
         return JsonResponse(content_detail, safe=False, status=200)
-
-@login_required
-@require_http_methods(["POST"])
-def content_recommendation_matrix(request):
-    """
-    /api/content/recommendation/matrix/
-
-    POST
-        Save similarity matrix in DB
-    """
-    if request.method == "POST":
-        contents = Content.objects.all()
-        content_list = []
-        for content in contents:
-            cast = " ".join(c.name for c in content.cast.all())
-            genre = " ".join(g.name for g in content.genres.all())
-            content_info = {
-                "id": content.id,
-                "overview": content.overview,
-                "director": content.director,
-                "cast": cast,
-                "genres": genre,
-                "poster": content.poster
-            }
-            content_list.append(content_info)
-
-        similarity = Similarity.objects.all()
-        # no similarity matrix exists
-        if not similarity:
-            similarity = Similarity(matrix = create_matrix(content_list))
-            similarity.save()
-        else:
-            similarity_before = similarity[0]
-            similarity_before.matrix = create_matrix(content_list)
-            similarity_before.save()
-        
-        return HttpResponse(status=201)
-
 
 @login_required
 @require_http_methods(["GET"])
