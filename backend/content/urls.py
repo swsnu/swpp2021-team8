@@ -12,4 +12,5 @@ urlpatterns = [
     path('<int:user_id>/favorite/<int:content_id>/', views.content_favorite),
     path('<int:content_id>/review/', views.review_content),
     path('<int:content_id>/', views.content_detail),
+    path('recommendation/matrix/', views.content_recommendation_matrix)
 ]

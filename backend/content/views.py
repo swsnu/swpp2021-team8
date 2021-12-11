@@ -9,8 +9,8 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from deco import login_required
 from review.models import Review
-from .models import Content, Genre, Actor
-from .recommend import recommender
+from .models import Content, Genre, Actor, Similarity
+from .recommend import create_matrix, get_recommendation, recommender
 
 def request_the_movie_api(url, _params, max_retries=2, sleep_time=5):
     """
@@ -287,6 +287,52 @@ def content_detail(request, content_id):
         return JsonResponse(content_detail, safe=False, status=200)
 
 @login_required
+@require_http_methods(["GET", "POST"])
+def content_recommendation_matrix(request):
+    """
+    /api/content/recommendation/matrix/
+
+    POST
+        Save similarity matrix in DB
+    """
+    if request.method == "GET":
+        similarity = Similarity.objects.all()
+        if not similarity:
+            return HttpResponseBadRequest()
+
+        result = get_recommendation(similarity[0].matrix, 680)
+        return JsonResponse(result, status=200, safe=False)
+
+    elif request.method == "POST":
+        contents = Content.objects.all()
+        content_list = []
+        for content in contents:
+            cast = " ".join(c.name for c in content.cast.all())
+            genre = " ".join(g.name for g in content.genres.all())
+            content_info = {
+                "id": content.id,
+                "overview": content.overview,
+                "director": content.director,
+                "cast": cast,
+                "genres": genre,
+                "poster": content.poster
+            }
+            content_list.append(content_info)
+
+        similarity = Similarity.objects.all()
+        # no similarity matrix exists
+        if not similarity:
+            similarity = Similarity(matrix = create_matrix(content_list))
+            similarity.save()
+        else:
+            similarity_before = similarity[0]
+            similarity_before.matrix = create_matrix(content_list)
+            similarity_before.save()
+        
+        return HttpResponse(status=201)
+
+
+@login_required
 @require_http_methods(["GET"])
 def content_recommendation_2(request, user_id):
     """
@@ -345,10 +391,15 @@ def content_recommendation_2(request, user_id):
                 }
                 content_list.append(content_info)
 
+            similarity = Similarity.objects.all()
+            # no similarity matrix exists
+            if not similarity:
+                return HttpResponseBadRequest()
+            similarity_matrix = similarity[0].matrix
             # generate recommendation only using last 5
             result = []
             for favorite_id in fav_contents_id[-5:]:
-                result = result + [item for item in recommender(content_list, favorite_id) if item not in result]
+                result = result + [item for item in get_recommendation(similarity_matrix, favorite_id) if item not in result]
             
             if not recommendation_contents:
                 recommendation_contents = [

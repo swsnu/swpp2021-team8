@@ -40,3 +40,6 @@ class Content(models.Model):
     def __str__(self):
         content_id = str(self.id)
         return content_id
+
+class Similarity(models.Model):
+    matrix = models.BinaryField()
