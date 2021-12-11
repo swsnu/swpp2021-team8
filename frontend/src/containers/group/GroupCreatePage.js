@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 import { createGroup } from '../../store/GroupStore';
 import { getOtts, getOttPlan } from '../../store/OttStore';
 import FieldInfoItem from '../../components/base/FieldInfoItem';
@@ -20,6 +22,8 @@ const GroupCreatePage = ({ history }) => {
   const [accountNumber, setAccountNumber] = useState('');
   const [accountName, setAccountName] = useState('');
   const [payday, setPayday] = useState(1);
+
+  const MySwal = withReactContent(Swal);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -96,20 +100,69 @@ const GroupCreatePage = ({ history }) => {
     history.push('/main');
   };
   const onCreateGroupClick = () => {
-    dispatch(
-      createGroup({
-        name: title,
-        description,
-        isPublic,
-        password,
-        ottPlanId: ottPlan.id,
-        payday,
-        accountBank,
-        accountNumber,
-        accountName,
-      }),
-    );
-    history.push('/main/');
+    let undones = [];
+    if (title === '') {
+      undones = [...undones, 'Title'];
+    }
+    if (description === '') {
+      undones = [...undones, 'Description'];
+    }
+    if (!ottPlan) {
+      undones = [...undones, 'Ott Info'];
+    }
+    if (accountName === '') {
+      undones = [...undones, 'your name on account'];
+    }
+    if (accountNumber === '') {
+      undones = [...undones, 'Account number'];
+    }
+    if (undones.length) {
+      const undoneHtml = (
+        <>
+          {undones.map((undone) => {
+            return (
+              <>
+                {undone}
+                <br />
+              </>
+            );
+          })}
+        </>
+      );
+      MySwal.fire({
+        title: 'Missing',
+        html: undoneHtml,
+      });
+    } else {
+      MySwal.fire({
+        title: 'Create Group',
+        text: 'Submit with these info?',
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          dispatch(
+            createGroup({
+              name: title,
+              description,
+              isPublic,
+              password,
+              ottPlanId: ottPlan.id,
+              payday,
+              accountBank,
+              accountNumber,
+              accountName,
+            }),
+          );
+          history.push('/main/');
+          MySwal.fire(
+            'Success!',
+            'The group is now Created!',
+            'success',
+          );
+        }
+      });
+    }
   };
   const platformSelectContent = ottList.map((ott) => {
     const checked = platform ? platform.name === ott.name : false;
@@ -396,14 +449,6 @@ const GroupCreatePage = ({ history }) => {
             id="create-group-button"
             onClick={onCreateGroupClick}
             type="button"
-            disabled={
-              !ottPlan ||
-              !title ||
-              !description ||
-              !accountBank ||
-              !accountName ||
-              !accountNumber
-            }
           >
             Create Group
           </button>
