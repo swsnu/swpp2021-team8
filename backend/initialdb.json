@@ -106,7 +106,7 @@
     "model": "ott.ott",
     "id": 9,
     "fields": {
-      "ott": "CoupangPlay",
+      "ott": "Coupangplay",
       "membership": "Basic",
       "max_people": 5,
       "cost": 2900

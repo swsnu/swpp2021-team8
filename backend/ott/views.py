@@ -33,7 +33,6 @@ def ott_detail(request, ott_plan):
     """
     if request.method == 'GET':
         ott_platform, ott_membership = ott_plan.split('_')
-
         try:
             ott = Ott.objects.get(
                 ott=ott_platform.capitalize(),
