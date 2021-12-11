@@ -6,7 +6,7 @@ DATABASES = {
         'NAME': 'subroker',
         'USER': 'root',
         'PASSWORD': 'swppteam8',
-        'HOST': 'localhost',
+        'HOST': '15.164.57.207',
         'PORT': '3306'
     }
 }
