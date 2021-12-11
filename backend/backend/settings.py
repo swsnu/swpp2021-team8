@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'ec2-15-164-57-207.ap-northeast-2.compute.amazonaws.com', '15.164.57.207']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'ec2-15-164-57-207.ap-northeast-2.compute.amazonaws.com', '15.164.57.207']
 
 SECRET_KEY = my_settings.SECRET_KEY
 THE_MOVIE_API_KEY = my_settings.THE_MOVIE_API_KEY

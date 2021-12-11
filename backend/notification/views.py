@@ -13,16 +13,13 @@ def handle_notification(request):
     /api/notification/?user=""&&id=""
     Handle notification related events
 
-    GET 
+    GET
         return notification that receiver is user
-    
-    POST
-        create a new notification
 
     DELETE
         delete current id's notification
     """
-    
+
     if request.method == "GET":
         user_id = request.GET.get("user", None)
 
@@ -37,25 +34,12 @@ def handle_notification(request):
         response = [
             {
                 "id": notification.id,
-                "content": notification.content
-            } for notification in user._notifications.all()]
+                "type": notification.type,
+                "content": notification.content,
+                "created_at": notification.created_at
+            } for notification in user.notification.all()]
 
         return JsonResponse(response, safe=False, status=200)
-
-    elif request.method == "POST":
-        body = json.loads(request.body.decode())
-
-        receiver = body["receiver"]
-        content = body["content"]
-
-        try:
-            user = User.objects.get(id=receiver)
-        except User.DoesNotExist:
-            return HttpResponseNotFound()
-
-        Notification(receiver=user, content=content).save()
-
-        return HttpResponse(status=201)
 
     elif request.method == "DELETE":
         body = json.loads(request.body.decode())

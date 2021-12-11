@@ -1,4 +1,7 @@
+from datetime import datetime
+from unittest import mock
 import json
+import pytz
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 
@@ -27,15 +30,18 @@ class NotificationTestCase(TestCase):
         user.save()
         User(username="test2", password="test2").save()
 
-        Notification(receiver=user, content="group create").save()
-        Notification(receiver=user, content="group delete").save()
-        Notification(receiver=user, content="group payday").save()
-    
+        self.mocked_time = datetime(2018, 4, 4, 0, 0, 0, tzinfo=pytz.utc)
+        self.return_time = '2018-04-04T00:00:00Z'
+        with mock.patch('django.utils.timezone.now', mock.Mock(return_value=self.mocked_time)):
+            Notification(receiver=user, type="create", content="group create").save()
+            Notification(receiver=user, type="delete", content="group delete").save()
+            Notification(receiver=user, type="payday", content="group payday").save()
+
     def test_get_notification(self):
         """
         GET /api/notification/
         """
-        
+
         # when  URL doesn't have "user" query
         # then  Return 400 error
         response = self.client.get('/api/notification/')
@@ -49,38 +55,12 @@ class NotificationTestCase(TestCase):
         # when  user request notification
         # then  Return all notifications
         expect_result = [
-            {"id": 1, "content": "group create"},
-            {"id": 2, "content": "group delete"},
-            {"id": 3, "content": "group payday"},
+            {"id": 1, "type": "create", "content": "group create", "created_at": self.return_time},
+            {"id": 2, "type": "delete", "content": "group delete", "created_at": self.return_time},
+            {"id": 3, "type": "payday", "content": "group payday", "created_at": self.return_time},
         ]
         response = self.client.get('/api/notification/?user=1')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.content.decode()), expect_result)
-
-    def test_post_notification(self):
-        """
-        POST /api/notification/
-        """
-
-        # when  Receiver does not exist
-        # then  Return 404 error
-        response = self.client.post('/api/notification/', json.dumps({
-            "receiver": 3,
-            "content": "test content"
-        }), content_type='application/json')
-        self.assertEqual(response.status_code, 404)
-        
-        # when  receiver and content is in body
-        # then  Create a new notification
-        expect_result = [
-            {"id": 4, "content": "test content"},
-        ]
-        response = self.client.post('/api/notification/', json.dumps({
-            "receiver": 2,
-            "content": "test content"
-        }), content_type='application/json')
-        self.assertEqual(response.status_code, 201)
-        response = self.client.get('/api/notification/?user=2')
         self.assertEqual(json.loads(response.content.decode()), expect_result)
 
     def test_delete_notification(self):
@@ -95,11 +75,11 @@ class NotificationTestCase(TestCase):
         }), content_type='application/json')
         self.assertEqual(response.status_code, 404)
 
-        # when  Delete is successful, delete item 
+        # when  Delete is successful, delete item
         # then  Return 200 code
         expect_result = [
-            {"id": 1, "content": "group create"},
-            {"id": 2, "content": "group delete"},
+            {"id": 1, "type": "create", "content": "group create", "created_at": self.return_time},
+            {"id": 2, "type": "delete", "content": "group delete", "created_at": self.return_time},
         ]
         response = self.client.delete('/api/notification/', json.dumps({
             "receiver": 3,

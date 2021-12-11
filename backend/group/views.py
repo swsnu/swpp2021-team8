@@ -102,7 +102,7 @@ def group_list(request):
         group.save()
 
         # Make Notification
-        Notification(receiver=request.user.id, type="create", content="{0} has been created".format(group_name)).save()
+        Notification(receiver=request.user, type="create", content="{0} has been created".format(group_name)).save()
 
         response_dict = {
             'id': group.id,
@@ -223,7 +223,7 @@ def group_detail(request, group_id):
 
         # Make Notification
         for member in group.members.all():
-            Notification(receiver=member.id, type="delete", content="{0} will be deleted".format(group.name)).save()
+            Notification(receiver=member, type="delete", content="{0} will be deleted".format(group.name)).save()
 
         # group.delete()
         response_dict = {
@@ -264,9 +264,9 @@ def group_add_user(request, group_id):
 
         # Make Notification
         # Leader
-        Notification(receiver=group.leader.id, type="join", content="{0} has been joined your group {1}".format(request.user.username, group.name)).save()
+        Notification(receiver=group.leader, type="join", content="{0} has been joined your group {1}".format(request.user.username, group.name)).save()
         # member
-        Notification(receiver=request.user.id, type="join", content="You have been joined group {0}".format(group.name)).save()
+        Notification(receiver=request.user, type="join", content="You have been joined group {0}".format(group.name)).save()
 
         members = list(group.members.all().values())
         response_dict = {
@@ -291,9 +291,9 @@ def group_add_user(request, group_id):
 
         # Make Notification
         # Leader
-        Notification(receiver=group.leader.id, type="quit", content="{0} has been quit your group {1}".format(request.user.username, group.name)).save()
+        Notification(receiver=group.leader, type="quit", content="{0} has been quit your group {1}".format(request.user.username, group.name)).save()
         # member
-        Notification(receiver=request.user.id, type="quit", content="You have been quit group {0}".format(group.name)).save()
+        Notification(receiver=request.user, type="quit", content="You have been quit group {0}".format(group.name)).save()
 
         members = list(group.members.all().values())
         response_dict = {

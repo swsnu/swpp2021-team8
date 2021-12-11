@@ -27,7 +27,7 @@ export const getNotifications = (user) => async (dispatch) => {
 
 export const deleteNotification = (id) => async (dispatch) => {
   try {
-    await axios.delete('/api/notification/', id);
+    await axios.delete('/api/notification/', { data: { receiver: id } });
     dispatch(_deleteNotification(id));
   } catch (e) {}
 };

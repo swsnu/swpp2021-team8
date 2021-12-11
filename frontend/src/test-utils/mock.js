@@ -7,9 +7,11 @@ import thunk from 'redux-thunk';
 
 const getMockReducer = jest.fn(
   /* eslint no-unused-vars: ["off"]  */
-  (initialState) => (state = initialState, action) => {
-    return state;
-  },
+  (initialState) =>
+    // eslint-disable-next-line implicit-arrow-linebreak
+    (state = initialState, action) => {
+      return state;
+    },
 );
 
 export const history = createBrowserHistory();
@@ -21,12 +23,14 @@ export const getMockStore = (
   groupState,
   ottState,
   reviewState,
+  notificationState = { notifications: [] },
 ) => {
   const authReducer = getMockReducer(authState);
   const contentReducer = getMockReducer(contentState);
   const groupReducer = getMockReducer(groupState);
   const ottReducer = getMockReducer(ottState);
   const reviewReducer = getMockReducer(reviewState);
+  const notificationReducer = getMockReducer(notificationState);
 
   const rootReducer = combineReducers({
     auth: authReducer,
@@ -34,6 +38,7 @@ export const getMockStore = (
     group: groupReducer,
     ott: ottReducer,
     review: reviewReducer,
+    notification: notificationReducer,
     router: connectRouter(history),
   });
 

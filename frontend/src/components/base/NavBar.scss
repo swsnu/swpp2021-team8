@@ -25,7 +25,15 @@
   &__auth {
     display: flex;
     justify-content: space-between;
+    gap: 30px;
     color: white;
+
+    &__notification {
+      display: flex;
+      align-items: center;
+      margin-right: 10px;
+      cursor: pointer;
+    }
 
     &__group {
       cursor: pointer;
@@ -57,7 +65,6 @@
     &__mypage {
       cursor: pointer;
       font-size: 2.55em;
-      margin: 0px 30px;
     }
   }
 }

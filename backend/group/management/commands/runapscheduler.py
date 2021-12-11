@@ -38,9 +38,9 @@ def delete_group_notification():
     """
     Send notification to user whose group will be deleted
     """
-    for group in Group.objects.filter(will_be_deleted=True).values():
-        for member in group["members"]:
-            Notification(receiver=member.id, type="delete", content="{0} will be deleted".format(group["name"])).save()
+    for group in Group.objects.filter(will_be_deleted=True):
+        for member in group.members.all():
+            Notification(receiver=member, type="delete", content="{0} will be deleted".format(group.name)).save()
 
 def payday_notification():
     """
@@ -51,14 +51,14 @@ def payday_notification():
     day = int(today.strftime("%d"))
     end_of_day = int(today.replace(day = calendar.monthrange(today.year, today.month)[1]).strftime("%d"))
 
-    for group in Group.objects.filter(payday=day).values():
-        for member in group["members"]:
-            Notification(receiver=member.id, type="payday", content="Today is your payday for group {0}".format(group["name"])).save()
+    for group in Group.objects.filter(payday=day):
+        for member in group.members.all():
+            Notification(receiver=member, type="payday", content="Today is your payday for group {0}".format(group.name)).save()
 
     if day == end_of_day:
         for group in Group.objects.filter(payday__gt=day).values():
-            for member in group["members"]:
-                Notification(receiver=member.id, type="payday", content="Today is your payday for group {0}".format(group["name"])).save()
+            for member in group.members.all():
+                Notification(receiver=member, type="payday", content="Today is your payday for group {0}".format(group.name)).save()
 
 
 class Command(BaseCommand):
