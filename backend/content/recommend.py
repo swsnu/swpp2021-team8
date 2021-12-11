@@ -14,6 +14,7 @@ cast_percentage = 0.3
 overview_percentage = 0.1
 
 import pandas as pd
+from pandas.core.indexes.base import Index
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -57,6 +58,7 @@ def recommender(data, movie_user_likes):
 
 def create_matrix(data):
     df = pd.json_normalize(data)
+    poster = df[["id", "poster"]].set_index("id")
 
     cv = CountVectorizer()
     tfidf = TfidfVectorizer(stop_words='english')
@@ -78,20 +80,25 @@ def create_matrix(data):
 
     final_matrix = matrix_cast*cast_percentage + matrix_genres*genre_percentage + matrix_director*director_percentage + matrix_overview*overview_percentage
 
-    final_series = pd.DataFrame(np.array(final_matrix)).stack()
-    final_series = final_series.rename(lambda x: df[df.index == x]["id"].values[0])
+    final_df = pd.DataFrame(np.array(final_matrix))
+    final_df = final_df.rename(columns = lambda x: df[df.index == x]["id"].values[0])
+    poster_df = df[["poster", "id"]]
 
-    return cPickle.dumps(final_series)
+    final_df = final_df.merge(poster_df, left_index=True, right_index=True)
+    final_df = final_df.rename(index = lambda x: df[df.index == x]["id"].values[0])
+    final_df = final_df.drop('id', axis=1)
+
+    return cPickle.dumps(final_df)
 
 def get_recommendation(matrix_pickle, movie_user_likes):
-    final_matrix = cPickle.loads(matrix_pickle)
-    print(final_matrix)
+    final_df = cPickle.loads(matrix_pickle)
+    final_matrix = final_df.drop('poster', axis=1).stack()
     
     similar_movies = final_matrix[movie_user_likes]
 
     sorted_movies = similar_movies.sort_values(ascending=False)
     sorted_movies = sorted_movies[1:11]
 
-    result = list({"id": movie[0]} for movie in sorted_movies.items())
+    result = list({"id": movie[0], "poster":final_df['poster'][movie[0]]} for movie in sorted_movies.items())
 
     return result

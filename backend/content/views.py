@@ -287,7 +287,7 @@ def content_detail(request, content_id):
         return JsonResponse(content_detail, safe=False, status=200)
 
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["POST"])
 def content_recommendation_matrix(request):
     """
     /api/content/recommendation/matrix/
@@ -295,15 +295,7 @@ def content_recommendation_matrix(request):
     POST
         Save similarity matrix in DB
     """
-    if request.method == "GET":
-        similarity = Similarity.objects.all()
-        if not similarity:
-            return HttpResponseBadRequest()
-
-        result = get_recommendation(similarity[0].matrix, 680)
-        return JsonResponse(result, status=200, safe=False)
-
-    elif request.method == "POST":
+    if request.method == "POST":
         contents = Content.objects.all()
         content_list = []
         for content in contents:
@@ -375,7 +367,6 @@ def content_recommendation_2(request, user_id):
         # If user has favorite contents
         else:
             # generate all content info for recommendation
-            result = []
             contents = Content.objects.all()
             content_list = []
             for content in contents:
@@ -397,10 +388,9 @@ def content_recommendation_2(request, user_id):
                 return HttpResponseBadRequest()
             similarity_matrix = similarity[0].matrix
             # generate recommendation only using last 5
-            result = []
+            recommendation_contents = []
             for favorite_id in fav_contents_id[-5:]:
-                result = result + [item for item in get_recommendation(similarity_matrix, favorite_id) if item not in result]
-            
+                recommendation_contents = recommendation_contents + [item for item in get_recommendation(similarity_matrix, favorite_id) if item not in recommendation_contents]
             if not recommendation_contents:
                 recommendation_contents = [
                     {"id": 0, "poster": placeholder}] * 5
@@ -411,7 +401,7 @@ def content_recommendation_2(request, user_id):
                     recommendation_contents, min(
                         len(recommendation_contents), 21))
 
-        return JsonResponse(result, safe=False, status=200)
+        return JsonResponse(recommendation_contents, safe=False, status=200)
 
 
 
