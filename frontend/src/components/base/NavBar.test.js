@@ -4,14 +4,25 @@ import NavBar from './NavBar';
 
 describe('<NavBar />', () => {
   it('should render without error when user is NOT logged in', () => {
-    const component = shallow(<NavBar.WrappedComponent />);
+    const component = shallow(
+      <NavBar.WrappedComponent
+        notifications={[]}
+        onNotificationClick={jest.fn(() => {})}
+      />,
+    );
 
     expect(component.find('.navbar').length).toBe(1);
     expect(component.find('.navbar__auth').length).toBe(0);
   });
 
   it('should render without error when user is logged in ', () => {
-    const component = shallow(<NavBar.WrappedComponent isLoggedIn />);
+    const component = shallow(
+      <NavBar.WrappedComponent
+        isLoggedIn
+        notifications={[]}
+        onNotificationClick={jest.fn(() => {})}
+      />,
+    );
 
     expect(component.find('.navbar__auth').length).toBe(1);
   });
@@ -20,7 +31,12 @@ describe('<NavBar />', () => {
     const history = jest.fn(() => {});
     history.push = jest.fn(() => {});
     const component = shallow(
-      <NavBar.WrappedComponent history={history} isLoggedIn />,
+      <NavBar.WrappedComponent
+        history={history}
+        isLoggedIn
+        notifications={[]}
+        onNotificationClick={jest.fn(() => {})}
+      />,
     );
 
     const logoWrapper = component.find('.navbar__logo');
@@ -35,7 +51,12 @@ describe('<NavBar />', () => {
   it('should call back logOutClick function when Logout button is clicked', () => {
     const mockLogOutClick = jest.fn(() => {});
     const component = shallow(
-      <NavBar.WrappedComponent isLoggedIn onLogOutClick={mockLogOutClick} />,
+      <NavBar.WrappedComponent
+        isLoggedIn
+        onLogOutClick={mockLogOutClick}
+        notifications={[]}
+        onNotificationClick={jest.fn(() => {})}
+      />,
     );
 
     const logoutWrapper = component.find('#logout-button');

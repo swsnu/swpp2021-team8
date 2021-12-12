@@ -13,6 +13,10 @@ import ContentDetailPage from './containers/content/ContentDetailPage';
 import NavBar from './components/base/NavBar';
 import { getLoginStatus, logOut } from './store/AuthStore';
 import Loading from './components/base/Loading';
+import {
+  deleteNotification,
+  getNotifications,
+} from './store/NotificationStore';
 
 function App({ history }) {
   const dispatch = useDispatch();
@@ -20,6 +24,10 @@ function App({ history }) {
   const { id, notDeletedGroupCount, deletedGroupCount } = useSelector(
     (state) => state.auth.user,
   );
+  const notifications = useSelector(
+    (state) => state.notification.notifications,
+  );
+  const groups = useSelector((state) => state.group);
 
   useEffect(() => {
     dispatch(getLoginStatus());
@@ -29,9 +37,23 @@ function App({ history }) {
     dispatch(getLoginStatus());
   }, [isLoggedIn]);
 
+  useEffect(() => {
+    if (isLoggedIn && id) {
+      dispatch(getNotifications(id));
+    }
+  }, [id]);
+
+  useEffect(() => {
+    dispatch(getLoginStatus());
+    if (isLoggedIn && id) {
+      dispatch(getNotifications(id));
+    }
+  }, [groups]);
+
   const onLogOutClick = () => {
     dispatch(logOut());
   };
+
   return (
     <ConnectedRouter history={history}>
       <NavBar
@@ -39,6 +61,8 @@ function App({ history }) {
         notDeletedGroupCount={notDeletedGroupCount}
         deletedGroupCount={deletedGroupCount}
         onLogOutClick={onLogOutClick}
+        notifications={notifications}
+        onNotificationClick={(_id) => dispatch(deleteNotification(_id))}
       />
       {isLoggedIn ? (
         id ? (

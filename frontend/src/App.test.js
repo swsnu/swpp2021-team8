@@ -5,6 +5,7 @@ import * as redux from 'react-redux';
 import * as AuthReducer from './store/AuthStore';
 import App from './App';
 import { getMockStore, history } from './test-utils/mock';
+import * as NotificationReducer from './store/NotificationStore';
 
 const mockStore = getMockStore(
   {
@@ -20,6 +21,11 @@ const mockStore = getMockStore(
   { groups: [] },
   {},
   {},
+  {
+    notifications: [
+      { id: 1, type: 'create', content: 'test', created_at: new Date() },
+    ],
+  },
 );
 
 describe('App', () => {
@@ -34,6 +40,7 @@ describe('App', () => {
     redux.useDispatch = jest.fn(() => () => {});
     AuthReducer.getLoginStatus = jest.fn(() => {});
     AuthReducer.logOut = jest.fn(() => {});
+    NotificationReducer.deleteNotification = jest.fn(() => {});
   });
 
   it('should render App properly', () => {
