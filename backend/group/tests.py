@@ -29,8 +29,8 @@ class GroupTestCase(TestCase):
         -----
             id  name        description         is_public   password    will_be_deleted membership  payday  account_back    account_name    account_number  leader  current_people
             ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-            1   group_name  group_description   True        -1          False           new_ott1    1       Woori           group1_account  1234            user1   1
-            2   group_name  group_description   True        -1          False           new_ott2    1       Woori           group2_account  1234            user1   1
+            1   group_name1  group_description   True        -1          False           new_ott1    1       Woori           group1_account  1234            user1   1
+            2   group_name2  group_description   True        -1          False           new_ott2    1       Woori           group2_account  1234            user1   1
 
         """
         new_user1 = User.objects.create_user(
@@ -54,7 +54,7 @@ class GroupTestCase(TestCase):
         new_ott2.save()
 
         self.new_group = Group(
-            name='group_name',
+            name='group_name1',
             description='group_description',
             is_public=True,
             password=-1,
@@ -69,7 +69,7 @@ class GroupTestCase(TestCase):
         self.new_group.save()
 
         self.new_group2 = Group(
-            name='group_name',
+            name='group_name2',
             description='group_description',
             is_public=True,
             password=-1,
@@ -93,6 +93,10 @@ class GroupTestCase(TestCase):
                                    content_type='application/json',
                                    HTTP_X_CSRFTOKEN=self.csrf_token)
 
+    def test_group_name(self):
+        group = Group.objects.get(name='group_name1')
+        self.assertEqual(str(group), '1 / Watcha')
+
     def test_group_list_get(self):
         """
         /api/group/
@@ -111,15 +115,15 @@ class GroupTestCase(TestCase):
         group = json.loads(response.content.decode())[0]
 
         self.assertEqual(group, {
-            'id': self.new_group.id,
-            'platform': self.new_group.membership.ott,
-            'membership': self.new_group.membership.membership,
-            'name': self.new_group.name,
-            'leader': self.new_group.leader.username,
-            'cost': self.new_group.membership.cost,
-            'currentPeople': self.new_group.current_people,
-            'maxPeople': self.new_group.membership.max_people,
-            'payday': self.new_group.payday
+            'id': self.new_group2.id,
+            'platform': self.new_group2.membership.ott,
+            'membership': self.new_group2.membership.membership,
+            'name': self.new_group2.name,
+            'leader': self.new_group2.leader.username,
+            'cost': self.new_group2.membership.cost,
+            'currentPeople': self.new_group2.current_people,
+            'maxPeople': self.new_group2.membership.max_people,
+            'payday': self.new_group2.payday
         })
 
         # GET Request with query
@@ -215,6 +219,8 @@ class GroupTestCase(TestCase):
             "name": self.new_group.name,
             "platform": self.new_group.membership.ott,
             "membership": self.new_group.membership.membership,
+            "isPublic": self.new_group.is_public,
+            "password": self.new_group.password,
             "cost": self.new_group.membership.cost,
             "maxPeople": self.new_group.membership.max_people,
             "currentPeople": self.new_group.current_people,
@@ -223,9 +229,8 @@ class GroupTestCase(TestCase):
             "accountNumber": self.new_group.account_number,
             "accountName": self.new_group.account_name,
             "description": self.new_group.description,
-            "isPublic": self.new_group.is_public,
-            "password": self.new_group.password,
             "payday": self.new_group.payday,
+            "willBeDeleted": self.new_group.will_be_deleted,
             "leader": {"id": 1, "username": "user1"},
         })
 

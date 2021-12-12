@@ -10,6 +10,7 @@ import content from './ContentStore';
 import group from './GroupStore';
 import ott from './OttStore';
 import review from './ReviewStore';
+import notification from './NotificationStore';
 
 export const history = createBrowserHistory();
 const rootReducer = combineReducers({
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   group,
   ott,
   review,
+  notification,
   router: connectRouter(history),
 });
 export const middlewares = [thunk, routerMiddleware(history)];

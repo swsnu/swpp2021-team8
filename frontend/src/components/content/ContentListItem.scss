@@ -1,5 +1,7 @@
-div {
+.content-list {
+  display: flex;
   margin: 0px 10px;
+  cursor: pointer;
 
   img {
     width: 100%;

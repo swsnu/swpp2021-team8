@@ -43,6 +43,7 @@ const GroupEditPage = ({ history, match }) => {
       setDescription(group.description);
       setIsPublic(group.isPublic);
       setPassword(group.password);
+      setPasswordConfirm(group.password);
       setAccountBank(group.accountBank);
       setAccountNumber(group.accountNumber);
       setAccountName(group.accountName);
@@ -142,56 +143,10 @@ const GroupEditPage = ({ history, match }) => {
       )}
     </div>
   );
-  const isPublicContent = (
-    <>
-      <input
-        type="checkbox"
-        name="public"
-        id="groupedit-public-input"
-        onChange={onPublicToggle}
-      />
-      <label htmlFor="groupedit-public-input" className="round-slider-container">
-        <div />
-        <div />
-        <div className="round-slider" />
-      </label>
-    </>
-  );
-  const passwordContent = (
-    <>
-      <input
-        id="groupedit-password-input"
-        name="password"
-        type="password"
-        onChange={onPasswordChange}
-      />
-      <input
-        id="groupedit-password-confirm-input"
-        name="password-confirm"
-        type="password"
-        onChange={onPasswordConfirmChange}
-      />
-      <div className="password-validcheck">
-        <span>
-          {isPasswordValid ? (
-            <FaCheckCircle className="isvalid" style={{ color: 'green' }} />
-          ) : (
-            <FaTimesCircle className="isnotvalid" style={{ color: 'red' }} />
-          )}
-        </span>
-        4 digits
-      </div>
-      <div className="password-equalcheck">
-        <span>
-          {isPasswordEqual ? (
-            <FaCheckCircle className="isequal" style={{ color: 'green' }} />
-          ) : (
-            <FaTimesCircle className="isnotequal" style={{ color: 'red' }} />
-          )}
-        </span>
-        password match
-      </div>
-    </>
+  const paydayContent = (
+    <div className="payday__text">
+      {group.payday ? <>{group.payday}</> : <>0</>}
+    </div>
   );
   const descriptionInputContent = (
     <>
@@ -210,8 +165,7 @@ const GroupEditPage = ({ history, match }) => {
         id="groupedit-account-bank-select"
         name="account-bank"
         type="text"
-        key={accountBank}
-        value={accountBank}
+        defaultValue={accountBank}
         onChange={onAccountBankChange}
       >
         <option value="NongHyup">NongHyup</option>
@@ -241,6 +195,64 @@ const GroupEditPage = ({ history, match }) => {
         value={accountName}
         onChange={onAccountNameChange}
       />
+    </>
+  );
+  const isPublicContent = (
+    <>
+      <input
+        type="checkbox"
+        name="public"
+        id="groupedit-public-input"
+        key={isPublic}
+        defaultChecked={!isPublic}
+        onChange={onPublicToggle}
+      />
+      <label
+        htmlFor="groupedit-public-input"
+        className="round-slider-container"
+      >
+        <div />
+        <div />
+        <div className="round-slider" />
+      </label>
+    </>
+  );
+  const passwordContent = (
+    <>
+      <input
+        id="groupedit-password-input"
+        name="password"
+        type="password"
+        defaultValue={password}
+        onChange={onPasswordChange}
+      />
+      <input
+        id="groupedit-password-confirm-input"
+        name="password-confirm"
+        type="password"
+        defaultValue={passwordConfirm}
+        onChange={onPasswordConfirmChange}
+      />
+      <div className="password-validcheck">
+        <span>
+          {isPasswordValid ? (
+            <FaCheckCircle className="isvalid" style={{ color: 'green' }} />
+          ) : (
+            <FaTimesCircle className="isnotvalid" style={{ color: 'red' }} />
+          )}
+        </span>
+        4 digits
+      </div>
+      <div className="password-equalcheck">
+        <span>
+          {isPasswordEqual ? (
+            <FaCheckCircle className="isequal" style={{ color: 'green' }} />
+          ) : (
+            <FaTimesCircle className="isnotequal" style={{ color: 'red' }} />
+          )}
+        </span>
+        password match
+      </div>
     </>
   );
 
@@ -273,14 +285,36 @@ const GroupEditPage = ({ history, match }) => {
             <h1 className="groupedit__membership__info">Membership Info</h1>
           </div>
           <div className="groupedit__membership__body">
-            <FieldInfoItem container="groupedit" category="OTT" content={platformContent} section="membership" />
-            <FieldInfoItem container="groupedit" category="Membership" content={membershipContent} section="membership" />
-            <FieldInfoItem container="groupedit" category="People" content={peopleContent} section="membership" />
-            <FieldInfoItem container="groupedit" category="Cost" content={costContent} section="membership" />
-            <FieldInfoItem container="groupedit" category="Public" content={isPublicContent} section="membership" />
-            {isPublic
-              ? null
-              : <FieldInfoItem container="groupedit" category="Password" content={passwordContent} section="membership" />}
+            <FieldInfoItem
+              container="groupedit"
+              category="OTT"
+              content={platformContent}
+              section="membership"
+            />
+            <FieldInfoItem
+              container="groupedit"
+              category="Membership"
+              content={membershipContent}
+              section="membership"
+            />
+            <FieldInfoItem
+              container="groupedit"
+              category="People"
+              content={peopleContent}
+              section="membership"
+            />
+            <FieldInfoItem
+              container="groupedit"
+              category="Cost"
+              content={costContent}
+              section="membership"
+            />
+            <FieldInfoItem
+              container="groupedit"
+              category="Payday"
+              content={paydayContent}
+              section="group"
+            />
           </div>
         </div>
         <hr />
@@ -289,12 +323,40 @@ const GroupEditPage = ({ history, match }) => {
             <h1 className="groupedit__group__info">Group Info</h1>
           </div>
           <div className="groupedit__group__body">
-            <FieldInfoItem container="groupedit" category="Description" content={descriptionInputContent} section="group" />
-            <FieldInfoItem container="groupedit" category="Account" content={accountInputContent} section="group" />
+            <FieldInfoItem
+              container="groupedit"
+              category="Description"
+              content={descriptionInputContent}
+              section="group"
+            />
+            <FieldInfoItem
+              container="groupedit"
+              category="Account"
+              content={accountInputContent}
+              section="group"
+            />
+            <FieldInfoItem
+              container="groupedit"
+              category="Public"
+              content={isPublicContent}
+              section="membership"
+            />
+            {isPublic ? null : (
+              <FieldInfoItem
+                container="groupedit"
+                category="Password"
+                content={passwordContent}
+                section="membership"
+              />
+            )}
           </div>
         </div>
         <div className="groupedit__buttons">
-          <button id="groupedit-cancel-button" onClick={onCancelClick} type="button">
+          <button
+            id="groupedit-cancel-button"
+            onClick={onCancelClick}
+            type="button"
+          >
             Cancel
           </button>
           <button
@@ -303,15 +365,13 @@ const GroupEditPage = ({ history, match }) => {
             type="button"
             disabled={
               !group.id ||
-              (
-                title === group.name &&
+              (title === group.name &&
                 isPublic === group.isPublic &&
                 password === group.password &&
                 description === group.description &&
                 accountBank === group.accountBank &&
                 accountName === group.accountName &&
-                accountNumber === group.accountNumber
-              )
+                accountNumber === group.accountNumber)
             }
           >
             Edit Group

@@ -1,0 +1,135 @@
+[
+  { "model": "content.genre", "id": 1, "fields": { "name": "Action" } },
+  { "model": "content.genre", "id": 2, "fields": { "name": "Adventure" } },
+  { "model": "content.genre", "id": 3, "fields": { "name": "Animation" } },
+  { "model": "content.genre", "id": 4, "fields": { "name": "Comedy" } },
+  { "model": "content.genre", "id": 5, "fields": { "name": "Crime" } },
+  { "model": "content.genre", "id": 6, "fields": { "name": "Documentary" } },
+  { "model": "content.genre", "id": 7, "fields": { "name": "Drama" } },
+  { "model": "content.genre", "id": 8, "fields": { "name": "Family" } },
+  { "model": "content.genre", "id": 9, "fields": { "name": "Fantasy" } },
+  { "model": "content.genre", "id": 10, "fields": { "name": "History" } },
+  { "model": "content.genre", "id": 11, "fields": { "name": "Horror" } },
+  { "model": "content.genre", "id": 12, "fields": { "name": "Music" } },
+  { "model": "content.genre", "id": 13, "fields": { "name": "Mystery" } },
+  { "model": "content.genre", "id": 14, "fields": { "name": "Romance" } },
+  {
+    "model": "content.genre",
+    "id": 15,
+    "fields": { "name": "Science Fiction" }
+  },
+  { "model": "content.genre", "id": 16, "fields": { "name": "TV Movie" } },
+  { "model": "content.genre", "id": 17, "fields": { "name": "Thriller" } },
+  { "model": "content.genre", "id": 18, "fields": { "name": "War" } },
+  { "model": "content.genre", "id": 19, "fields": { "name": "Western" } },
+  {
+    "model": "ott.ott",
+    "id": 1,
+    "fields": {
+      "ott": "Watcha",
+      "membership": "Premium",
+      "max_people": 4,
+      "cost": 12900
+    }
+  },
+  {
+    "model": "ott.ott",
+    "id": 2,
+    "fields": {
+      "ott": "Netflix",
+      "membership": "Basic",
+      "max_people": 1,
+      "cost": 9500
+    }
+  },
+  {
+    "model": "ott.ott",
+    "id": 3,
+    "fields": {
+      "ott": "Netflix",
+      "membership": "Standard",
+      "max_people": 2,
+      "cost": 12000
+    }
+  },
+  {
+    "model": "ott.ott",
+    "id": 4,
+    "fields": {
+      "ott": "Netflix",
+      "membership": "Premium",
+      "max_people": 4,
+      "cost": 14500
+    }
+  },
+  {
+    "model": "ott.ott",
+    "id": 5,
+    "fields": {
+      "ott": "Tving",
+      "membership": "Standard",
+      "max_people": 2,
+      "cost": 10900
+    }
+  },
+  {
+    "model": "ott.ott",
+    "id": 6,
+    "fields": {
+      "ott": "Tving",
+      "membership": "Premium",
+      "max_people": 4,
+      "cost": 13900
+    }
+  },
+  {
+    "model": "ott.ott",
+    "id": 7,
+    "fields": {
+      "ott": "Youtube",
+      "membership": "Premium",
+      "max_people": 10,
+      "cost": 9500
+    }
+  },
+  {
+    "model": "ott.ott",
+    "id": 8,
+    "fields": {
+      "ott": "Disney",
+      "membership": "Basic",
+      "max_people": 4,
+      "cost": 9900
+    }
+  },
+  {
+    "model": "ott.ott",
+    "id": 9,
+    "fields": {
+      "ott": "Coupangplay",
+      "membership": "Basic",
+      "max_people": 5,
+      "cost": 2900
+    }
+  },
+  {
+    "model": "ott.ott",
+    "id": 10,
+    "fields": {
+      "ott": "Wavve",
+      "membership": "Standard",
+      "max_people": 2,
+      "cost": 10900
+    }
+  },
+  {
+    "model": "ott.ott",
+    "id": 11,
+    "fields": {
+      "ott": "Wavve",
+      "membership": "Premium",
+      "max_people": 4,
+      "cost": 13900
+    }
+  }
+]

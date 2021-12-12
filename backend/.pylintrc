@@ -158,7 +158,8 @@ disable=print-statement,
         consider-using-set-comprehension,
         unused-argument,
         redefined-builtin,
-        inconsistent-return-statements
+        inconsistent-return-statements,
+        too-many-statements,
 
 
 # Enable the message, report, category or checker with the given id(s). You can

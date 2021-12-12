@@ -6,26 +6,9 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 const initialState = {
   searchContents: [],
   favoriteContents: [],
-  recommendationContents: [
-    { id: 1 },
-    { id: 2 },
-    { id: 3 },
-    { id: 4 },
-    { id: 5 },
-    { id: 6 },
-    { id: 7 },
-    { id: 8 },
-  ],
-  trendingContents: [
-    { id: 1 },
-    { id: 2 },
-    { id: 3 },
-    { id: 4 },
-    { id: 5 },
-    { id: 6 },
-    { id: 7 },
-    { id: 8 },
-  ],
+  isFavorite: false,
+  recommendationContents: [],
+  trendingContents: [],
   selectedContent: {},
 };
 
@@ -41,12 +24,24 @@ const _getFavoriteContents = (contents) => {
   return { type: 'content/GET_FAVORITE_CONTENTS', contents };
 };
 
-const _addFavoriteContent = (content) => {
-  return { type: 'content/ADD_FAVORITE_CONTENT', content };
+const _getIsFavoriteContent = (isFavorite) => {
+  return { type: 'content/GET_IS_FAVORITE_CONTENT', isFavorite };
 };
 
-const _deleteFavoriteContent = (id) => {
-  return { type: 'content/DELETE_FAVORITE_CONTENT', id };
+const _addFavoriteContent = (content) => {
+  return {
+    type: 'content/ADD_FAVORITE_CONTENT',
+    id: content.id,
+    favoriteCount: content.favorite_cnt,
+  };
+};
+
+const _deleteFavoriteContent = (content) => {
+  return {
+    type: 'content/DELETE_FAVORITE_CONTENT',
+    id: content.id,
+    favoriteCount: content.favorite_cnt,
+  };
 };
 
 const _getTrendingContents = (contents) => {
@@ -85,9 +80,18 @@ export const getFavoriteContents = (userId) => async (dispatch) => {
   } catch (e) {}
 };
 
+export const getIsFavoriteContent = (userId, contentId) => async (dispatch) => {
+  try {
+    const res = await axios.get(
+      `/api/content/${userId}/favorite/${contentId}/`,
+    );
+    dispatch(_getIsFavoriteContent(res.data));
+  } catch (e) {}
+};
+
 export const addFavoriteContent = (userId, contentId) => async (dispatch) => {
   try {
-    const res = await axios.post(
+    const res = await axios.put(
       `/api/content/${userId}/favorite/${contentId}/`,
     );
     dispatch(_addFavoriteContent(res.data));
@@ -97,8 +101,10 @@ export const addFavoriteContent = (userId, contentId) => async (dispatch) => {
 export const deleteFavoriteContent =
   (userId, contentId) => async (dispatch) => {
     try {
-      await axios.delete(`/api/content/${userId}/favorite/${contentId}/`);
-      dispatch(_deleteFavoriteContent(contentId));
+      const res = await axios.delete(
+        `/api/content/${userId}/favorite/${contentId}/`,
+      );
+      dispatch(_deleteFavoriteContent(res.data));
     } catch (e) {}
   };
 
@@ -123,15 +129,26 @@ export default function ContentReducer(state = initialState, action) {
     case 'content/GET_TRENDING_CONTENTS':
       return { ...state, trendingContents: action.contents };
 
+    case 'content/GET_IS_FAVORITE_CONTENT':
+      return { ...state, isFavorite: action.isFavorite.is_favorite };
+
     case 'content/ADD_FAVORITE_CONTENT':
       return {
         ...state,
-        favoriteContents: state.favoriteContents.concat(action.content),
+        selectedContent: {
+          ...state.selectedContent,
+          favorite_cnt: action.favoriteCount,
+        },
+        favoriteContents: state.favoriteContents.concat(action.id),
       };
 
     case 'content/DELETE_FAVORITE_CONTENT':
       return {
         ...state,
+        selectedContent: {
+          ...state.selectedContent,
+          favorite_cnt: action.favoriteCount,
+        },
         favoriteContents: state.favoriteContents.filter(
           (content) => content.id !== action.id,
         ),

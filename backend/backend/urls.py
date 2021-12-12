@@ -22,5 +22,6 @@ urlpatterns = [
     path('api/content/', include('content.urls')),
     path('api/ott/', include('ott.urls')),
     path('api/review/', include('review.urls')),
+    path('api/notification/', include('notification.urls')),
     path('admin/', admin.site.urls),
 ]

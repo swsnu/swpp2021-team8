@@ -78,81 +78,6 @@ def content_recommendation_matrix():
 
 @login_required
 @require_http_methods(["GET"])
-def initialize_genre(request):
-    if request.method == 'GET':
-        Genre.objects.create( name = 'Action' )
-        Genre.objects.create( name = 'Adventure' )
-        Genre.objects.create( name = 'Animation' )
-        Genre.objects.create( name = 'Comedy' )
-        Genre.objects.create( name = 'Crime' )
-        Genre.objects.create( name = 'Documentary' )
-        Genre.objects.create( name = 'Drama' )
-        Genre.objects.create( name = 'Family' )
-        Genre.objects.create( name = 'Fantasy' )
-        Genre.objects.create( name = 'History' )
-        Genre.objects.create( name = 'Horror' )
-        Genre.objects.create( name = 'Music' )
-        Genre.objects.create( name = 'Mystery' )
-        Genre.objects.create( name = 'Romance' )
-        Genre.objects.create( name = 'Science Fiction' )
-        Genre.objects.create( name = 'TV Movie' )
-        Genre.objects.create( name = 'Thriller' )
-        Genre.objects.create( name = 'War' )
-        Genre.objects.create( name = 'Western' )
-        return HttpResponse(status=201)
-
-@login_required
-@require_http_methods(['GET'])
-def initialize_contents(request):
-    if request.method == 'GET':
-        trending_list = request_the_movie_api('https://api.themoviedb.org/3/trending/movie/week', dict())['results']
-        for content in trending_list:
-            content_id = content["id"]
-            info_url = 'https://api.themoviedb.org/3/movie/' + str(content_id)
-            credit_url = 'https://api.themoviedb.org/3/movie/' + str(content_id) + '/credits'
-            info_data = request_the_movie_api(info_url, dict())
-            credit_data = request_the_movie_api(credit_url, dict())
-
-            # Exception : no info found in TMDB
-            if not info_data or not credit_data:
-                return HttpResponse(status=405)
-
-            director=''
-            for member in credit_data['crew']:
-                if member['job'] == "Director":
-                    director = member['name']
-                    break
-            content = Content(
-                id = info_data["id"],
-                title = info_data["title"],
-                poster = 'https://image.tmdb.org/t/p/original' + info_data['poster_path'],
-                overview = info_data["overview"],
-                release_date = info_data["release_date"],
-                rate = info_data["vote_average"],
-                director = director
-                )
-            content.save()
-
-            genres = []
-            for genre in info_data["genres"]:
-                genre_name = Genre.objects.get(name = genre["name"])
-                genres.append(genre_name)
-            content.genres.set(genres)
-
-            cast = []
-            for actor in credit_data["cast"][:4]:
-                try:
-                    actor = Actor.objects.get(name = actor["name"])
-                except Actor.DoesNotExist as _:
-                    actor = Actor(name = actor["name"])
-                    actor.save()
-                cast.append(actor)
-            content.cast.set(cast)
-
-        return HttpResponse(status=201)
-
-@login_required
-@require_http_methods(["GET"])
 def content_trending(request):
     """
     /api/content/trending/
@@ -174,7 +99,7 @@ def content_trending(request):
             trending_contents = [
                 {
                     "id": content["id"],
-                    "poster": 'https://image.tmdb.org/t/p/original/' + content["poster_path"]
+                    "poster": ('https://image.tmdb.org/t/p/original/' + content["poster_path"]) if content["poster_path"] else 'https://via.placeholder.com/150?text=No+Content'
                 } for content in data["results"]]
 
         return JsonResponse(trending_contents, safe=False, status=200)
@@ -199,7 +124,7 @@ def content_search(request, search_str):
 
         search_contents = [{
             "id": content["id"],
-            "poster": 'https://image.tmdb.org/t/p/original/' + content["poster_path"] if content["poster_path"] else "",
+            "poster": ('https://image.tmdb.org/t/p/original/' + content["poster_path"]) if content["poster_path"] else 'https://via.placeholder.com/150?text=No+Content',
             "title": content["title"]
         } for content in data["results"]]
 
@@ -235,13 +160,13 @@ def content_detail(request, content_id):
             for member in credit_data['crew']:
                 if member['job'] == "Director":
                     director = member['name']
-                    break        
-            
+                    break
+
             # Create Content
             content = Content(
                 id = info_data["id"],
                 title = info_data["title"],
-                poster = 'https://image.tmdb.org/t/p/original' + info_data['poster_path'],
+                poster = ('https://image.tmdb.org/t/p/original/' + info_data["poster_path"]) if info_data["poster_path"] else 'https://via.placeholder.com/150?text=No+Content',
                 overview = info_data["overview"],
                 release_date = info_data["release_date"],
                 rate = info_data["vote_average"],
@@ -255,7 +180,7 @@ def content_detail(request, content_id):
             ott_string = ""
             content_found = True
             # See if content is available in kinolights
-            try: 
+            try:
                 movie_id = response["movies"][0]["Idx"]
             except IndexError as _:
                 ott_string = "Currently not available in any Ott :("
@@ -268,7 +193,7 @@ def content_detail(request, content_id):
                 if ott_list:
                     for ott_name in ott_list:
                         ott_name = ott_name.replace("-", " ").title().replace(" ", "")
-                        ott_string = ott_string + ott_name + '  ' 
+                        ott_string = ott_string + ott_name + '  '
                     ott_string = ", ".join([ott_name.replace("-", " ").title().replace(" ", "") for ott_name in ott_list])
 
             content.ott = ott_string
@@ -296,10 +221,10 @@ def content_detail(request, content_id):
             content_recommendation_matrix()
 
         genre_list = list(content.genres.all().values())
-        return_genres = ", ".join([genre['name'] for genre in genre_list]),
+        return_genres = ", ".join([genre['name'] for genre in genre_list])
 
         cast_list = list(content.cast.all().values())
-        return_cast = ", ".join([cast['name'] for cast in cast_list]),
+        return_cast = ", ".join([cast['name'] for cast in cast_list])
 
         content_detail = {
             "id": content.id,
@@ -440,8 +365,8 @@ def content_recommendation(request, user_id):
                 recommendation_contents = [
                     {
                         "id": content["id"],
-                        "poster": 'https://image.tmdb.org/t/p/original/' +
-                        content["poster_path"]} for content in data["results"]]
+                        "poster": ('https://image.tmdb.org/t/p/original/' + content["poster_path"]) if content["poster_path"] else 'https://via.placeholder.com/150?text=No+Content'
+                    } for content in data["results"]]
 
         # If user has favorite contents
         else:
@@ -454,7 +379,7 @@ def content_recommendation(request, user_id):
                     recommendation_contents.extend(
                         [{
                             "id": content["id"],
-                            "poster": 'https://image.tmdb.org/t/p/original/' + content["poster_path"]
+                            "poster": ('https://image.tmdb.org/t/p/original/' + content["poster_path"]) if content["poster_path"] else 'https://via.placeholder.com/150?text=No+Content'
                         } for content in data["results"]])
 
             if not recommendation_contents:
@@ -486,16 +411,22 @@ def user_favorite_list(request, user_id):
         except(User.DoesNotExist) as _:
             return HttpResponse(status=404)
 
-        fav_contents = list(user.favorite_contents.all().values())
+        fav_contents = [{
+            "id": content.id,
+            "poster": ('https://image.tmdb.org/t/p/original/' + content.poster) if content.poster else 'https://via.placeholder.com/150?text=No+Content'
+        } for content in user.favorite_contents.all()]
 
         return JsonResponse(fav_contents, safe=False, status=200)
 
 
 @login_required
-@require_http_methods(["PUT", "DELETE"])
+@require_http_methods(["GET", "PUT", "DELETE"])
 def content_favorite(request, user_id, content_id):
     """
     /api/content/<int:user_id>/favorite/<int:content_id>/
+
+    GET
+        Check that content is in user's favorite list
 
     PUT
         Add content to user's favorite list
@@ -503,7 +434,27 @@ def content_favorite(request, user_id, content_id):
     DELETE
         Delete content from user's favorite list
     """
-    if request.method == 'PUT':
+    if request.method == 'GET':
+        try:
+            new_user = User.objects.get(id=user_id)
+        # ERR 404 : User Doesn't Exist
+        except(User.DoesNotExist) as _:
+            return HttpResponse(status=404)
+
+        # ERR 400 : Content Doesn't Exist
+        try:
+            content = Content.objects.get(id=content_id)
+        except(Content.DoesNotExist) as _:
+            return HttpResponse(status=404)
+
+        is_favorite = False
+        for user in content.favorite_users.all():
+            if user.id == user_id:
+                is_favorite = True
+                break
+        return JsonResponse({"is_favorite":is_favorite}, status=200)
+
+    elif request.method == 'PUT':
         try:
             new_user = User.objects.get(id=user_id)
         # ERR 404 : User Doesn't Exist
@@ -524,7 +475,6 @@ def content_favorite(request, user_id, content_id):
 
         response_dict = {
             "id": content.id,
-            "favorite_users": fav_users,
             "favorite_cnt": content.favorite_cnt
         }
 
@@ -532,7 +482,7 @@ def content_favorite(request, user_id, content_id):
 
     elif request.method == 'DELETE':
         try:
-            User.objects.get(id=user_id)
+            new_user = User.objects.get(id=user_id)
         # ERR 404 : User Doesn't Exist
         except(User.DoesNotExist) as _:
             return HttpResponse(status=404)
@@ -543,10 +493,19 @@ def content_favorite(request, user_id, content_id):
         except(Content.DoesNotExist) as _:
             return HttpResponse(status=404)
 
-        content.favorite_users.remove(request.user)
+        content.favorite_users.remove(new_user)
         content.favorite_cnt = content.favorite_cnt - 1
+        content.save()
 
-        return HttpResponse(status=200)
+        fav_users = list(content.favorite_users.all().values())
+
+        response_dict = {
+            "id": content.id,
+            "favorite_users": fav_users,
+            "favorite_cnt": content.favorite_cnt
+        }
+
+        return JsonResponse(response_dict, status=200)
 
 
 @login_required
@@ -568,9 +527,16 @@ def review_content(request, content_id):
         except(Content.DoesNotExist) as _:
             return HttpResponse(status=404)
 
-        reviews = list(content.content_reviews.all().values())
+        response_dict = [{
+            "id": review.id,
+            "content_id": review.content.id,
+            "detail": review.detail,
+            "user_id": review.user.id,
+            "username": review.user.username,
+            "created_at": review.created_at
+        } for review in content.content_reviews.all()]
 
-        return JsonResponse(reviews, safe=False, status=200)
+        return JsonResponse(response_dict, safe=False, status=200)
 
     elif request.method == 'POST':
         try:
@@ -592,11 +558,12 @@ def review_content(request, content_id):
         review.save()
 
         response_dict = {
-            'id': review.id,
-            'content': review.content.id,
-            'detail': review.detail,
-            'user': review.user.id,
-            'created_at': review.created_at
+            "id": review.id,
+            "content_id": review.content.id,
+            "detail": review.detail,
+            "user_id": review.user.id,
+            "username": review.user.username,
+            "created_at": review.created_at
         }
 
         return JsonResponse(response_dict, status=201)

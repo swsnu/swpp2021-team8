@@ -55,6 +55,16 @@ class OttTestCase(TestCase):
                                    content_type='application/json',
                                    HTTP_X_CSRFTOKEN=self.csrf_token)
 
+    def test_ott_name(self):
+        ott = Ott(
+            ott='Watcha',
+            membership='Basic',
+            max_people=1,
+            cost=7900,
+            image=tempfile.NamedTemporaryFile(suffix=".jpg").name)
+        ott.save()
+        self.assertEqual(str(ott), 'Watcha / Basic')
+
     def test_ott_list(self):
         """
         /api/ott/

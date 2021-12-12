@@ -1,92 +1,111 @@
 @import '../../base.scss';
-.groupdetail{
-    display: flex;
-    margin:0 0 0 0;
-    .groupdetail__main {
-        color:white;
-        .groupdetail__header {
-            display: flex;
-            margin: 20px 0 50px 0px;
-            text-align: center;
-            align-items: center;
-            .groupdetail__ottlogo {
-                display: flex;
-                height: 70px;
-                width: 70px;
-            }
-            .groupdetail__name {
-                margin-left: 20px;
-                font-size: 32pt;
-                font-family: $font-title-stack;
-                font-weight: bolder;
-            }
-        }
-        .groupdetail__body {
-            .groupdetail__field {
-                display: flex;
-                align-content: center;
-                margin: 20px 0 20px 0;
-                .category {
-                    width: 200px;
-                }
-            }
-            .description, .members {
-                display: block;
-                .content {
-                    margin-top: 10px;
-                    display: flex;
-                }
-            }
-            .groupdetail__member {
-                margin-right: 20px;
-                text-align: center;
-                .groupdetail__member__index {
-                    display: flex;
-                    align-content: center;
-                    justify-content: center;
-                    background-color: orange;
-                    height: 50px;
-                    width: 50px;
-                    border-radius: 50%;
-                }
-                .groupdetail__member__username {
-                    text-align: center;
-                    width:50px;
-                    font-size: 10pt;
-                }
-            }
-            .groupdetail__member--empty {
-                margin-right: 20px;
-                text-align: center;
-                .groupdetail__member__index--empty {
-                    display: flex;
-                    align-content: center;
-                    justify-content: center;
-                    background-color: gray;
-                    height: 50px;
-                    width: 50px;
-                    border-radius: 50%;
-                }
-            }
-        }
-        .groupdetail__footer {
-            .groupdetail__body__table {
-                height: 300px;
-                width: 500px;
-                margin: 0 20px 0 20px;
-            }
-        }
+.groupdetail {
+  display: flex;
+  flex: 1;
+  margin: 0 0 0 0;
+  .groupdetail__main {
+    color: white;
+    width: 100%;
+    .groupdetail__header {
+      display: flex;
+      margin: 20px 0 50px 0px;
+      text-align: center;
+      align-items: center;
+      .groupdetail__ottlogo {
+        display: flex;
+        height: 70px;
+        width: 70px;
+      }
+      .groupdetail__name {
+        margin-left: 20px;
+        font-size: 32pt;
+        font-family: $font-title-stack;
+        font-weight: bolder;
+      }
     }
+    .groupdetail__body {
+      .groupdetail__field {
+        display: flex;
+        align-content: center;
+        margin: 20px 0 20px 0;
+        .category {
+          width: 200px;
+        }
+      }
+      .description,
+      .members {
+        display: block;
+        .content {
+          margin-top: 10px;
+          display: flex;
+        }
+      }
+      .groupdetail__member {
+        text-align: center;
+        .groupdetail__member__index {
+          display: flex;
+          align-content: center;
+          justify-content: center;
+          background-color: orange;
+          margin-right: 20px;
+          height: 50px;
+          width: 50px;
+          border-radius: 50%;
+        }
+      }
+      .groupdetail__member--empty {
+        margin-right: 20px;
+        text-align: center;
+        .groupdetail__member__index--empty {
+          display: flex;
+          align-content: center;
+          justify-content: center;
+          background-color: gray;
+          height: 50px;
+          width: 50px;
+          border-radius: 50%;
+        }
+      }
+    }
+    .groupdetail__footer {
+      .groupdetail__body__table {
+        height: 300px;
+        width: 500px;
+        margin: 0 20px 0 20px;
+      }
+
+      .groupdetail__timer {
+        display: flex;
+        margin-top: 20px;
+        flex-direction: column;
+        font-size: 2em;
+        border-top: 2px solid #ff3c3c;
+
+        &__title {
+          margin-top: 10px;
+          text-align: center;
+        }
+        &__countdown {
+          margin-top: 20px;
+          text-align: center;
+        }
+      }
+    }
+  }
 }
+#edit-button {
+  margin-right: 10px;
+}
+
 #back-button {
-    display: flex;
-    background-color: black;
-    height: 40px;
-    width: 120px;
-    font-size: 15pt;
-    font-weight: bold;
-    justify-content: left;
-    align-items: center;
-    margin: 10px 0 0 0;
-    padding:0 0 0 0;
+  display: flex;
+  background-color: black;
+  height: 40px;
+  width: 120px;
+  font-size: 15pt;
+  font-weight: bold;
+  justify-content: left;
+  align-items: center;
+  margin: 10px 0 0 0;
+  padding: 0 0 0 0;
 }

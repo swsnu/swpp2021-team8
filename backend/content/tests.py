@@ -2,7 +2,7 @@ import json
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
 from review.models import Review
-from .models import Content
+from .models import Actor, Content, Genre
 
 
 class ContentTestCase(TestCase):
@@ -52,6 +52,26 @@ class ContentTestCase(TestCase):
                             detail='review_detail', user=new_user1)
         new_review.save()
 
+        Genre.objects.create( name = 'Action' )
+        Genre.objects.create( name = 'Adventure' )
+        Genre.objects.create( name = 'Animation' )
+        Genre.objects.create( name = 'Comedy' )
+        Genre.objects.create( name = 'Crime' )
+        Genre.objects.create( name = 'Documentary' )
+        Genre.objects.create( name = 'Drama' )
+        Genre.objects.create( name = 'Family' )
+        Genre.objects.create( name = 'Fantasy' )
+        Genre.objects.create( name = 'History' )
+        Genre.objects.create( name = 'Horror' )
+        Genre.objects.create( name = 'Music' )
+        Genre.objects.create( name = 'Mystery' )
+        Genre.objects.create( name = 'Romance' )
+        Genre.objects.create( name = 'Science Fiction' )
+        Genre.objects.create( name = 'TV Movie' )
+        Genre.objects.create( name = 'Thriller' )
+        Genre.objects.create( name = 'War' )
+        Genre.objects.create( name = 'Western' )
+
         self.logged_in_client = Client()
         response = self.logged_in_client.get('/api/user/token/')
         self.csrf_token = response.cookies['csrftoken'].value
@@ -61,6 +81,18 @@ class ContentTestCase(TestCase):
                                                'password': 'user1_password'}),
                                    content_type='application/json',
                                    HTTP_X_CSRFTOKEN=self.csrf_token)
+
+    def test_content_name(self):
+        group = Content.objects.get(id=1)
+        self.assertEqual(str(group), '1')
+
+    def test_genre_name(self):
+        genre = Genre.objects.get(name='Action')
+        self.assertEqual(str(genre), 'Action')
+
+    def test_actor_name(self):
+        actor = Actor.objects.create(name='Actor')
+        self.assertEqual(str(actor), 'Actor')
 
     def test_content_search(self):
         """
@@ -136,12 +168,48 @@ class ContentTestCase(TestCase):
 
         content = json.loads(response.content.decode())[0]
         self.assertEqual(2, content['id'])
-        self.assertEqual(1, content['favorite_cnt'])
 
         # GET ERR user doesn't exist : 404
         response = client.get('/api/content/10/favorite/')
         self.assertEqual(response.status_code, 404)
 
+
+    def test_content_favorite_get(self):
+        """
+        /api/content/<int:user_id>/favorite/<int:content_id>/
+
+        GET
+        """
+        client = Client()
+
+        # GET ERR unauthorized user request : 401
+        response = client.get('/api/content/1/favorite/1/')
+        self.assertEqual(response.status_code, 401)
+
+        # login
+        client.post('/api/user/login/',
+                    json.dumps({'username': 'user2',
+                                'password': 'user2_password'}),
+                    content_type='application/json')
+
+        # GET ERR user doesn't exist : 404
+        response = client.get('/api/content/10/favorite/1/')
+        self.assertEqual(response.status_code, 404)
+
+        # GET ERR content doesn't exist : 404
+        response = client.get('/api/content/1/favorite/10/')
+        self.assertEqual(response.status_code, 404)
+
+        # GET SUCCESS : 200
+        response = client.get('/api/content/1/favorite/2/')
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content.decode())
+        self.assertEqual(True, content['is_favorite'])
+
+        response = client.get('/api/content/2/favorite/2/')
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content.decode())
+        self.assertEqual(False, content['is_favorite'])
 
     def test_content_favorite_put(self):
         """
@@ -271,8 +339,8 @@ class ContentTestCase(TestCase):
         self.assertEqual(response.status_code, 201)
         review = json.loads(response.content.decode())
         self.assertEqual(2, review['id'])
-        self.assertEqual(1, review['content'])
-        self.assertEqual(1, review['user'])
+        self.assertEqual(1, review['content_id'])
+        self.assertEqual(1, review['user_id'])
         self.assertEqual('review1', review['detail'])
 
         # POST ERR content doesn't exist : 404

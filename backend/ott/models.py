@@ -22,7 +22,7 @@ class Ott(models.Model):
     membership = models.CharField(choices=membership_type, max_length=10)
     max_people = models.IntegerField(default=1)
     cost = models.IntegerField(default=0)
-    image = models.ImageField(upload_to="ott_image")
+    image = models.ImageField(upload_to="public/img")
 
     def __str__(self):
         name = self.ott + ' / ' + self.membership

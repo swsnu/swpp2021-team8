@@ -62,6 +62,57 @@
                         color: rgb(209, 204, 204);
                     }
                 }
+                .payday {
+                    .content{
+                        #groupcreate-payday-select{
+                            height: 35px;
+                            width: 80px;
+                            color: gray;
+                            font-size: 12pt;
+                        }
+                    }
+                }
+            }
+        }
+        hr {
+            margin-top: 50px;
+            margin-bottom: 50px;
+            width : 800px;
+            color:white;
+            size: 5;
+        }
+        .groupcreate__group {
+            .groupcreate__group__header {
+                display: flex;
+                margin: 20px 0 50px 0px;
+                text-align: center;
+                align-items: center;
+                .groupcreate__group__info {
+                    font-size: 24pt;
+                    font-family: $font-base-stack;
+                    font-weight:bolder;
+                }
+            }
+            .groupcreate__group__body {
+                .content {
+                    input, textarea, select{
+                        height : 35px;
+                        width : 400px;
+                        color: gray;
+                        font-size: 12pt;
+                    }
+                    textarea {
+                        height : 90px;
+                    }
+                }                
+                .account {
+                    .content {
+                        display: grid;
+                        input{
+                            margin-top: 1%;
+                        }
+                    }
+                }
                 .public {
                     .content{
                         [type=checkbox]{
@@ -114,50 +165,6 @@
                         }
                     }
                 }    
-            }
-        }
-        hr {
-            margin-top: 50px;
-            margin-bottom: 50px;
-            width : 800px;
-            color:white;
-            size: 5;
-        }
-        .groupcreate__group {
-            .groupcreate__group__header {
-                display: flex;
-                margin: 20px 0 50px 0px;
-                text-align: center;
-                align-items: center;
-                .groupcreate__group__info {
-                    font-size: 24pt;
-                    font-family: $font-base-stack;
-                    font-weight:bolder;
-                }
-            }
-            .groupcreate__group__body {
-                .content {
-                    input, textarea, select{
-                        height : 35px;
-                        width : 400px;
-                        color: gray;
-                        font-size: 12pt;
-                    }
-                    textarea {
-                        height : 90px;
-                    }
-                    #groupcreate-payday-select {
-                        width: 80px;
-                    }
-                }                
-                .account {
-                    .content {
-                        display: grid;
-                        input{
-                            margin-top: 1%;
-                        }
-                    }
-                }
             }
         }
     }

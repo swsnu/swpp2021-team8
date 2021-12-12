@@ -4,46 +4,54 @@
   margin-bottom: 3px;
   color: white;
   cursor: pointer;
-}
 
-.group-item__platform {
-  width: 10%;
-}
-.group-item__title {
-  display: flex;
-  flex-direction: column;
-  width: 30%;
-  justify-content: center;
-  .group-item__title--title {
-    font-size: 1.3em;
-    margin-bottom: 10px;
+  &__platform {
+    flex: 1;
   }
-  .group-item__title--creator {
+
+  &__title {
+    display: flex;
+    flex-direction: column;
+    flex: 3;
+    justify-content: center;
+
+    &--title {
+      font-size: 1.3em;
+      margin-bottom: 10px;
+    }
+
+    &--leader {
+      font-size: 1em;
+    }
+  }
+
+  &__membership {
+    display: flex;
+    flex-direction: column;
+    flex: 2;
+    justify-content: center;
+
+    &--membership {
+      font-size: 1.3em;
+      margin-bottom: 10px;
+    }
+
+    &--cost {
+      font-size: 1em;
+    }
+  }
+
+  &__member {
+    display: flex;
+    align-items: center;
+    flex: 1;
     font-size: 1em;
   }
-}
-.group-item__membership {
-  display: flex;
-  flex-direction: column;
-  width: 20%;
-  justify-content: center;
-  .group-item__membership--membership {
-    font-size: 1.3em;
-    margin-bottom: 10px;
-  }
-  .group-item__membership--price {
+
+  &__payday {
+    display: flex;
+    align-items: center;
+    flex: 1;
     font-size: 1em;
   }
-}
-.group-item__member {
-  display: flex;
-  align-items: center;
-  width: 20%;
-  font-size: 1em;
-}
-.group-item__duration {
-  display: flex;
-  align-items: center;
-  width: 20%;
-  font-size: 1em;
 }
