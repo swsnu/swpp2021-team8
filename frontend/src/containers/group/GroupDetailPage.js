@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Text } from 'react-native';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import Countdown from 'react-countdown';
@@ -72,12 +73,34 @@ const GroupDetailPage = ({ history, match }) => {
       confirmButtonText: 'Yes, join it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(addUserToGroup(group));
-        MySwal.fire(
-          'Success!',
-          'You have successfully joined this group!',
-          'success',
-        );
+        if (!group.isPublic) {
+          MySwal.fire({
+            title: 'This is a Private Group.',
+            text: 'Submit your Password (ex: 0000)',
+            input: 'text',
+            showCancelButton: true,
+          }).then((result2) => {
+            if (result2.value === group.password.toString()) {
+              dispatch(addUserToGroup(group));
+              MySwal.fire(
+                'Success!',
+                'You have successfully joined this group!',
+                'success',
+              );
+            } else {
+              MySwal.fire(
+                'Wrong Password!',
+              );
+            }
+          });
+        } else {
+          dispatch(addUserToGroup(group));
+          MySwal.fire(
+            'Success!',
+            'You have successfully joined this group!',
+            'success',
+          );
+        }
       }
     });
   };
@@ -136,9 +159,12 @@ const GroupDetailPage = ({ history, match }) => {
           /* eslint react/no-array-index-key: ['off'] */
           <div className="groupdetail__member" key={`member-${index}`}>
             <div className="groupdetail__member__index" />
-            <div className="groupdetail__member__username">
+            <Text
+              style={{ color: 'white', width: '60px', marginTop: '5px' }}
+              numberOfLines={1}
+            >
               {member.username}
-            </div>
+            </Text>
           </div>
         );
       })
@@ -212,11 +238,18 @@ const GroupDetailPage = ({ history, match }) => {
                 category="Members"
                 content={members}
               />
-              <FieldInfoItem
-                container="groupdetail"
-                category="Account"
-                content={account}
-              />
+              <>
+                {group.members &&
+                group.members.find((member) => member.id === user.id) ? (
+                  <FieldInfoItem
+                    container="groupdetail"
+                    category="Account"
+                    content={account}
+                  />
+                ) : (
+                  <></>
+                )}
+              </>
               <FieldInfoItem
                 container="groupdetail"
                 category="Payday"
