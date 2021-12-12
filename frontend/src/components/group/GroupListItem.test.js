@@ -19,7 +19,7 @@ describe('<GroupListItem />', () => {
     expect(component.find('.group-item').length).toBe(1);
   });
 
-  it('should contain correct linearGradient when vacantPercent is 0', () => {
+  it('should contain correct linearGradient when takenPercent is 100', () => {
     const mockGroupFull = {
       currentPeople: 4,
       maxPeople: 4,
@@ -30,11 +30,11 @@ describe('<GroupListItem />', () => {
     );
 
     expect(JSON.stringify(component.find('.group-item').props().style)).toMatch(
-      'linear-gradient(to right, #C99208 0%, #CD3131 0%)',
+      '{"background":"linear-gradient(to right, #CD3131 100%, #C99208 0%)"}',
     );
   });
 
-  it('should contain correct linearGradient when vacantPercent is 100', () => {
+  it('should contain correct linearGradient when takenPercent is 0', () => {
     const mockGroupEmpty = {
       currentPeople: 0,
       maxPeople: 4,
@@ -45,7 +45,7 @@ describe('<GroupListItem />', () => {
     );
 
     expect(JSON.stringify(component.find('.group-item').props().style)).toMatch(
-      'linear-gradient(to right, #C99208 100%, #CD3131 0%)',
+      '{"background":"linear-gradient(to right, #CD3131 0%, #C99208 0%)"}',
     );
   });
 
