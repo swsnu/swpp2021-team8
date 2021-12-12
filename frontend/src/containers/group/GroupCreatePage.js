@@ -10,7 +10,7 @@ import './GroupCreatePage.scss';
 
 const GroupCreatePage = ({ history }) => {
   const [platform, setPlatform] = useState(null);
-  const [membership, setMembership] = useState('Basic');
+  const [membership, setMembership] = useState('');
   const [isPublic, setIsPublic] = useState(true);
   const [password, setPassword] = useState(0);
   const [passwordConfirm, setPasswordConfirm] = useState(0);
@@ -29,11 +29,15 @@ const GroupCreatePage = ({ history }) => {
   useEffect(() => {
     dispatch(getOtts());
   }, []);
-  useEffect(() => {
-    dispatch(getOttPlan(platform, membership));
-  }, [platform, membership]);
+
   const ottList = useSelector((state) => state.ott.otts);
   const ottPlan = useSelector((state) => state.ott.selectedOttPlan);
+
+  useEffect(() => {
+    if (ottPlan) {
+      setMembership(ottPlan[0]);
+    }
+  }, [ottPlan]);
 
   const onBackClick = () => {
     history.goBack();
@@ -45,9 +49,10 @@ const GroupCreatePage = ({ history }) => {
         return ott.name === e.target.value;
       }),
     );
+    dispatch(getOttPlan(e.target.value));
   };
   const onMembershipSelect = (e) => {
-    setMembership(e.target.value);
+    setMembership(ottPlan.find((ott) => ott.membership === e.target.value));
   };
   const onPublicToggle = () => {
     setIsPublic(!isPublic);
@@ -147,7 +152,7 @@ const GroupCreatePage = ({ history }) => {
               description,
               isPublic,
               password,
-              ottPlanId: ottPlan.id,
+              ottPlanId: membership.id,
               payday,
               accountBank,
               accountNumber,
@@ -155,11 +160,7 @@ const GroupCreatePage = ({ history }) => {
             }),
           );
           history.push('/main/');
-          MySwal.fire(
-            'Success!',
-            'The group is now Created!',
-            'success',
-          );
+          MySwal.fire('Success!', 'The group is now Created!', 'success');
         }
       });
     }
@@ -191,24 +192,38 @@ const GroupCreatePage = ({ history }) => {
     <select
       id="groupcreate-membership-select"
       name="membership"
-      onChange={onMembershipSelect}
       disabled={!platform}
+      onChange={onMembershipSelect}
+      value={membership && membership.membership}
     >
-      <option value="Basic">Basic</option>
-      <option value="Standard">Standard</option>
-      <option value="Premium">Premium</option>
+      {ottPlan &&
+        ottPlan.map((plan) => {
+          return (
+            <option
+              value={plan.membership}
+              data-id={plan.id}
+              key={`membership-${plan.id}`}
+            >
+              {plan.membership}
+            </option>
+          );
+        })}
     </select>
   );
   const peopleContent = (
     <div className="people__text">
-      {ottPlan && ottPlan.maxPeople ? <>{ottPlan.maxPeople}</> : <>0</>}
+      {membership && membership.maxPeople ? (
+        <>{membership.maxPeople}</>
+      ) : (
+        <>0</>
+      )}
     </div>
   );
   const costContent = (
     <div className="cost__text">
-      {ottPlan && ottPlan.cost ? (
+      {membership && membership.cost ? (
         <>
-          {Math.floor(ottPlan.cost / ottPlan.maxPeople)
+          {Math.floor(membership.cost / membership.maxPeople)
             .toString()
             .concat(' Won')}
         </>

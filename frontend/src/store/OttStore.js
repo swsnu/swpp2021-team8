@@ -5,7 +5,7 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 
 const initialState = {
   otts: [],
-  selectedOttPlan: {},
+  selectedOttPlan: [],
 };
 const _getOtts = (otts) => {
   return { type: 'ott/GET_OTTS', otts };
@@ -19,10 +19,9 @@ export const getOtts = () => async (dispatch) => {
     dispatch(_getOtts(res.data));
   } catch (e) {}
 };
-export const getOttPlan = (ottPlatform, ottMembership) => async (dispatch) => {
+export const getOttPlan = (ott) => async (dispatch) => {
   try {
-    const ottPlan = `${ottPlatform.name.toLowerCase()}_${ottMembership.toLowerCase()}`;
-    const res = await axios.get(`/api/ott/${ottPlan}/`);
+    const res = await axios.get(`/api/ott/${ott}/`);
     dispatch(_getOttPlan(res.data));
   } catch (e) {
     dispatch(_getOttPlan(null));

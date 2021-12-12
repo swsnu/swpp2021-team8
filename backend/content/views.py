@@ -12,7 +12,7 @@ from review.models import Review
 from .models import Content, Genre, Actor, Similarity
 from .recommend import create_matrix, get_recommendation, recommender
 
-def request_the_movie_api(url, _params, max_retries=2, sleep_time=5):
+def request_the_movie_api(url, _params,max_retries=2, sleep_time=5):
     """
     Request The MOVIE API
 
@@ -185,10 +185,16 @@ def content_detail(request, content_id):
             except IndexError as _:
                 ott_string = "Currently not available in any Ott :("
                 content_found = False
+
             if content_found:
                 detail_url = 'https://api.kinolights.com/v1/movie/' + str(movie_id) + '/prices'
                 response = requests.get(detail_url).json()
-                ott_list = list(set([movie["TechnicalName"] for movie in response["data"]]))
+                try:
+                    ott_list = list(set([movie["TechnicalName"] for movie in response["data"]]))
+                except:
+                    ott_list = ""
+                    ott_string = "Currently not available in any Ott :("
+
                 # Ott list not empty
                 if ott_list:
                     for ott_name in ott_list:
@@ -314,6 +320,7 @@ def content_recommendation_2(request, user_id):
             recommendation_contents = []
             for favorite_id in fav_contents_id[-5:]:
                 recommendation_contents = recommendation_contents + [item for item in get_recommendation(similarity_matrix, favorite_id) if item not in recommendation_contents]
+
             if not recommendation_contents:
                 recommendation_contents = [
                     {"id": 0, "poster": placeholder}] * 5

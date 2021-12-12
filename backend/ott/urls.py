@@ -3,6 +3,6 @@ from . import views
 
 urlpatterns = [
     # Ott
-    path('<slug:ott_plan>/', views.ott_detail),
+    path('<str:ott_plan>/', views.ott_detail),
     path('', views.ott_list),
 ]
