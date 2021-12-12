@@ -8,10 +8,10 @@ OVERVIEW 10
 
 """
 # MODIFY THESE AS YOU PLEASE
-genre_percentage = 0.4
-director_percentage = 0.2
-cast_percentage = 0.3
-overview_percentage = 0.1
+GENRE_PERCENTAGE = 0.4
+DIRECTOR_PERCENTAGE = 0.2
+CAST_PERCENTAGE = 0.3
+OVERVIEW_PERCENTAGE = 0.1
 
 import pandas as pd
 from pandas.core.indexes.base import Index
@@ -42,7 +42,7 @@ def recommender(data, movie_user_likes):
     matrix_director = np.matrix(cosine_sim_director)
     matrix_overview = np.matrix(cosine_sim_overview)
 
-    final_matrix = matrix_cast*cast_percentage + matrix_genres*genre_percentage + matrix_director*director_percentage + matrix_overview*overview_percentage
+    final_matrix = matrix_cast*CAST_PERCENTAGE + matrix_genres*GENRE_PERCENTAGE + matrix_director*DIRECTOR_PERCENTAGE + matrix_overview*OVERVIEW_PERCENTAGE
 
     final_series = pd.DataFrame(np.array(final_matrix)).stack()
     final_series = final_series.rename(lambda x: df[df.index == x]["id"].values[0])
@@ -78,7 +78,7 @@ def create_matrix(data):
     matrix_director = np.matrix(cosine_sim_director)
     matrix_overview = np.matrix(cosine_sim_overview)
 
-    final_matrix = matrix_cast*cast_percentage + matrix_genres*genre_percentage + matrix_director*director_percentage + matrix_overview*overview_percentage
+    final_matrix = matrix_cast*CAST_PERCENTAGE + matrix_genres*GENRE_PERCENTAGE + matrix_director*DIRECTOR_PERCENTAGE + matrix_overview*OVERVIEW_PERCENTAGE
 
     final_df = pd.DataFrame(np.array(final_matrix))
     final_df = final_df.rename(columns = lambda x: df[df.index == x]["id"].values[0])

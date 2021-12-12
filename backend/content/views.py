@@ -334,6 +334,10 @@ def content_recommendation_2(request, user_id):
             # ERR 404 : User Doesn't Exist
             return HttpResponse(status=404)
 
+        # ERR 400 : User Doesn't Match
+        if request.user != user:
+            return HttpResponseBadRequest
+
         fav_contents_id = [content["id"]
                            for content in user.favorite_contents.all().values()]
         recommendation_contents = []
