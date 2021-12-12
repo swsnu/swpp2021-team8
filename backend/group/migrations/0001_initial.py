@@ -18,7 +18,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Group',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(default='New Group', max_length=64)),
                 ('description', models.TextField(default='')),
                 ('is_public', models.BooleanField(default=True)),
@@ -27,13 +28,17 @@ class Migration(migrations.Migration):
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('will_be_deleted', models.BooleanField(default=False)),
                 ('payday', models.IntegerField(default=1)),
-                ('account_bank', models.CharField(choices=[('NongHyup', 'NongHyup'), ('KookMin', 'KookMin'), ('KakaoBank', 'KakaoBank'), ('ShinHan', 'ShinHan'), ('Woori', 'Woori'), ('IBK', 'IBK'), ('Hana', 'Hana'), ('Saemaeul', 'Saemaeul'), ('DaegooBank', 'DaegooBank'), ('PostOffice', 'PostOffice'), ('Toss', 'Toss'), ('CitiBank', 'CitiBank'), ('KDB', 'KDB')], max_length=15)),
+                ('account_bank', models.CharField(choices=[('NongHyup', 'NongHyup'), ('KookMin', 'KookMin'), ('KakaoBank', 'KakaoBank'), ('ShinHan', 'ShinHan'), ('Woori', 'Woori'), ('IBK', 'IBK'), (
+                    'Hana', 'Hana'), ('Saemaeul', 'Saemaeul'), ('DaegooBank', 'DaegooBank'), ('PostOffice', 'PostOffice'), ('Toss', 'Toss'), ('CitiBank', 'CitiBank'), ('KDB', 'KDB')], max_length=15)),
                 ('account_number', models.CharField(max_length=20)),
                 ('account_name', models.CharField(max_length=30)),
                 ('current_people', models.IntegerField(default=1)),
-                ('leader', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='group_leader', to=settings.AUTH_USER_MODEL)),
-                ('members', models.ManyToManyField(blank=True, related_name='user_groups', to=settings.AUTH_USER_MODEL)),
-                ('membership', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='membership_groups', to='ott.ott')),
+                ('leader', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                 related_name='group_leader', to=settings.AUTH_USER_MODEL)),
+                ('members', models.ManyToManyField(blank=True,
+                 related_name='user_groups', to=settings.AUTH_USER_MODEL)),
+                ('membership', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                 related_name='membership_groups', to='ott.ott')),
             ],
         ),
     ]

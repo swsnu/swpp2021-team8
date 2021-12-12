@@ -89,7 +89,6 @@ export const signUp = (userInfo) => async (dispatch) => {
 
     return true;
   } catch (e) {
-    // TODO
     switch (e.response.status) {
       case 409: // Username already exists
         dispatch(_setSignUpErrorMessage('Username already exists'));
@@ -102,7 +101,6 @@ export const signUp = (userInfo) => async (dispatch) => {
   }
 };
 
-// TODO: LocalStorage
 export default function AuthReducer(state = initialState, action) {
   switch (action.type) {
     case 'auth/GET_LOGIN_STATUS':

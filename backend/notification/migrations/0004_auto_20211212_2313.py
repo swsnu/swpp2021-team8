@@ -16,11 +16,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='notification',
             name='receiver',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='notification', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                    related_name='notification', to=settings.AUTH_USER_MODEL),
         ),
         migrations.AlterField(
             model_name='notification',
             name='type',
-            field=models.CharField(choices=[('create', 'create'), ('join', 'join'), ('quit', 'quit'), ('delete', 'delete'), ('payday', 'payday')], default='create', max_length=10),
+            field=models.CharField(choices=[('create', 'create'), ('join', 'join'), ('quit', 'quit'), (
+                'delete', 'delete'), ('payday', 'payday')], default='create', max_length=10),
         ),
     ]

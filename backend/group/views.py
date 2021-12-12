@@ -9,6 +9,7 @@ from .models import Ott, Group
 
 # Create your views here.
 
+
 @login_required
 @require_http_methods(['GET', 'POST'])
 def group_list(request):
@@ -60,9 +61,11 @@ def group_list(request):
         } for group in groups]
 
         if not query_id:
-            group_all_list = list(filter(lambda group: group["currentPeople"] < group["maxPeople"], group_all_list))
+            group_all_list = list(filter(
+                lambda group: group["currentPeople"] < group["maxPeople"], group_all_list))
 
-        group_all_list.sort(key=lambda group: (group["currentPeople"]/group["maxPeople"]), reverse=True)
+        group_all_list.sort(key=lambda group: (
+            group["currentPeople"]/group["maxPeople"]), reverse=True)
 
         return JsonResponse(group_all_list, safe=False, status=200)
 
@@ -102,7 +105,8 @@ def group_list(request):
         group.save()
 
         # Make Notification
-        Notification(receiver=request.user, type="create", content="{0} has been created".format(group_name)).save()
+        Notification(receiver=request.user, type="create",
+                     content="{0} has been created".format(group_name)).save()
 
         response_dict = {
             'id': group.id,
@@ -223,7 +227,8 @@ def group_detail(request, group_id):
 
         # Make Notification
         for member in group.members.all():
-            Notification(receiver=member, type="delete", content="{0} will be deleted".format(group.name)).save()
+            Notification(receiver=member, type="delete",
+                         content="{0} will be deleted".format(group.name)).save()
 
         # group.delete()
         response_dict = {
@@ -264,9 +269,11 @@ def group_add_user(request, group_id):
 
         # Make Notification
         # Leader
-        Notification(receiver=group.leader, type="join", content="{0} has been joined your group {1}".format(request.user.username, group.name)).save()
+        Notification(receiver=group.leader, type="join", content="{0} has been joined your group {1}".format(
+            request.user.username, group.name)).save()
         # member
-        Notification(receiver=request.user, type="join", content="You have been joined group {0}".format(group.name)).save()
+        Notification(receiver=request.user, type="join",
+                     content="You have been joined group {0}".format(group.name)).save()
 
         members = list(group.members.all().values())
         response_dict = {
@@ -291,9 +298,11 @@ def group_add_user(request, group_id):
 
         # Make Notification
         # Leader
-        Notification(receiver=group.leader, type="quit", content="{0} has been quit your group {1}".format(request.user.username, group.name)).save()
+        Notification(receiver=group.leader, type="quit", content="{0} has been quit your group {1}".format(
+            request.user.username, group.name)).save()
         # member
-        Notification(receiver=request.user, type="quit", content="You have been quit group {0}".format(group.name)).save()
+        Notification(receiver=request.user, type="quit",
+                     content="You have been quit group {0}".format(group.name)).save()
 
         members = list(group.members.all().values())
         response_dict = {

@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='notification',
             name='type',
-            field=models.CharField(choices=[('create', 'create'), ('join', 'join'), ('quit', 'quit'), ('delete', 'delete')], default='create', max_length=10),
+            field=models.CharField(choices=[('create', 'create'), ('join', 'join'), (
+                'quit', 'quit'), ('delete', 'delete')], default='create', max_length=10),
         ),
     ]

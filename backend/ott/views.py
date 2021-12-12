@@ -1,7 +1,8 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from deco import login_required
 from .models import Ott
+
 
 @login_required
 @require_http_methods(["GET"])

@@ -45,7 +45,7 @@ jest.mock('../../components/content/ContentListItem', () => {
 });
 
 const mockStore = getMockStore(
-  { isLoggedIn: true },
+  { isLoggedIn: true, user: { id: 1 } },
   {
     searchContents: [],
     recommendationContents: [
@@ -89,7 +89,7 @@ const mockStore = getMockStore(
 );
 
 const mockPaginationStore = getMockStore(
-  { isLoggedIn: true },
+  { isLoggedIn: true, user: { id: 1 } },
   {
     searchContents: [
       { id: 1 },

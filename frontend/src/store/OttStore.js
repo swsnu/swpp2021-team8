@@ -28,7 +28,6 @@ export const getOttPlan = (ott) => async (dispatch) => {
   }
 };
 
-// TODO: LocalStorage
 export default function OttReducer(state = initialState, action) {
   switch (action.type) {
     case 'ott/GET_OTTS':

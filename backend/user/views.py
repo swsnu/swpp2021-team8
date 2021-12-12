@@ -31,10 +31,13 @@ def user(request):
     """
     if request.method == 'GET':
         if request.user.is_authenticated:
-            user = User.objects.prefetch_related('user_groups').get(id=request.user.id)
+            user = User.objects.prefetch_related(
+                'user_groups').get(id=request.user.id)
 
-            not_deleted_group_count = user.user_groups.filter(will_be_deleted=False).count()
-            deleted_group_count = user.user_groups.filter(will_be_deleted=True).count()
+            not_deleted_group_count = user.user_groups.filter(
+                will_be_deleted=False).count()
+            deleted_group_count = user.user_groups.filter(
+                will_be_deleted=True).count()
 
             return JsonResponse({"id": request.user.id, "username": request.user.username, "isLoggedIn": True, "notDeletedGroupCount": not_deleted_group_count, "deletedGroupCount": deleted_group_count}, status=200)
         else:

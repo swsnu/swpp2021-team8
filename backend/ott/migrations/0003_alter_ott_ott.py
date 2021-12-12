@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='ott',
             name='ott',
-            field=models.CharField(choices=[('Watcha', 'Watcha'), ('Netflix', 'Netflix'), ('Tving', 'Tving'), ('Youtube', 'Youtube'), ('Disney', 'Disney'), ('Coupangplay', 'Coupangplay'), ('Wavve', 'Wavve')], max_length=15),
+            field=models.CharField(choices=[('Watcha', 'Watcha'), ('Netflix', 'Netflix'), ('Tving', 'Tving'), (
+                'Youtube', 'Youtube'), ('Disney', 'Disney'), ('Coupangplay', 'Coupangplay'), ('Wavve', 'Wavve')], max_length=15),
         ),
     ]

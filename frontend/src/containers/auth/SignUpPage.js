@@ -54,7 +54,6 @@ const SignUpPage = ({ history }) => {
   };
 
   const onCreateAccountClick = async () => {
-    // TODO: Validation check
     if (isPasswordValid && isPasswordEqual) {
       const res = await dispatch(signUp({ password, username }));
 

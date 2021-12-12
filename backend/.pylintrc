@@ -160,6 +160,8 @@ disable=print-statement,
         redefined-builtin,
         inconsistent-return-statements,
         too-many-statements,
+        protected-access,
+        broad-except
 
 
 # Enable the message, report, category or checker with the given id(s). You can

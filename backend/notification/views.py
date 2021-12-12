@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .models import Notification
 
+
 @csrf_exempt
 @require_http_methods(["GET", "POST", "DELETE"])
 def handle_notification(request):

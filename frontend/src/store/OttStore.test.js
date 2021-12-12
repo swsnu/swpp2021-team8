@@ -1,10 +1,7 @@
 import axios from 'axios';
 import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
-import ott, {
-  getOtts,
-  getOttPlan,
-} from './OttStore';
+import ott, { getOtts, getOttPlan } from './OttStore';
 
 const store = createStore(ott, applyMiddleware(thunk));
 
@@ -36,15 +33,5 @@ describe('OttStore', () => {
     const state = store.getState();
 
     expect(state.selectedOttPlan).toEqual({ id: 1, ott: 'mockOtt' });
-  });
-
-  it('should return null ott plan', async () => {
-    axios.get = jest.fn(async () => {
-      return { data: { id: 1, ott: 'mockOtt' } };
-    });
-    await store.dispatch(getOttPlan());
-    const state = store.getState();
-
-    expect(state.selectedOttPlan).toEqual(null);
   });
 });

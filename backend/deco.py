@@ -1,5 +1,5 @@
-from django.http import HttpResponse
 from threading import Timer
+from django.http import HttpResponse
 
 
 def login_required(func):
@@ -17,6 +17,8 @@ def login_required(func):
 #  All rights reserved.
 #  SPDX-License-Identifier: BSD-3-Clause
 #  For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+
 def debounce(wait_time):
     """
     Decorator that will debounce a function so that it is called after wait_time seconds

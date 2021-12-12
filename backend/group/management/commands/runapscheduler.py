@@ -12,6 +12,7 @@ from group.models import Group
 
 logger = logging.getLogger(__name__)
 
+
 def delete_group():
     """
     Delete group whose will_be_deleted field is True
@@ -29,10 +30,12 @@ def delete_group():
     # Case 2
     # today is last day of month, but payday is greater than today's date.
     # e.g) payday is 30, and today is Feb. 28
-    end_of_day = int(today.replace(day = calendar.monthrange(today.year, today.month)[1]).strftime("%d"))
+    end_of_day = int(today.replace(day=calendar.monthrange(
+        today.year, today.month)[1]).strftime("%d"))
 
     if day == end_of_day:
         Group.objects.filter(will_be_deleted=True, payday__gt=day).delete()
+
 
 def delete_group_notification():
     """
@@ -40,7 +43,9 @@ def delete_group_notification():
     """
     for group in Group.objects.filter(will_be_deleted=True):
         for member in group.members.all():
-            Notification(receiver=member, type="delete", content="{0} will be deleted".format(group.name)).save()
+            Notification(receiver=member, type="delete",
+                         content="{0} will be deleted".format(group.name)).save()
+
 
 def payday_notification():
     """
@@ -49,16 +54,19 @@ def payday_notification():
     # today
     today = datetime.date(datetime.now())
     day = int(today.strftime("%d"))
-    end_of_day = int(today.replace(day = calendar.monthrange(today.year, today.month)[1]).strftime("%d"))
+    end_of_day = int(today.replace(day=calendar.monthrange(
+        today.year, today.month)[1]).strftime("%d"))
 
     for group in Group.objects.filter(payday=day):
         for member in group.members.all():
-            Notification(receiver=member, type="payday", content="Today is your payday for group {0}".format(group.name)).save()
+            Notification(receiver=member, type="payday",
+                         content="Today is your payday for group {0}".format(group.name)).save()
 
     if day == end_of_day:
         for group in Group.objects.filter(payday__gt=day).values():
             for member in group.members.all():
-                Notification(receiver=member, type="payday", content="Today is your payday for group {0}".format(group.name)).save()
+                Notification(receiver=member, type="payday",
+                             content="Today is your payday for group {0}".format(group.name)).save()
 
 
 class Command(BaseCommand):

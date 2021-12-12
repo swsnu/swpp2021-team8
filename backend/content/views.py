@@ -10,9 +10,10 @@ from django.conf import settings
 from deco import login_required, debounce
 from review.models import Review
 from .models import Content, Genre, Actor, Similarity
-from .recommend import create_matrix, get_recommendation, recommender
+from .recommend import create_matrix, get_recommendation
 
-def request_the_movie_api(url, _params,max_retries=2, sleep_time=5):
+
+def request_the_movie_api(url, _params, max_retries=2, sleep_time=5):
     """
     Request The MOVIE API
 
@@ -48,6 +49,7 @@ def request_the_movie_api(url, _params,max_retries=2, sleep_time=5):
 
     return None
 
+
 @debounce(0.5)
 def content_recommendation_matrix():
     contents = Content.objects.all()
@@ -68,13 +70,13 @@ def content_recommendation_matrix():
     similarity = Similarity.objects.all()
     # no similarity matrix exists
     if not similarity:
-        similarity = Similarity(matrix = create_matrix(content_list))
+        similarity = Similarity(matrix=create_matrix(content_list))
         similarity.save()
     else:
         similarity_before = similarity[0]
         similarity_before.matrix = create_matrix(content_list)
         similarity_before.save()
-    return None
+
 
 @login_required
 @require_http_methods(["GET"])
@@ -147,7 +149,8 @@ def content_detail(request, content_id):
         # Create Content
         except Content.DoesNotExist as _:
             info_url = 'https://api.themoviedb.org/3/movie/' + str(content_id)
-            credit_url = 'https://api.themoviedb.org/3/movie/' + str(content_id) + '/credits'
+            credit_url = 'https://api.themoviedb.org/3/movie/' + \
+                str(content_id) + '/credits'
             info_data = request_the_movie_api(info_url, dict())
             credit_data = request_the_movie_api(credit_url, dict())
 
@@ -156,7 +159,7 @@ def content_detail(request, content_id):
                 return HttpResponse(status=405)
 
             # Find 'Director'
-            director=''
+            director = ''
             for member in credit_data['crew']:
                 if member['job'] == "Director":
                     director = member['name']
@@ -164,18 +167,19 @@ def content_detail(request, content_id):
 
             # Create Content
             content = Content(
-                id = info_data["id"],
-                title = info_data["title"],
-                poster = ('https://image.tmdb.org/t/p/original/' + info_data["poster_path"]) if info_data["poster_path"] else 'https://via.placeholder.com/150?text=No+Content',
-                overview = info_data["overview"],
-                release_date = info_data["release_date"],
-                rate = info_data["vote_average"],
-                director = director,
-                )
+                id=info_data["id"],
+                title=info_data["title"],
+                poster=('https://image.tmdb.org/t/p/original/' +
+                        info_data["poster_path"]) if info_data["poster_path"] else 'https://via.placeholder.com/150?text=No+Content',
+                overview=info_data["overview"],
+                release_date=info_data["release_date"],
+                rate=info_data["vote_average"],
+                director=director,
+            )
 
             # Find 'Ott'
             content_title = content.title.replace(" ", "+")
-            search_url = 'https://api.kinolights.com/v1/search?keyword='+ content_title
+            search_url = 'https://api.kinolights.com/v1/search?keyword=' + content_title
             response = requests.get(search_url).json()
             ott_string = ""
             content_found = True
@@ -187,20 +191,24 @@ def content_detail(request, content_id):
                 content_found = False
 
             if content_found:
-                detail_url = 'https://api.kinolights.com/v1/movie/' + str(movie_id) + '/prices'
+                detail_url = 'https://api.kinolights.com/v1/movie/' + \
+                    str(movie_id) + '/prices'
                 response = requests.get(detail_url).json()
                 try:
-                    ott_list = list(set([movie["TechnicalName"] for movie in response["data"]]))
-                except:
+                    ott_list = list(set([movie["TechnicalName"]
+                                    for movie in response["data"]]))
+                except Exception:
                     ott_list = ""
                     ott_string = "Currently not available in any Ott :("
 
                 # Ott list not empty
                 if ott_list:
                     for ott_name in ott_list:
-                        ott_name = ott_name.replace("-", " ").title().replace(" ", "")
+                        ott_name = ott_name.replace(
+                            "-", " ").title().replace(" ", "")
                         ott_string = ott_string + ott_name + '  '
-                    ott_string = ", ".join([ott_name.replace("-", " ").title().replace(" ", "") for ott_name in ott_list])
+                    ott_string = ", ".join(
+                        [ott_name.replace("-", " ").title().replace(" ", "") for ott_name in ott_list])
 
             content.ott = ott_string
             content.save()
@@ -208,7 +216,7 @@ def content_detail(request, content_id):
             # Find 'Genres'
             genres = []
             for genre in info_data["genres"]:
-                genre_name = Genre.objects.get(name = genre["name"])
+                genre_name = Genre.objects.get(name=genre["name"])
                 genres.append(genre_name)
             content.genres.set(genres)
 
@@ -216,14 +224,14 @@ def content_detail(request, content_id):
             cast = []
             for actor in credit_data["cast"][:4]:
                 try:
-                    actor = Actor.objects.get(name = actor["name"])
+                    actor = Actor.objects.get(name=actor["name"])
                 except Actor.DoesNotExist as _:
-                    actor = Actor(name = actor["name"])
+                    actor = Actor(name=actor["name"])
                     actor.save()
                 cast.append(actor)
             content.cast.set(cast)
 
-            #build similarity matrix
+            # build similarity matrix
             content_recommendation_matrix()
 
         genre_list = list(content.genres.all().values())
@@ -240,14 +248,15 @@ def content_detail(request, content_id):
             "overview": content.overview,
             "release_date": content.release_date,
             "rate": content.rate,
-            "cast" : return_cast,
-            "director" : content.director,
-            "ott" : content.ott,
+            "cast": return_cast,
+            "director": content.director,
+            "ott": content.ott,
             "favorite_users": list(content.favorite_users.all().values()),
             "favorite_cnt": content.favorite_cnt,
         }
 
         return JsonResponse(content_detail, safe=False, status=200)
+
 
 @login_required
 @require_http_methods(["GET"])
@@ -319,7 +328,8 @@ def content_recommendation_2(request, user_id):
             # generate recommendation only using last 5
             recommendation_contents = []
             for favorite_id in fav_contents_id[-5:]:
-                recommendation_contents = recommendation_contents + [item for item in get_recommendation(similarity_matrix, favorite_id) if item not in recommendation_contents]
+                recommendation_contents = recommendation_contents + [item for item in get_recommendation(
+                    similarity_matrix, favorite_id) if item not in recommendation_contents]
 
             if not recommendation_contents:
                 recommendation_contents = [
@@ -332,7 +342,6 @@ def content_recommendation_2(request, user_id):
                         len(recommendation_contents), 21))
 
         return JsonResponse(recommendation_contents, safe=False, status=200)
-
 
 
 @login_required
@@ -459,7 +468,7 @@ def content_favorite(request, user_id, content_id):
             if user.id == user_id:
                 is_favorite = True
                 break
-        return JsonResponse({"is_favorite":is_favorite}, status=200)
+        return JsonResponse({"is_favorite": is_favorite}, status=200)
 
     elif request.method == 'PUT':
         try:

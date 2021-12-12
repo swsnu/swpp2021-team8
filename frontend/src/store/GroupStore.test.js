@@ -105,7 +105,6 @@ describe('GroupStore', () => {
     expect(state.groups).toEqual([{ id: 1, title: 'mockGroup' }]);
   });
 
-  // TODO ADD User
   it('should add user to group properly', async () => {
     axios.get = jest.fn(async () => {
       return {
@@ -128,7 +127,6 @@ describe('GroupStore', () => {
     ]);
   });
 
-  // TODO DELETE User
   it('should delete user to group properly', async () => {
     axios.get = jest.fn(async () => {
       return {
