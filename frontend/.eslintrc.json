@@ -43,6 +43,7 @@
     ],
     "jsx-a11y/click-events-have-key-events": "off",
     "indent": "off",
-    "no-nested-ternary": "off"
+    "no-nested-ternary": "off",
+    "import/no-unresolved": "off"
   }
 }
