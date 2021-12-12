@@ -7,9 +7,10 @@ from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.models import User
 from django.conf import settings
-from deco import login_required
+from deco import login_required, debounce
 from review.models import Review
-from .models import Content, Genre, Actor
+from .models import Content, Genre, Actor, Similarity
+from .recommend import create_matrix, get_recommendation, recommender
 
 def request_the_movie_api(url, _params, max_retries=2, sleep_time=5):
     """
@@ -45,6 +46,34 @@ def request_the_movie_api(url, _params, max_retries=2, sleep_time=5):
             attempt_num += 1
             time.sleep(sleep_time)
 
+    return None
+
+@debounce(0.5)
+def content_recommendation_matrix():
+    contents = Content.objects.all()
+    content_list = []
+    for content in contents:
+        cast = " ".join(c.name for c in content.cast.all())
+        genre = " ".join(g.name for g in content.genres.all())
+        content_info = {
+            "id": content.id,
+            "overview": content.overview,
+            "director": content.director,
+            "cast": cast,
+            "genres": genre,
+            "poster": content.poster
+        }
+        content_list.append(content_info)
+
+    similarity = Similarity.objects.all()
+    # no similarity matrix exists
+    if not similarity:
+        similarity = Similarity(matrix = create_matrix(content_list))
+        similarity.save()
+    else:
+        similarity_before = similarity[0]
+        similarity_before.matrix = create_matrix(content_list)
+        similarity_before.save()
     return None
 
 @login_required
@@ -188,6 +217,9 @@ def content_detail(request, content_id):
                 cast.append(actor)
             content.cast.set(cast)
 
+            #build similarity matrix
+            content_recommendation_matrix()
+
         genre_list = list(content.genres.all().values())
         return_genres = ", ".join([genre['name'] for genre in genre_list])
 
@@ -208,7 +240,91 @@ def content_detail(request, content_id):
             "favorite_users": list(content.favorite_users.all().values()),
             "favorite_cnt": content.favorite_cnt,
         }
+
         return JsonResponse(content_detail, safe=False, status=200)
+
+@login_required
+@require_http_methods(["GET"])
+def content_recommendation_2(request, user_id):
+    """
+    /api/content/<int:user_id>/recommendation/
+
+    GET
+        Get recommended contents for current user from THE MOIVE API
+    """
+    if request.method == "GET":
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            # ERR 404 : User Doesn't Exist
+            return HttpResponse(status=404)
+
+        # ERR 400 : User Doesn't Match
+        if request.user != user:
+            return HttpResponseBadRequest
+
+        fav_contents_id = [content["id"]
+                           for content in user.favorite_contents.all().values()]
+        recommendation_contents = []
+        recommendation_url = 'https://api.themoviedb.org/3/movie/{0}/recommendations'
+        placeholder = 'https://via.placeholder.com/150?text=No+Content'
+
+        # If user has no favorite contents
+        if not fav_contents_id:
+            DEFAULT_CONTENT_ID = 68718  # Django Unchained
+            url = recommendation_url.format(DEFAULT_CONTENT_ID)
+            data = request_the_movie_api(url, dict())
+
+            # if data is not provided retrun placeholder images
+            if not data:
+                recommendation_contents = [
+                    {"id": 0, "poster": placeholder}] * 5
+
+            else:
+                recommendation_contents = [
+                    {
+                        "id": content["id"],
+                        "poster": 'https://image.tmdb.org/t/p/original/' +
+                        content["poster_path"]} for content in data["results"]]
+
+        # If user has favorite contents
+        else:
+            # generate all content info for recommendation
+            contents = Content.objects.all()
+            content_list = []
+            for content in contents:
+                cast = " ".join(c.name for c in content.cast.all())
+                genre = " ".join(g.name for g in content.genres.all())
+                content_info = {
+                    "id": content.id,
+                    "overview": content.overview,
+                    "director": content.director,
+                    "cast": cast,
+                    "genres": genre,
+                    "poster": content.poster
+                }
+                content_list.append(content_info)
+
+            similarity = Similarity.objects.all()
+            # no similarity matrix exists
+            if not similarity:
+                return HttpResponseBadRequest()
+            similarity_matrix = similarity[0].matrix
+            # generate recommendation only using last 5
+            recommendation_contents = []
+            for favorite_id in fav_contents_id[-5:]:
+                recommendation_contents = recommendation_contents + [item for item in get_recommendation(similarity_matrix, favorite_id) if item not in recommendation_contents]
+            if not recommendation_contents:
+                recommendation_contents = [
+                    {"id": 0, "poster": placeholder}] * 5
+
+            else:
+                # pick only 21 samples
+                recommendation_contents = random.sample(
+                    recommendation_contents, min(
+                        len(recommendation_contents), 21))
+
+        return JsonResponse(recommendation_contents, safe=False, status=200)
 
 
 
