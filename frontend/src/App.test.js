@@ -56,4 +56,12 @@ describe('App', () => {
 
     expect(AuthReducer.logOut).toHaveBeenCalledTimes(1);
   });
+
+  it('should logout properly', () => {
+    const component = mount(app);
+
+    component.find('#logout-button').simulate('click');
+
+    expect(AuthReducer.logOut).toHaveBeenCalledTimes(1);
+  });
 });

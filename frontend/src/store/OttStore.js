@@ -23,9 +23,7 @@ export const getOttPlan = (ott) => async (dispatch) => {
   try {
     const res = await axios.get(`/api/ott/${ott}/`);
     dispatch(_getOttPlan(res.data));
-  } catch (e) {
-    dispatch(_getOttPlan(null));
-  }
+  } catch (e) {}
 };
 
 export default function OttReducer(state = initialState, action) {
