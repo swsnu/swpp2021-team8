@@ -9,11 +9,15 @@ class Genre(models.Model):
 
     def __str__(self):
         return self.name
+
+
 class Actor(models.Model):
-    name = models.CharField(max_length = 50, default="")
+    name = models.CharField(max_length=50, default="")
 
     def __str__(self):
         return self.name
+
+
 class Content(models.Model):
     title = models.CharField(max_length=100, default="")
     genres = models.ManyToManyField(
@@ -26,7 +30,7 @@ class Content(models.Model):
     rate = models.DecimalField(default=0, max_digits=4, decimal_places=1)
     cast = models.ManyToManyField(
         Actor,
-        blank= True
+        blank=True
     )
     director = models.CharField(max_length=100, default="")
     ott = models.CharField(max_length=200, default="")
@@ -40,6 +44,7 @@ class Content(models.Model):
     def __str__(self):
         content_id = str(self.id)
         return content_id
+
 
 class Similarity(models.Model):
     matrix = models.BinaryField()

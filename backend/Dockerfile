@@ -10,4 +10,4 @@ COPY . .
 RUN pip install -r requirements.txt
 RUN pip install uwsgi
 
-CMD uwsgi --wsgi-file backend/wsgi.py --http :8000
+CMD uwsgi --wsgi-file backend/wsgi.py --env DJANGO_SETTINGS_MODULE=backend.settings.production --http :8000

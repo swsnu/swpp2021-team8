@@ -49,7 +49,13 @@ const MyPage = () => {
         <div className="mypage__grouplist">
           <h2>My Group</h2>
           {groups.slice(itemOffset, itemOffset + itemsPerPage).map((group) => {
-            return <GroupListItem group={group} key={group.id} onlyTitle />;
+            return (
+              <GroupListItem
+                group={group}
+                key={`group_${group.id}`}
+                onlyTitle
+              />
+            );
           })}
           <ReactPaginate
             breakLabel="..."
@@ -70,7 +76,9 @@ const MyPage = () => {
       <div className="mypage__favorite">
         <div className="mypage__favorite__title">Favorite Contents</div>
         {favoriteContents.map((content) => {
-          return <ContentListItem content={content} key={content.id} />;
+          return (
+            <ContentListItem content={content} key={`content_${content.id}`} />
+          );
         })}
       </div>
     </div>

@@ -44,9 +44,7 @@ export const getGroups = (query) => async (dispatch) => {
   try {
     const res = await axios.get(`/api/group/?${query ?? ''}`);
     dispatch(_getGroups(res.data));
-  } catch (e) {
-    // TODO
-  }
+  } catch (e) {}
 };
 
 export const getGroupDetail = (id) => async (dispatch) => {

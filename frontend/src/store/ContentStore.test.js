@@ -119,7 +119,7 @@ describe('ContentStore', () => {
       return { data: [{ id: 1, name: 'mockContent' }] };
     });
 
-    await store.dispatch(getRecommendationContents());
+    await store.dispatch(getRecommendationContents(1));
     const state = store.getState();
 
     expect(state.recommendationContents).toEqual([

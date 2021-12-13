@@ -83,7 +83,7 @@ class OttTestCase(TestCase):
 
     def test_ott_detail(self):
         """
-        /api/ott/<slug:ott_plan>/
+        /api/ott/<str:ott_plan>/
 
         GET
         """
@@ -96,6 +96,6 @@ class OttTestCase(TestCase):
                                 'password': 'user1_password'}),
                     content_type='application/json')
         response = client.get('/api/ott/watchu_basic/')
-        self.assertEqual(response.status_code, 404)
-        response = client.get('/api/ott/watcha_basic/')
+        self.assertEqual(response.status_code, 200)
+        response = client.get('/api/ott/watcha/')
         self.assertEqual(response.status_code, 200)

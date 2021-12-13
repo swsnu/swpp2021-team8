@@ -16,31 +16,36 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Actor',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(default='', max_length=50)),
             ],
         ),
         migrations.CreateModel(
             name='Genre',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(default='', max_length=20)),
             ],
         ),
         migrations.CreateModel(
             name='Content',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(default='', max_length=100)),
                 ('poster', models.CharField(default='', max_length=200)),
                 ('overview', models.TextField(default='')),
                 ('release_date', models.CharField(default='', max_length=15)),
-                ('rate', models.DecimalField(decimal_places=1, default=0, max_digits=4)),
+                ('rate', models.DecimalField(
+                    decimal_places=1, default=0, max_digits=4)),
                 ('director', models.CharField(default='', max_length=100)),
                 ('ott', models.CharField(default='', max_length=200)),
                 ('favorite_cnt', models.IntegerField(default=0)),
                 ('cast', models.ManyToManyField(blank=True, to='content.Actor')),
-                ('favorite_users', models.ManyToManyField(blank=True, related_name='favorite_contents', to=settings.AUTH_USER_MODEL)),
+                ('favorite_users', models.ManyToManyField(
+                    blank=True, related_name='favorite_contents', to=settings.AUTH_USER_MODEL)),
                 ('genres', models.ManyToManyField(blank=True, to='content.Genre')),
             ],
         ),

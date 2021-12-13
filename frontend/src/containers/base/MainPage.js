@@ -53,6 +53,7 @@ const MainPage = ({ history }) => {
   });
 
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
   const groups = useSelector((state) => state.group.groups);
   const recommendationContents = useSelector(
     (state) => state.content.recommendationContents,
@@ -80,8 +81,7 @@ const MainPage = ({ history }) => {
 
   useEffect(() => {
     dispatch(getGroups());
-    // TODO
-    dispatch(getRecommendationContents(1));
+    dispatch(getRecommendationContents(user.id));
     dispatch(getTrendingContents());
   }, []);
 

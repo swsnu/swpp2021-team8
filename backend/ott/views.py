@@ -1,7 +1,8 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from deco import login_required
 from .models import Ott
+
 
 @login_required
 @require_http_methods(["GET"])
@@ -26,27 +27,19 @@ def ott_list(request):
 @require_http_methods(["GET"])
 def ott_detail(request, ott_plan):
     """
-    /api/ott/<slug:ott_plan>/
+    /api/ott/<str:ott_plan>/
 
     GET
         Get detail information for OTT
     """
     if request.method == 'GET':
-        ott_platform, ott_membership = ott_plan.split('_')
-        try:
-            ott = Ott.objects.get(
-                ott=ott_platform.capitalize(),
-                membership=ott_membership.capitalize())
-        # ERR 404 : Ott Doesn't Exist
-        except (Ott.DoesNotExist) as _:
-            return HttpResponse(status=404)
 
-        response_dict = {
+        response_dict = [{
             'id': ott.id,
             'platform': ott.ott,
             'membership': ott.membership,
             'maxPeople': ott.max_people,
             'cost': ott.cost,
-        }
+        } for ott in Ott.objects.filter(ott__iexact=ott_plan)]
 
         return JsonResponse(response_dict, safe=False, status=200)
