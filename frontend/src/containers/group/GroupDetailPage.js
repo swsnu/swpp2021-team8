@@ -88,9 +88,7 @@ const GroupDetailPage = ({ history, match }) => {
                 'success',
               );
             } else {
-              MySwal.fire(
-                'Wrong Password!',
-              );
+              MySwal.fire('Wrong Password!');
             }
           });
         } else {

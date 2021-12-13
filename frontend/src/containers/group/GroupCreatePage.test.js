@@ -165,21 +165,6 @@ describe('<GroupCreatePage />', () => {
     expect(component.find(GroupCreatePage, '.isnotequal').length).toBe(1);
   });
 
-  xit('should set platform, membership well', () => {
-    const component = mount(mockGroupCreatePage);
-    component.find('.groupcreate__ott').at(0).simulate('click');
-    expect(OttReducer.getOttPlan).toHaveBeenCalledTimes(1);
-    component
-      .find('#netflix-logo-button')
-      .simulate('change', { target: { value: 'Netflix' } });
-    expect(component.find('.logo.checked').length).toBe(1);
-    expect(OttReducer.getOttPlan).toHaveBeenCalledTimes(2);
-    component
-      .find('#groupcreate-membership-select')
-      .simulate('change', { target: { value: 'Premium' } });
-    expect(OttReducer.getOttPlan).toHaveBeenCalledTimes(3);
-  });
-
   it('should not set people and cost when ott is not valid', () => {
     const component = mount(
       <Provider store={mockStoreNotSelected}>

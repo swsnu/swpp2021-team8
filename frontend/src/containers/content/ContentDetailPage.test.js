@@ -20,7 +20,8 @@ jest.mock('sweetalert2-react-content', () => ({
   __esModule: true, // this property makes it work
   default: jest.fn(() => {
     return {
-      fire: jest.fn(async () => {
+      // eslint-disable-next-line no-unused-vars
+      fire: jest.fn(async ({ preConfirm = jest.fn(() => {}) }) => {
         return { isConfirmed: true };
       }),
     };

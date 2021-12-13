@@ -1,5 +1,6 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import Popper from '@mui/material/Popper';
+import { mount, shallow } from 'enzyme';
 import NavBar from './NavBar';
 
 describe('<NavBar />', () => {
@@ -62,5 +63,26 @@ describe('<NavBar />', () => {
     const logoutWrapper = component.find('#logout-button');
     logoutWrapper.simulate('click');
     expect(mockLogOutClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('should open Popper when badge clicked', () => {
+    const mockLogOutClick = jest.fn(() => {});
+    const component = mount(
+      <NavBar.WrappedComponent
+        isLoggedIn
+        onLogOutClick={mockLogOutClick}
+        notifications={[
+          { id: 1, type: 'create', content: 'test', created_at: new Date() },
+          { id: 2, type: 'delete', content: 'delete', created_at: new Date() },
+          { id: 3, type: 'join', content: 'join', created_at: new Date() },
+        ]}
+        onNotificationClick={jest.fn(() => {})}
+      />,
+    );
+
+    const wrapper = component.find('.navbar__auth__notification');
+    wrapper.simulate('click');
+
+    expect(component.find(Popper).length).toBe(1);
   });
 });

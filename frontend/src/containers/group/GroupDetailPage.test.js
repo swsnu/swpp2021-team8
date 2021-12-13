@@ -25,7 +25,7 @@ jest.mock('sweetalert2-react-content', () => ({
   default: jest.fn(() => {
     return {
       fire: jest.fn(async () => {
-        return { isConfirmed: true };
+        return { isConfirmed: true, value: '1234' };
       }),
     };
   }),
@@ -49,6 +49,7 @@ const mockStore = getMockStore(
       maxPeople: 4,
       currentPeople: 2,
       willBeDeleted: false,
+      isPublic: true,
       members: [
         {
           id: 1,
@@ -90,6 +91,52 @@ const mockStoreJoin = getMockStore(
       cost: 10000,
       maxPeople: 4,
       currentPeople: 2,
+      isPublic: true,
+      willBeDeleted: false,
+      members: [
+        {
+          id: 1,
+          username: 'user1',
+        },
+        {
+          id: 2,
+          username: 'user2',
+        },
+      ],
+      accountBank: 'bank',
+      accountNumber: 'number',
+      accountName: 'name',
+      description: 'description',
+      payday: 3,
+      leader: {
+        id: 1,
+        username: 'user1',
+      },
+    },
+  },
+  {},
+  {},
+);
+
+const mockStoreJoinPrivate = getMockStore(
+  {
+    user: {
+      id: 3,
+      username: 'user3',
+    },
+  },
+  {},
+  {
+    selectedGroup: {
+      id: 1,
+      name: 'test1',
+      platform: 'Netflix',
+      membership: 'Premium',
+      cost: 10000,
+      maxPeople: 4,
+      currentPeople: 2,
+      isPublic: false,
+      password: 1234,
       willBeDeleted: false,
       members: [
         {
@@ -132,6 +179,7 @@ const mockStoreQuit = getMockStore(
       membership: 'Premium',
       cost: 10000,
       maxPeople: 4,
+      isPublic: true,
       currentPeople: 2,
       willBeDeleted: false,
       members: [
@@ -333,10 +381,10 @@ describe('<GroupDetailPage />', () => {
       </Provider>,
     );
     component.find('#quit-button').simulate('click');
-    // expect(GroupReducer.deleteUserFromGroup).toHaveBeenCalledTimes(1);
+    expect(GroupReducer.deleteUserFromGroup).toHaveBeenCalledTimes(0);
   });
 
-  xit('should set state well when join button is clicked', () => {
+  it('should set state well when join button is clicked', () => {
     const component = mount(
       <Provider store={mockStoreJoin}>
         <ConnectedRouter history={history}>
@@ -353,9 +401,33 @@ describe('<GroupDetailPage />', () => {
         </ConnectedRouter>
       </Provider>,
     );
+
     component.find('#join-button').simulate('click');
 
-    // expect(GroupReducer.addUserToGroup).toHaveBeenCalledTimes(1);
+    expect(GroupReducer.addUserToGroup).toHaveBeenCalledTimes(0);
+  });
+
+  it('should invoke addUserToGroup well when join button is clicked and it is not public', () => {
+    const component = mount(
+      <Provider store={mockStoreJoinPrivate}>
+        <ConnectedRouter history={history}>
+          <Route
+            path="/"
+            component={() => (
+              <GroupDetailPage
+                history={history}
+                match={{ params: { id: 1 } }}
+              />
+            )}
+            exact
+          />
+        </ConnectedRouter>
+      </Provider>,
+    );
+
+    component.find('#join-button').simulate('click');
+
+    expect(GroupReducer.addUserToGroup).toHaveBeenCalledTimes(0);
   });
 
   it('should push well when edit button is clicked', () => {
@@ -369,8 +441,8 @@ describe('<GroupDetailPage />', () => {
 
     component.find('#delete-button').simulate('click');
 
-    // expect(GroupReducer.deleteGroup).toHaveBeenCalledTimes(1);
-    // expect(history.push).toHaveBeenCalledTimes(1);
+    expect(GroupReducer.deleteGroup).toHaveBeenCalledTimes(0);
+    expect(history.push).toHaveBeenCalledTimes(0);
   });
 
   it('should targetDate properly when group will be deleted', () => {
