@@ -161,7 +161,9 @@ disable=print-statement,
         inconsistent-return-statements,
         too-many-statements,
         protected-access,
-        broad-except
+        broad-except,
+        relative-beyond-top-level,
+        wildcard-import
 
 
 # Enable the message, report, category or checker with the given id(s). You can
