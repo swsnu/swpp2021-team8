@@ -3,6 +3,6 @@ from .base import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['ec2-15-164-57-207.ap-northeast-2.compute.amazonaws.com', '15.164.57.207']
+ALLOWED_HOSTS = ['34.64.132.108']
 
 DATABASES = my_settings.DATABASES
