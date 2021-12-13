@@ -112,21 +112,21 @@ class ContentTestCase(TestCase):
         # response = client.get('/api/content/566525/')
         # self.assertEqual(response.status_code, 200)
 
-    # def test_content_recommendation(self):
-    #     """
-    #     /api/content/<int:user_id>/recommendation/
+    def test_content_recommendation(self):
+        """
+        /api/content/<int:user_id>/recommendation2/
 
-    #     GET
-    #         Get recommended contents for current user from THE MOIVE API
-    #     """
-    #     response = self.logged_in_client.get('/api/content/1/recommendation/')
-    #     self.assertEqual(response.status_code, 200)
+        GET
+            Get recommended contents for current user from THE MOIVE API
+        """
+        response = self.logged_in_client.get('/api/content/1/recommendation2/')
+        self.assertEqual(response.status_code, 200)
 
-    #     response = self.logged_in_client.get('/api/content/2/recommendation/')
-    #     self.assertEqual(response.status_code, 200)
+        response = self.logged_in_client.get('/api/content/2/recommendation2/')
+        self.assertEqual(response.status_code, 200)
 
-    #     response = self.logged_in_client.get('/api/content/3/recommendation/')
-    #     self.assertEqual(response.status_code, 404)
+        response = self.logged_in_client.get('/api/content/3/recommendation2/')
+        self.assertEqual(response.status_code, 404)
 
     def test_user_favorite_list_get(self):
         """
